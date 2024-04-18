@@ -1,69 +1,76 @@
 ﻿using ZstdSharp;
-const int size = 4096;//all files are 4096 bytes long
 
-var buffers = Directory.GetFiles("data", "*.chf", SearchOption.AllDirectories)
-    .Select(File.ReadAllBytes).ToArray();
-var names = Directory.GetFiles("data", "*.chf", SearchOption.AllDirectories)
-    .Select(Path.GetFileName).ToArray();
+AnalyzeSimilarities();
+return;
 
-// var onesWithDeadbeef = buffers.Where(b =>
-// {
-//     var span = b.AsSpan();
-//     ReadOnlySpan<byte> deadbeef = [0xEF, 0xBE, 0xAD, 0xDE];
-//     
-//     return span.IndexOf(deadbeef) != -1;
-// }).ToArray();
-// var onesWithoutDeadbeef = buffers.Except(onesWithDeadbeef).ToArray();
-//
-// var commonBytesDeadBeef = new List<int>(size);
-// var commonBytesNoDeadBeef = new List<int>(size);
-//
-// for (var i = 0; i < size; i++)
-// {
-//     if (onesWithDeadbeef.All(b => b[i] == buffers[0][i]))
-//         commonBytesDeadBeef.Add(i);
-//     
-//     if (onesWithoutDeadbeef.All(b => b[i] == buffers[0][i]))
-//         commonBytesNoDeadBeef.Add(i);
-// }
-//
-// var valuesAtFFB = buffers.Select(i => i[0xffb]).ToArray();
-// for(var i = 0; i < buffers.Length; i++){
-//     if(valuesAtFFB[i] == 61)
-//         Console.WriteLine($"Special file: {names[i]}");
-// }
-// var ddbfvaluesAtBytes = commonBytesDeadBeef.Select(i => onesWithDeadbeef[0][i]).ToArray();
-// var ddbfasString = string.Join(", ", commonBytesDeadBeef.Select(i => $"0x{i:X2}"));
-// var ddbfvaluesAtByteHex = string.Join(", ", ddbfvaluesAtBytes.Select(b => $"0x{b:X2}"));
-//
-//
-// var nddbfvaluesAtBytes = commonBytesNoDeadBeef.Select(i => onesWithoutDeadbeef[0][i]).ToArray();
-// var nddbfasString = string.Join(", ", commonBytesNoDeadBeef.Select(i => $"0x{i:X2}"));
-// var nddbfvaluesAtByteHex = string.Join(", ", nddbfvaluesAtBytes.Select(b => $"0x{b:X2}"));
-Directory.CreateDirectory("decompressed");
-foreach (var (buffer, name) in buffers.Zip(names))
+static void AnalyzeSimilarities()
 {
-    try
+    var decompressedFiles = Directory.GetFiles("decompressed", "*.bin", SearchOption.AllDirectories)
+        .Select(x => (Path.GetFileName(x), File.ReadAllBytes(x))).ToArray();
+
+    var smallest = decompressedFiles.MinBy(x => x.Item2.Length).Item2.Length;
+    //analyze byte by byte if it is the same in all files
+    var commonBytes = new List<int>();
+    for (var i = 0; i < smallest; i++)
     {
-        var useful = buffer[16..^8];
-        var lastDataByte = FindLastDataByte(useful);
-        if (lastDataByte == -1)
-            continue;
-        
-        var cropped = useful[..(lastDataByte + 1)];
-        using var zstd = new Decompressor();
-        var decompressed = zstd.Unwrap(cropped.ToArray());
-        
-        Console.WriteLine($"Decompressed length: {decompressed.Length}");
-        File.WriteAllBytes(Path.Combine("decompressed", name), decompressed.ToArray());
+        if (decompressedFiles.All(b => b.Item2[i] == decompressedFiles[0].Item2[i]))
+            commonBytes.Add(i);
     }
-    catch (Exception e)
+    var valuesAtCommonBytes = commonBytes.Select(i => decompressedFiles[0].Item2[i]).ToArray();
+    var commonBytesString = string.Join(", ", commonBytes.Select(i => $"0x{i:X2}"));
+    var commonValuesString = string.Join(", ", valuesAtCommonBytes.Select(i => $"0x{i:X2}"));
+    
+    //compute sequences of bytes in a row. This is useful for finding patterns in the data
+    //input: 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15
+    //output: 0-3, 5-10, 12-15
+    var sequences = new List<(int, int)>();
+    for (var i = 0; i < commonBytes.Count; i++)
     {
-        Console.WriteLine(e);
+        var start = commonBytes[i];
+        var end = start;
+        while (i + 1 < commonBytes.Count && commonBytes[i + 1] == end + 1)
+        {
+            end++;
+            i++;
+        }
+
+        sequences.Add((start, end));
     }
+    var sequencesString = string.Join(", ", sequences.Select(x => $"0x{x.Item1:X4}-0x{x.Item2:X4}"));
+    
+    Console.WriteLine($"Common sequences: {sequencesString}");
+    Console.WriteLine($"Common bytes: {commonBytesString}");
+    Console.WriteLine($"Values at common bytes: {commonValuesString}");
 }
 
-return;
+static void Decompress()
+{
+    var files = Directory.GetFiles("data", "*.chf", SearchOption.AllDirectories)
+        .Select(x => (Path.GetFileName(x), File.ReadAllBytes(x))).ToArray();
+
+    Directory.CreateDirectory("decompressed");
+    foreach (var (name, buffer) in files)
+    {
+        try
+        {
+            var useful = buffer[16..^8];
+            var lastDataByte = FindLastDataByte(useful);
+            if (lastDataByte == -1)
+                continue;
+
+            var cropped = useful[..(lastDataByte + 1)];
+            using var zstd = new Decompressor();
+            var decompressed = zstd.Unwrap(cropped.ToArray());
+
+            Console.WriteLine($"Decompressed length: {decompressed.Length}");
+            File.WriteAllBytes(Path.Combine("decompressed", Path.ChangeExtension(name, ".bin")), decompressed.ToArray());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+}
 
 static int FindLastDataByte(ReadOnlySpan<byte> useful)
 {
@@ -85,15 +92,15 @@ static int FindLastDataByte(ReadOnlySpan<byte> useful)
 
 static int FindFirstDeadBeefByte(ReadOnlySpan<byte> useful)
 {
-    for (var i = useful.Length - 1; i >= 0; i-=4)
+    for (var i = useful.Length - 1; i >= 0; i -= 4)
     {
-        if (useful[i] != 0xDE) 
+        if (useful[i] != 0xDE)
             return i;
-        if (useful[i - 1] != 0xAD) 
+        if (useful[i - 1] != 0xAD)
             return i - 1;
-        if (useful[i - 2] != 0xBE) 
+        if (useful[i - 2] != 0xBE)
             return i - 2;
-        if (useful[i - 3] != 0xEF) 
+        if (useful[i - 3] != 0xEF)
             return i - 3;
     }
 
