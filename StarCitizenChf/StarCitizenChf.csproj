@@ -8,7 +8,9 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <Content Include="data/*.chf" CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="original/*.chf" CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="decompressed/*.bin" CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="hex/*.txt" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
     
     <ItemGroup>

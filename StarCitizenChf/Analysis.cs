@@ -39,4 +39,19 @@ public static class Analysis
 
         return new AnalysisResult(sequences, commonBytes.ToArray(), valuesAtCommonBytes);
     }
+
+    public static bool IsMale(ReadOnlySpan<byte> decompressedData)
+    {
+        ReadOnlySpan<byte> woman = [0xAD, 0x4C, 0xB0, 0xEF, 0x94, 0x4A, 0x79, 0xD0, 0x53, 0xC2, 0xD3, 0xB4, 0x58, 0x25, 0x38, 0xAD];
+        ReadOnlySpan<byte> man = [0x61, 0x4A, 0x6B, 0x14, 0xD5, 0x39, 0xF4, 0x25, 0x49, 0x8A, 0xB6, 0xDF, 0x86, 0xA4, 0x99, 0xA9];
+        
+        var search = decompressedData.Slice(8, 16);
+        
+        if (search.SequenceEqual(woman))
+            return false;
+        if (search.SequenceEqual(man))
+            return true;
+        
+        throw new Exception();
+    }
 }
