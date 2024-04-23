@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
@@ -8,13 +7,6 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <Content Include="original/*.chf" CopyToOutputDirectory="PreserveNewest"/>
-        <Content Include="decompressed/*.bin" CopyToOutputDirectory="PreserveNewest"/>
-        <Content Include="hex/*.txt" CopyToOutputDirectory="PreserveNewest"/>
-    </ItemGroup>
-    
-    <ItemGroup>
       <PackageReference Include="ZstdSharp.Port" Version="0.7.6" />
     </ItemGroup>
-
 </Project>

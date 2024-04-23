@@ -2,17 +2,16 @@
 
 public static class Processing
 {
-    public static void ConvertToHexView(string inputFolder, string outputFolder, int bytesPerLine)
+    public static Task ConvertToHexView(string inputFilename, string outputFilename, int bytesPerLine = 16)
     {
-        var decompressedFiles = Directory.GetFiles(inputFolder, "*.bin", SearchOption.AllDirectories)
-            .Select(x => (Path.GetFileName(x), File.ReadAllBytes(x))).ToArray();
+        if (!inputFilename.EndsWith(".bin")) 
+            throw new ArgumentException("Input file must be a .bin file", nameof(inputFilename));
+        if (!outputFilename.EndsWith(".txt"))
+            throw new ArgumentException("Output file must be a .txt file", nameof(outputFilename));
         
-        Directory.CreateDirectory(outputFolder);
-        foreach (var (name, buffer) in decompressedFiles)
-        {
-            var bufferParts = buffer.Chunk(bytesPerLine);
-            var lines = bufferParts.Select(x => string.Join(" ", x.Select(y => y.ToString("X2"))));
-            File.WriteAllLines(Path.Combine(outputFolder, Path.ChangeExtension(name, ".txt")), lines);
-        }
+        var buffer = File.ReadAllBytes(inputFilename);
+        var bufferParts = buffer.Chunk(bytesPerLine);
+        var lines = bufferParts.Select(x => string.Join(" ", x.Select(y => y.ToString("X2"))));
+        return File.WriteAllLinesAsync(outputFilename, lines);
     }
 }

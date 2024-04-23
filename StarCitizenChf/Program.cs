@@ -1,52 +1,52 @@
-﻿using StarCitizenChf;
+﻿using System.Text.Json;
+using StarCitizenChf;
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
-var original = Path.Combine(csprojFolder, "original");
-var decompressed = Path.Combine(csprojFolder, "decompressed");
-var hex = Path.Combine(csprojFolder, "hex");
+var charactersFolder = Path.Combine(csprojFolder, "characters");
 
-var decompFiles = Load(decompressed);
-foreach (var (data, name) in decompFiles)
+//await Download.DownloadAllMetadata(csprojFolder);
+await Download.DownloadAllCharacters(JsonSerializer.Deserialize<Character[]>(File.ReadAllText(Path.Combine(csprojFolder, "total.json")))!, charactersFolder);
+
+var characterFolders = Directory.GetDirectories(charactersFolder);
+await Task.WhenAll(characterFolders.Select(async characterFolder =>
 {
     try
     {
-        var male =     Analysis.IsMale(data);
-        Console.WriteLine($"{name} is {(male ? "male" : "female")}");
+        var files = Directory.GetFiles(characterFolder);
+        if (files.Length == 0)
+            return;
+        
+        var chf = files.SingleOrDefault(x => x.EndsWith(".chf"));
+        if (chf == null)
+            return;
+        var bin = Path.ChangeExtension(chf, ".bin");
+
+        if (!File.Exists(bin))
+            await Decompression.Decompress(chf, bin);
+
+        var hex = Path.ChangeExtension(chf, ".txt");
+        //if (!File.Exists(hex))
+        await Processing.ConvertToHexView(bin, hex, 1);
     }
     catch (Exception e)
     {
+        Console.WriteLine(e);
+    }
+}));
+
+var chfFiles = Directory.GetFiles(charactersFolder, "*.chf", SearchOption.AllDirectories);
+var hexFiles = Directory.GetFiles(charactersFolder, "*.txt", SearchOption.AllDirectories);
+var binFiles = Utils.LoadFilesWithNames(charactersFolder, "*.bin");
+
+foreach (var (data, name) in binFiles)
+{
+    try
+    {
+        var male = Analysis.IsMale(data);
+        Console.WriteLine($"{name} is {(male ? "male" : "female")}");
+    }
+    catch
+    {
         Console.WriteLine($"{name} is unknown");
     }
-}
-
-return;
-
-var fileToDecompress = Directory.GetFiles( decompressed, "*.bin", SearchOption.AllDirectories).First();
-Decryption.Decrypt(fileToDecompress);
-
-var analysis =  Analysis.AnalyzeSimilarities(decompressed);
-
-//compute markdown table to visualize the data
-const string markdown = "| Index | Value |";
-const string separate = "|-------|-------|";
-var lines = new List<string> { markdown, separate };
-for (var i = 0; i < analysis.CommonBytes.Length; i++)
-{
-    var continuous = i > 0 && analysis.CommonBytes[i] == analysis.CommonBytes[i - 1] + 1;
-
-    if (!continuous)
-    {
-        lines.Add(separate);
-    }
-    
-    lines.Add($"| 0x{analysis.CommonBytes[i]:X3} | 0x{analysis.ValuesAtCommonBytes[i]:X2}  |");
-}
-Console.WriteLine(string.Join(Environment.NewLine, lines));
-
-
-static (byte[] data, string name)[] Load(string path)
-{
-    return Directory.GetFiles(path, "*", SearchOption.AllDirectories)
-        .Select(x => (File.ReadAllBytes(x), Path.GetFileName(x)))
-        .ToArray();
 }

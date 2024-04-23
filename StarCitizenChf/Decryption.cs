@@ -4,9 +4,9 @@ namespace StarCitizenChf;
 
 public static class Decryption
 {
-    public static void Decrypt(string filename)
+    public static void Decrypt(string inputFilename, string outputFilename)
     {
-        var file = File.ReadAllBytes(filename);
+        var file = File.ReadAllBytes(inputFilename);
 
        var bytes = file.AsSpan()[8..].ToArray();
        // var bytes = file;
@@ -25,6 +25,6 @@ public static class Decryption
         using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
         using var reader = new BinaryReader(cs);
         var decrypted = reader.ReadBytes(bytes.Length);
-        File.WriteAllBytes(Path.ChangeExtension(filename, ".decrypted"), decrypted);
+        File.WriteAllBytes(outputFilename, decrypted);
     }
 }
