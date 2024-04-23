@@ -2,16 +2,33 @@
 
 public static class Processing
 {
-    public static Task ConvertToHexView(string inputFilename, string outputFilename, int bytesPerLine = 16)
+    public static async Task ProcessAllCharacters(string charactersFolder)
     {
-        if (!inputFilename.EndsWith(".bin")) 
-            throw new ArgumentException("Input file must be a .bin file", nameof(inputFilename));
-        if (!outputFilename.EndsWith(".txt"))
-            throw new ArgumentException("Output file must be a .txt file", nameof(outputFilename));
-        
-        var buffer = File.ReadAllBytes(inputFilename);
-        var bufferParts = buffer.Chunk(bytesPerLine);
-        var lines = bufferParts.Select(x => string.Join(" ", x.Select(y => y.ToString("X2"))));
-        return File.WriteAllLinesAsync(outputFilename, lines);
+        await Task.WhenAll(Directory.GetDirectories(charactersFolder).Select(async characterFolder =>
+        {
+            try
+            {
+                var files = Directory.GetFiles(characterFolder);
+                if (files.Length == 0)
+                    return;
+
+                var chf = files.SingleOrDefault(x => x.EndsWith(".chf"));
+                if (chf == null)
+                    return;
+                var bin = Path.ChangeExtension(chf, ".bin");
+
+                if (!File.Exists(bin))
+                    await Decompression.Decompress(chf, bin);
+
+                var hex = Path.ChangeExtension(chf, ".txt");
+                if (!File.Exists(hex))
+                    await HexView.ConvertToHexView(bin, hex, 1);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }));
     }
+
 }

@@ -3,50 +3,33 @@ using StarCitizenChf;
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var charactersFolder = Path.Combine(csprojFolder, "characters");
+var websiteCharactersFolder = Path.Combine(csprojFolder, "websiteCharacters");
+var localCharactersFolder = Path.Combine(csprojFolder, "localCharacters");
 
+Utils.ImportGameCharacters(localCharactersFolder);
+
+//download files.json from the star citizen characters website
 //await Download.DownloadAllMetadata(csprojFolder);
-await Download.DownloadAllCharacters(JsonSerializer.Deserialize<Character[]>(File.ReadAllText(Path.Combine(csprojFolder, "total.json")))!, charactersFolder);
 
-var characterFolders = Directory.GetDirectories(charactersFolder);
-await Task.WhenAll(characterFolders.Select(async characterFolder =>
-{
-    try
-    {
-        var files = Directory.GetFiles(characterFolder);
-        if (files.Length == 0)
-            return;
-        
-        var chf = files.SingleOrDefault(x => x.EndsWith(".chf"));
-        if (chf == null)
-            return;
-        var bin = Path.ChangeExtension(chf, ".bin");
+//download images and chf files for all characters, skip if already downloaded
+//await Download.DownloadAllCharacters(JsonSerializer.Deserialize<Character[]>(File.ReadAllText(Path.Combine(csprojFolder, "total.json")))!, websiteCharactersFolder);
 
-        if (!File.Exists(bin))
-            await Decompression.Decompress(chf, bin);
-
-        var hex = Path.ChangeExtension(chf, ".txt");
-        //if (!File.Exists(hex))
-        await Processing.ConvertToHexView(bin, hex, 1);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine(e);
-    }
-}));
-
+//decompress all chf files and write their hex views, skip if already done
+//await Processing.ProcessAllCharacters(websiteCharactersFolder);
+await Processing.ProcessAllCharacters(localCharactersFolder);
+return;
 var chfFiles = Directory.GetFiles(charactersFolder, "*.chf", SearchOption.AllDirectories);
 var hexFiles = Directory.GetFiles(charactersFolder, "*.txt", SearchOption.AllDirectories);
-var binFiles = Utils.LoadFilesWithNames(charactersFolder, "*.bin");
+var binFiles = Directory.GetFiles(charactersFolder, "*.bin", SearchOption.AllDirectories);
 
-foreach (var (data, name) in binFiles)
+foreach (var name in binFiles)
 {
     try
     {
-        var male = Analysis.IsMale(data);
-        Console.WriteLine($"{name} is {(male ? "male" : "female")}");
+        Decryption.Decrypt(name, Path.ChangeExtension(name, "decrypted"));
     }
     catch
     {
-        Console.WriteLine($"{name} is unknown");
+        Console.WriteLine($"{name} failed");
     }
 }
