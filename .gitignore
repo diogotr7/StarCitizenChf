@@ -192,7 +192,6 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 *.opendb
-src/.idea/.idea.RazerEmulatorReader/.idea/
 
 src/.idea/
 
@@ -200,8 +199,5 @@ src/.idea/
 
 .vscode/
 
-StarCitizenChf/total.json
 
-StarCitizenChf/characters/
-
-StarCitizenChf/localCharacters/
+StarCitizenChf/data

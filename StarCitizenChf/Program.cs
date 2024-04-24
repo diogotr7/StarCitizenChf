@@ -2,27 +2,36 @@
 using StarCitizenChf;
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
-var charactersFolder = Path.Combine(csprojFolder, "characters");
-var websiteCharactersFolder = Path.Combine(csprojFolder, "websiteCharacters");
-var localCharactersFolder = Path.Combine(csprojFolder, "localCharacters");
+var dataFolder = Path.Combine(csprojFolder, "data");
+var metadataFile = Path.Combine(dataFolder, "characters.json");
+var charactersFolder = Path.Combine(dataFolder, "websiteCharacters");
+var localCharactersFolder = Path.Combine(dataFolder, "localCharacters");
 
-Utils.ImportGameCharacters(localCharactersFolder);
+//Utils.ImportGameCharacters(localCharactersFolder);
 
 //download files.json from the star citizen characters website
-//await Download.DownloadAllMetadata(csprojFolder);
+//await Download.DownloadAllMetadata(metadataFile);
 
 //download images and chf files for all characters, skip if already downloaded
-//await Download.DownloadAllCharacters(JsonSerializer.Deserialize<Character[]>(File.ReadAllText(Path.Combine(csprojFolder, "total.json")))!, websiteCharactersFolder);
+//await Download.DownloadAllCharacters(JsonSerializer.Deserialize<Character[]>(File.ReadAllText(metadataFile))!, charactersFolder);
 
 //decompress all chf files and write their hex views, skip if already done
-//await Processing.ProcessAllCharacters(websiteCharactersFolder);
-await Processing.ProcessAllCharacters(localCharactersFolder);
-return;
-var chfFiles = Directory.GetFiles(charactersFolder, "*.chf", SearchOption.AllDirectories);
-var hexFiles = Directory.GetFiles(charactersFolder, "*.txt", SearchOption.AllDirectories);
-var binFiles = Directory.GetFiles(charactersFolder, "*.bin", SearchOption.AllDirectories);
+await Task.WhenAll([
+    Processing.ProcessAllCharacters(charactersFolder),
+    Processing.ProcessAllCharacters(localCharactersFolder)
+]);
 
-foreach (var name in binFiles)
+var x = Analysis.AnalyzeSimilarities(Directory.GetFiles(dataFolder, "*.chf", SearchOption.AllDirectories));
+
+return;
+var default_m = Path.Combine(localCharactersFolder, "default_m", "default_m.chf");
+var dest = Path.Combine(localCharactersFolder, "default_m", "default_m_to_f.chf");
+await Decompression.MutateFile(default_m, dest, x =>
+{
+    Mutations.ChangeBodyType(x);
+});
+
+foreach (var name in Directory.GetFiles(charactersFolder, "*.bin", SearchOption.AllDirectories))
 {
     try
     {

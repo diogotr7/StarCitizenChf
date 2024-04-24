@@ -4,21 +4,20 @@ public record AnalysisResult(List<(int,int)> CommonSequences, int[] CommonBytes,
 
 public static class Analysis
 {
-    public static AnalysisResult AnalyzeSimilarities(string inputFolder)
+    public static AnalysisResult AnalyzeSimilarities(IEnumerable<string> paths)
     {
-        var decompressedFiles = Directory.GetFiles(inputFolder, "*.bin", SearchOption.AllDirectories)
-            .Select(x => (Path.GetFileName(x), File.ReadAllBytes(x))).ToArray();
+        var decompressedFiles = paths.Select(File.ReadAllBytes).ToArray();
 
-        var smallest = decompressedFiles.MinBy(x => x.Item2.Length).Item2.Length;
+        var smallest = decompressedFiles.MinBy(x => x.Length)!.Length;
         //analyze byte by byte if it is the same in all files
         var commonBytes = new List<int>();
         for (var i = 0; i < smallest; i++)
         {
-            if (decompressedFiles.All(b => b.Item2[i] == decompressedFiles[0].Item2[i]))
+            if (decompressedFiles.All(b => b[i] == decompressedFiles[0][i]))
                 commonBytes.Add(i);
         }
 
-        var valuesAtCommonBytes = commonBytes.Select(i => decompressedFiles[0].Item2[i]).ToArray();
+        var valuesAtCommonBytes = commonBytes.Select(i => decompressedFiles[0][i]).ToArray();
 
         //compute sequences of bytes in a row. This is useful for finding patterns in the data
         //input: 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15

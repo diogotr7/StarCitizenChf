@@ -1,4 +1,6 @@
-﻿namespace StarCitizenChf;
+﻿using System.Collections.Immutable;
+
+namespace StarCitizenChf;
 
 public static class Processing
 {
@@ -18,7 +20,7 @@ public static class Processing
                 var bin = Path.ChangeExtension(chf, ".bin");
 
                 if (!File.Exists(bin))
-                    await Decompression.Decompress(chf, bin);
+                    await Decompression.DecompressFile(chf, bin);
 
                 var hex = Path.ChangeExtension(chf, ".txt");
                 if (!File.Exists(hex))
@@ -30,5 +32,4 @@ public static class Processing
             }
         }));
     }
-
 }
