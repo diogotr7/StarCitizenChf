@@ -53,4 +53,13 @@ public static class Analysis
         
         throw new Exception();
     }
+
+    public static void PrintLast8Bytes(string[] files)
+    {
+        foreach (var file in files)
+        {
+            var data = File.ReadAllBytes(file);
+            Console.WriteLine($"{BitConverter.ToString(data[^8..])} : {file}");
+        }
+    }
 }

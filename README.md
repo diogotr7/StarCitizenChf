@@ -6,15 +6,18 @@ Stands for Character Header File. Used for storing character data in Star Citize
 
 Files are always 4096 bytes long. Any references to "always" should be interpreted as "always in the files I tested with", which were downloaded from star-citizen-characters.com
 
-| Hex indices    | size (bytes) | data                   | description                                                                             |
-|----------------|--------------|------------------------|-----------------------------------------------------------------------------------------|
-| 0x000 to 0x003 | 4            | 0x42, 0x42, 0x00, 0x00 | sq42 magic bytes                                                                        |
-| 0x004 to 0x007 | 4            | ?                      | Checksum? Changes even if the same character is exported. Fails to import when changed. |
-| 0x008 to 0x00B | 4            | ?                      | Compressed data size, int32                                                             |
-| 0x00C to 0x00F | 4            | ?                      | Decompressed data size, int32                                                           |
-| 0x010 to 0x013 | 4            | 0x28, 0xB5, 0x2F, 0xFD | Zstd magic bytes                                                                        |
-| 0x014 to 0xFF7 | 4072         | ?                      | Data. Encrypted, then zstd compressed                                                   |
-| 0xFF8 to 0xFFF | 8            | 0xF8, ... , 0x00, 0x00 | Footer. The first byte is always 0xF8 (at index 0xFF8), last two are always 0x00        |
+| Hex indices    | size (bytes) | data                   | description                                                                      |
+|----------------|--------------|------------------------|----------------------------------------------------------------------------------|
+| 0x000 to 0x003 | 4            | 0x42, 0x42, 0x00, 0x00 | sq42 magic bytes                                                                 |
+| 0x004 to 0x007 | 4            | ?                      | ~CRC32 checksum of data[16..]                                                    |
+| 0x008 to 0x00B | 4            | ?                      | Compressed data size, int32                                                      |
+| 0x00C to 0x00F | 4            | ?                      | Decompressed data size, int32                                                    |
+| 0x010 to 0x013 | 4            | 0x28, 0xB5, 0x2F, 0xFD | Zstd magic bytes                                                                 |
+| 0x014 to 0xFF7 | 4072         | ?                      | Data. Encrypted, then zstd compressed                                            |
+| 0xFF8 to 0xFFF | 8            | 0xF8, ... , 0x00, 0x00 | Footer. The first byte is always 0xF8 (at index 0xFF8), last two are always 0x00 |
+
+Perhaps the footer is a save date of some sort. Given the same character data, the footer changes. of course, this makes the crc also change.
+Finding the purpose of the footer would be good. As far as I can tell, it is not compressed.
 
 ## Encryption
 Any information in this section is based on the decompressed data. It has nothing to do with the above table.

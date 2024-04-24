@@ -30,6 +30,8 @@ public static class Decompression
         
         reCompressed.CopyTo(compressed.AsSpan()[16..]);
         
+        Checksum.FixChecksum(compressed);
+        
         await File.WriteAllBytesAsync(outputFilename, compressed);
     }
     
