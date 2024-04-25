@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+using System.Buffers;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 using StarCitizenChf;
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
@@ -19,6 +21,9 @@ await Task.WhenAll([
 ]);
 
 var default_m = Path.Combine(localCharactersFolder, "default_m", "default_m.chf");
+var buffer = await File.ReadAllBytesAsync(default_m);
+var file = MemoryMarshal.AsRef<ChfFile>(buffer.AsSpan());
+
 var dest = Path.Combine(localCharactersFolder, "default_m", "default_m_to_f.chf");
 await Decompression.MutateFile(default_m, dest, x =>
 {
