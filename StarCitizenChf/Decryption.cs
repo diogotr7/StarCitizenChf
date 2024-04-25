@@ -12,11 +12,9 @@ public static class Decryption
         using var aes = Aes.Create();
 
         aes.Key = [0x5E, 0x7A, 0x20, 0x02, 0x30, 0x2E, 0xEB, 0x1A, 0x3B, 0xB6, 0x17, 0xC3, 0x0F, 0xDE, 0x1E, 0x47];
-        aes.KeySize = 128;
-        aes.BlockSize = 128;
         aes.IV = new byte[16];
         aes.Mode = CipherMode.CBC;
-        aes.Padding = PaddingMode.Zeros;
+        aes.Padding = PaddingMode.None;
 
         var decryptor = aes.CreateDecryptor();
         using var ms = new MemoryStream(bytes);
@@ -25,4 +23,23 @@ public static class Decryption
         var decrypted = reader.ReadBytes(bytes.Length);
         File.WriteAllBytes(outputFilename, decrypted);
     }
+
+    public static void DecryptAll(string inputDirectory)
+    {
+        var binFiles = Directory.GetFiles(inputDirectory, "*.bin", SearchOption.AllDirectories);
+
+        foreach (var binFile in binFiles)
+        {
+            try
+            {
+                Decrypt(binFile, Path.ChangeExtension(binFile, ".decrypted"));
+                Console.WriteLine($"Decrypted {binFile}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+    
 }

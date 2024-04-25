@@ -25,6 +25,8 @@ public static class Processing
                 var hex = Path.ChangeExtension(chf, ".txt");
                 if (!File.Exists(hex))
                     await HexView.ConvertToHexView(bin, hex, 1);
+                
+                //TODO: decrypt here
             }
             catch (Exception e)
             {

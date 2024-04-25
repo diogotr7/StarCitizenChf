@@ -30,7 +30,7 @@ public static class Download
 
     public static async Task DownloadAllCharacters(IEnumerable<Character> rows, string outputFolder)
     {
-        var tasks = rows.Select(async row =>
+        await Task.WhenAll(rows.Select(async row =>
         {
             try
             {
@@ -57,9 +57,7 @@ public static class Download
             {
                 Console.WriteLine($"Error downloading {row.title}: {e.Message}");
             }
-        });
-
-        await Task.WhenAll(tasks);
+        }));
     }
     
     private static async Task DownloadFileAsync(string url, string path)

@@ -21,6 +21,9 @@ public static class Checksum
     
     public static void FixChecksum(Span<byte> data)
     {
+        if (data.Length != 4096)
+            throw new ArgumentException("Invalid data length");
+        
         var crc = Crc32c(data[16..]);
         BitConverter.TryWriteBytes(data[4..8], crc);
     }

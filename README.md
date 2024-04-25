@@ -71,10 +71,16 @@ Ranges:
 0x0199-0x019B, 0x048D-0x048D, 0x049B-0x049B, 0x04A2-0x04A2, 0x04B0-0x04B0
 `
 
-| Indices                | size | data                   | description                                                                                       |
-|------------------------|------|------------------------|---------------------------------------------------------------------------------------------------|
-| 0x00, 0x01, 0x02, 0x03 | 4    | 0x02, 0x00, 0x00, 0x00 | ?                                                                                                 |
-| 0x04, 0x05, 0x06, 0x07 | 4    | 0x07, 0x00, 0x00, 0x00 | Guess: CHF version. The source of the game checks for numbers higher  than 7 and throws an error. |
-| 0x08 - 0x17            | 16   | 0x??                   | Unknown                                                                                           |
-| 0x18 - 0x27            | 16   | 0x00                   | Padding                                                                                           |
+| Indices                | size | data                   | description            |
+|------------------------|------|------------------------|------------------------|
+| 0x00, 0x01, 0x02, 0x03 | 4    | 0x02, 0x00, 0x00, 0x00 | Unknown1               |
+| 0x04, 0x05, 0x06, 0x07 | 4    | 0x07, 0x00, 0x00, 0x00 | CHF version. See below |
+| 0x08 - 0x17            | 16   | 0x??                   | Unknown2               |
+| 0x18 - 0x27            | 16   | 0x00                   | Padding                |
 
+Unknown1:
+I tried changing the 2 value to 1 and 3, this makes the game silently fail to load the character.
+
+CHF version:
+When changing the number in the file to 0x08, this is shown in the log:
+`[Error] <Unrecognised Custom Head File Version: %u> assert(false): Unrecognised Custom Head File Version: 8 [Team_S42Features][Assert]`
