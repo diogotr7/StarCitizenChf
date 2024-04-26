@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-
-namespace StarCitizenChf;
+﻿namespace StarCitizenChf;
 
 public static class Download
 {
@@ -28,8 +25,10 @@ public static class Download
         await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(rowsList));
     }
 
-    public static async Task DownloadAllCharacters(IEnumerable<Character> rows, string outputFolder)
+    public static async Task DownloadAllCharacters(string metadataFile, string outputFolder)
     {
+        var rows = JsonSerializer.Deserialize<Character[]>(await File.ReadAllTextAsync(metadataFile))!;
+        
         await Task.WhenAll(rows.Select(async row =>
         {
             try

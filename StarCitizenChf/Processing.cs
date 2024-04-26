@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace StarCitizenChf;
+﻿namespace StarCitizenChf;
 
 public static class Processing
 {
@@ -17,20 +15,18 @@ public static class Processing
                 var chf = files.SingleOrDefault(x => x.EndsWith(".chf"));
                 if (chf == null)
                     return;
+                
                 var bin = Path.ChangeExtension(chf, ".bin");
-
                 if (!File.Exists(bin))
                     await Decompression.DecompressFile(chf, bin);
 
                 var hex = Path.ChangeExtension(chf, ".txt");
                 if (!File.Exists(hex))
                     await HexView.ConvertToHexView(bin, hex, 1);
-                
-                //TODO: decrypt here
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"Error processing {characterFolder}: {e.Message}");
             }
         }));
     }

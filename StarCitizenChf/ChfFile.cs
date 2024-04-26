@@ -1,7 +1,4 @@
-﻿
-using System.Runtime.InteropServices;
-
-namespace StarCitizenChf;
+﻿namespace StarCitizenChf;
 
 public sealed class ChfFile
 {

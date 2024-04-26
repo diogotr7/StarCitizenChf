@@ -54,12 +54,38 @@ public static class Analysis
         throw new Exception();
     }
 
-    public static void PrintLast8Bytes(string[] files)
+    public static void PrintLast8Bytes(IEnumerable<string> files)
     {
         foreach (var file in files)
         {
             var data = File.ReadAllBytes(file);
             Console.WriteLine($"{BitConverter.ToString(data[^8..])} : {file}");
+        }
+    }
+
+    /// <summary>
+    /// Tries to look for the largest common byte sequence in every file
+    /// </summary>
+    /// <param name="files"></param>
+    public static void BruteForceCommonBytes(IEnumerable<string> files)
+    {
+        var decompressedFiles = files.Select(File.ReadAllBytes).ToArray();
+        var firstFile = decompressedFiles[0];
+        var chunks = firstFile.Chunk(4).Where(c => c.Any(i => i != 0));
+        var commonString = new HashSet<string>();
+        
+        foreach (var chunk in chunks)
+        {
+            if (decompressedFiles.All(f => f.AsSpan().IndexOf(chunk) != -1))
+            {
+                commonString.Add(BitConverter.ToString(chunk));
+            }
+        }
+
+        Console.WriteLine($"Found {commonString.Count} common chunks");
+        foreach (var chunk in commonString)
+        {
+            Console.WriteLine(chunk);
         }
     }
 }

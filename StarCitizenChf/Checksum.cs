@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace StarCitizenChf;
+﻿namespace StarCitizenChf;
 
 public static class Checksum
 {

@@ -1,6 +1,4 @@
-﻿using ZstdSharp;
-
-namespace StarCitizenChf;
+﻿namespace StarCitizenChf;
 
 public static class Decompression
 {
