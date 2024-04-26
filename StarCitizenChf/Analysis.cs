@@ -88,4 +88,11 @@ public static class Analysis
             Console.WriteLine(chunk);
         }
     }
+
+    public static async Task<Rgba32> GetEyeColor(string bin)
+    {
+        var data = await File.ReadAllBytesAsync(bin);
+        var eyeColor = data.AsSpan().Slice(data.Length - 136, 4).ToArray();
+        return new Rgba32(eyeColor[0], eyeColor[1], eyeColor[2], eyeColor[3]);
+    }
 }

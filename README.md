@@ -96,3 +96,6 @@ When changing the number in the file to 0x08, this is shown in the log:
 The game has this color picker:
 
 ![Eye color picker](img/eye_picker.png)
+
+The color is stored in the file as 4 bytes, RGBA.
+In the files I have this color seems to always be 136 bytes from the end of the binary data. Maybe it's a good idea to start reverse engineering the files backwards.
