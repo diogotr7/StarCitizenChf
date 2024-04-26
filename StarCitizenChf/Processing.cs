@@ -20,16 +20,16 @@ public static class Processing
                 if (!File.Exists(bin))
                     await Decompression.DecompressFile(chf, bin);
 
-                var hex = Path.ChangeExtension(chf, ".txt");
-                if (!File.Exists(hex))
-                    await HexView.ConvertToHexView(bin, hex, 1);
-                
                 var eyeImage = Path.Combine(characterFolder, "eye.png");
                 if (!File.Exists(eyeImage))
                 {
                     var eyeColor = await Analysis.GetEyeColor(bin);
                     await Images.WriteSolidColorImage(eyeImage, 64, 64, eyeColor);
                 }
+                
+                var reversedBin = Path.ChangeExtension(chf, ".reversed.bin");
+                if (!File.Exists(reversedBin))
+                    await Utils.ReverseFile(bin, reversedBin);
             }
             catch (Exception e)
             {

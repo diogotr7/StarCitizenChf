@@ -54,15 +54,6 @@ public static class Analysis
         throw new Exception();
     }
 
-    public static void PrintLast8Bytes(IEnumerable<string> files)
-    {
-        foreach (var file in files)
-        {
-            var data = File.ReadAllBytes(file);
-            Console.WriteLine($"{BitConverter.ToString(data[^8..])} : {file}");
-        }
-    }
-
     /// <summary>
     /// Tries to look for the largest common byte sequence in every file
     /// </summary>

@@ -37,4 +37,11 @@ public static class Utils
             File.Copy(character, Path.Combine(output, $"{name}.chf"));
         }
     }
+
+    public static async Task ReverseFile(string bin, string reversedBin)
+    {
+        var data = await File.ReadAllBytesAsync(bin);
+        Array.Reverse(data);
+        await File.WriteAllBytesAsync(reversedBin, data);
+    }
 }
