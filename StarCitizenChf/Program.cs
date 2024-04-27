@@ -45,15 +45,27 @@ continue;
     await ColorAnalyzer.GetHairColorDye(r);
 }
 
+// foreach (var r in reversed)
+// {
+//     //632
+//     var bytes = File.ReadAllBytes(r).Skip(0).Take(48);
+//     var chunks = bytes.Chunk(4).ToArray();
+//     var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
+//     var merged = string.Join("|", stringChunks);
+//     Console.WriteLine($"{merged}: {Path.GetFileName(r)}");
+// }
+
+var lines = new List<string>();
 foreach (var r in reversed)
 {
     //632
-    var bytes = File.ReadAllBytes(r).Skip(0).Take(48);
+    var bytes = File.ReadAllBytes(r);
     var chunks = bytes.Chunk(4).ToArray();
     var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
     var merged = string.Join("|", stringChunks);
-    Console.WriteLine($"{merged}: {Path.GetFileName(r)}");
+    lines.Add($"{merged}: {Path.GetFileName(r)}");
 }
+File.WriteAllLines(Path.Combine(folders.Base, "reversed.txt"), lines);
 
 return;
 
