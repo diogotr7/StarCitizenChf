@@ -37,6 +37,7 @@ await Task.WhenAll([
 //
 
 var reversed = Directory.GetFiles(folders.Base, "*.reversed.bin", SearchOption.AllDirectories);
+var bins = Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories).Except(reversed).ToArray();
 foreach (var r in reversed)
 {
     ColorAnalyzer.FindAllColors(r);
@@ -55,6 +56,8 @@ continue;
 //     Console.WriteLine($"{merged}: {Path.GetFileName(r)}");
 // }
 
+return;
+
 var lines = new List<string>();
 foreach (var r in reversed)
 {
@@ -66,6 +69,18 @@ foreach (var r in reversed)
     lines.Add($"{merged}: {Path.GetFileName(r)}");
 }
 File.WriteAllLines(Path.Combine(folders.Base, "reversed.txt"), lines);
+
+var lines2 = new List<string>();
+foreach (var r in bins)
+{
+    //632
+    var bytes = File.ReadAllBytes(r);
+    var chunks = bytes.Chunk(4).ToArray();
+    var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
+    var merged = string.Join("|", stringChunks);
+    lines2.Add($"{merged}: {Path.GetFileName(r)}");
+}
+File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), lines2);
 
 return;
 

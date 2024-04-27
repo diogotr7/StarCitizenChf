@@ -24,7 +24,7 @@ public static class Processing
                 if (!File.Exists(eyeImage))
                 {
                     var eyeColor = await Analysis.GetEyeColor(bin);
-                    await Images.WriteSolidColorImage(eyeImage, 64, 64, eyeColor);
+                    await Images.WriteSolidColorImage(eyeImage, eyeColor);
                 }
                 
                 var reversedBin = Path.ChangeExtension(chf, ".reversed.bin");

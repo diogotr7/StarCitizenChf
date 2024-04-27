@@ -2,9 +2,9 @@
 
 public static class Images
 {
-    public static async Task WriteSolidColorImage(string path, int width, int height, Rgba32 color)
+    public static async Task WriteSolidColorImage(string path, Rgba32 color)
     {
-        using var image = new Image<Rgba32>(width, height, color);
+        using var image = new Image<Rgba32>(256, 256, color);
         await using var stream = File.OpenWrite(path);
         await image.SaveAsPngAsync(stream);
     }

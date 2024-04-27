@@ -41,7 +41,7 @@ public static class ColorAnalyzer
             
             var color = new Rgba32(rgba[3], rgba[2], rgba[1], rgba[0]);
             
-            await Images.WriteSolidColorImage(imageFile, 256,256, color);
+            await Images.WriteSolidColorImage(imageFile, color);
             
             Console.WriteLine($"#{rgba[3]:X2}{rgba[2]:X2}{rgba[1]:X2}{rgba[0]:X2}");
         }
@@ -66,7 +66,7 @@ public static class ColorAnalyzer
         var color = new Rgba32(rgba[3], rgba[2], rgba[1], rgba[0]);
         
         var imageFile = Path.Combine(Path.GetDirectoryName(file)!, "hair_dye.png");
-        await Images.WriteSolidColorImage(imageFile, 256,256, color);
+        await Images.WriteSolidColorImage(imageFile, color);
     }
     
     public static void FindAllColors(string file)
@@ -74,7 +74,7 @@ public static class ColorAnalyzer
         var magic = new byte[] { 0xBD, 0x53, 0x07, 0x97 };
         var bytes = File.ReadAllBytes(file);
         var colors = new List<Rgba32>();
-        var asd = FindAllInstances(magic, bytes).ToArray();
+        var asd = bytes.AsSpan().IndexOfAll(magic).ToArray();
         
         foreach (var idx in asd)
         {
@@ -87,30 +87,25 @@ public static class ColorAnalyzer
         foreach (var color in colors)
         {
             var imageFile = Path.Combine(Path.GetDirectoryName(file)!, $"autocolor_{i++}.png");
-            Images.WriteSolidColorImage(imageFile, 256, 256, color).Wait();
+            Images.WriteSolidColorImage(imageFile, color).Wait();
         }
     }
     
-    public static IEnumerable<int> FindAllInstances(byte[] pattern, byte[] source)
+    public static List<int> IndexOfAll(this Span<byte> source, ReadOnlySpan<byte> pattern)
     {
-        for (int i = 0; i <= source.Length - pattern.Length; i++)
+        var indices = new List<int>();
+        
+        var index = source.IndexOf(pattern);
+        while (index != -1)
         {
-            if (IsMatch(pattern, source.AsSpan().Slice(i, pattern.Length)))
-            {
-                yield return i;
-            }
+            indices.Add(index);
+            var newIndex = source[(index + pattern.Length)..].IndexOf(pattern);
+            if (newIndex == -1)
+                break;
+            
+            index += newIndex + pattern.Length;
         }
-    }
-
-    private static bool IsMatch(Span<byte> pattern, Span<byte> source)
-    {
-        for (int i = 0; i < pattern.Length; i++)
-        {
-            if (pattern[i] != source[i])
-            {
-                return false;
-            }
-        }
-        return true;
+        
+        return indices;
     }
 }
