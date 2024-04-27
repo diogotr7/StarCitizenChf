@@ -67,6 +67,8 @@ public static class Analysis
         foreach (var r in files)
         {
             var bytes = await File.ReadAllBytesAsync(r);
+            if (bytes.Length == 0)
+                continue;
             var chunks = bytes.Chunk(4).ToArray();
             var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
             var merged = string.Join("|", stringChunks);

@@ -6,20 +6,18 @@ using StarCitizenChf;
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var folders = new Folders(csprojFolder);
 
-//Imports all non-modded characters exported from the game into our local characters folder.
-await Utils.ImportGameCharacters(folders.LocalCharacters);
-await Mutations.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
-
 //Downloads all characters from the website and saves them to the website characters folder.
 //await Download.DownloadAllMetadata(folders.MetadataFile);
 //await Download.DownloadAllCharacters(folders.MetadataFile, folders.WebsiteCharacters);
 
+//Imports all non-modded characters exported from the game into our local characters folder.
+await Utils.ImportGameCharacters(folders.LocalCharacters);
+await Mutations.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
+
 //Extracts all chf files into bins, reverses these bins for easier analysis.
 //also tries to extract some color information to compare to images.
-await Task.WhenAll([
-    Processing.ProcessAllCharacters(folders.WebsiteCharacters),
-    Processing.ProcessAllCharacters(folders.LocalCharacters)
-]);
+await Processing.ProcessAllCharacters(folders.WebsiteCharacters);
+await Processing.ProcessAllCharacters(folders.LocalCharacters);
 
 //only search for colors in website characters since those have images we can compare to.
 var websiteRevs = Directory.GetFiles(folders.WebsiteCharacters, "*.rev", SearchOption.AllDirectories);
@@ -31,10 +29,8 @@ await Task.WhenAll(websiteRevs.SelectMany(b => new[]
 }));
 
 // prints all data buffers to a file, one per line, in 4 byte chunks for easy visual comparison.
-await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.Base, "*.rev", SearchOption.AllDirectories), Path.Combine(folders.Base, "reversed.txt"));
 await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories), Path.Combine(folders.Base, "bins.txt"));
 
 //brute force search for common bytes in all files.
 //this can be useful to find patterns in the data.
 Analysis.BruteForceCommonBytes(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories));
-Analysis.BruteForceCommonBytes(Directory.GetFiles(folders.Base, "*.rev", SearchOption.AllDirectories));
