@@ -114,7 +114,7 @@ This table uses reverse indices, so the first byte is the last byte in the file.
 | 14-15-16-17       | 4    | Unknown     | 00-00-00-00                |                                                                       |
 | 18-19-1A-1B       | 4    | Unknown     | 00-00-00-00                |                                                                       |
 | 1C-1D-1E-1F       | 4    | Unknown     | 00-00-00-00                |                                                                       |
-| 20-21-22-23       | 4    | Unknown     | A4-1F-A1-2C or 8A-5B-66-DB | *1                                                                    |
+| 20-21-22-23       | 4    | Unknown     | A4-1F-A1-2C or 8A-5B-66-DB | *1   8A-5B-66-DB = woman, A4-1F-A1-2C = man. Might be voice or smth   |
 | 24-25-26-27       | 4    | Unknown     | 00-00-00-05                |                                                                       |
 | 28-29-2A-2B       | 4    | Unknown     | 00-00-00-00                |                                                                       |
 | 2C-2D-2E-2F       | 4    | Torso color | -                          |                                                                       |

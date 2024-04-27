@@ -39,6 +39,8 @@ await Task.WhenAll([
 var reversed = Directory.GetFiles(folders.Base, "*.reversed.bin", SearchOption.AllDirectories);
 foreach (var r in reversed)
 {
+    ColorAnalyzer.FindAllColors(r);
+continue;
     await ColorAnalyzer.ExtractCharacterColors(r);
     await ColorAnalyzer.GetHairColorDye(r);
 }

@@ -69,11 +69,48 @@ public static class ColorAnalyzer
         await Images.WriteSolidColorImage(imageFile, 256,256, color);
     }
     
+    public static void FindAllColors(string file)
+    {
+        var magic = new byte[] { 0xBD, 0x53, 0x07, 0x97 };
+        var bytes = File.ReadAllBytes(file);
+        var colors = new List<Rgba32>();
+        var asd = FindAllInstances(magic, bytes).ToArray();
+        
+        foreach (var idx in asd)
+        {
+            var rgba = bytes.AsSpan().Slice(idx - 4, 4).ToArray();
+            var color = new Rgba32(rgba[3], rgba[2], rgba[1], rgba[0]);
+            colors.Add(color);
+        }
+        
+        int i = 0;
+        foreach (var color in colors)
+        {
+            var imageFile = Path.Combine(Path.GetDirectoryName(file)!, $"autocolor_{i++}.png");
+            Images.WriteSolidColorImage(imageFile, 256, 256, color).Wait();
+        }
+    }
     
+    public static IEnumerable<int> FindAllInstances(byte[] pattern, byte[] source)
+    {
+        for (int i = 0; i <= source.Length - pattern.Length; i++)
+        {
+            if (IsMatch(pattern, source.AsSpan().Slice(i, pattern.Length)))
+            {
+                yield return i;
+            }
+        }
+    }
 
-    const int a = 1065243000;
-    const int b = 1065170376;
-    const int c = 1064917280;
-    const int d = 1064845615;
-    const int e = 49768721;
+    private static bool IsMatch(Span<byte> pattern, Span<byte> source)
+    {
+        for (int i = 0; i < pattern.Length; i++)
+        {
+            if (pattern[i] != source[i])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
