@@ -31,7 +31,10 @@ public static class ColorAnalyzer
             throw new ArgumentException("File must be a .rev file");
 
         var bytes = await File.ReadAllBytesAsync(file);
-
+        if (bytes.Length == 0)
+            return;
+        
+        
         int i = 0;
         foreach (var idx in _colorIndices)
         {
