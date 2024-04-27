@@ -1,4 +1,13 @@
-﻿namespace StarCitizenChf;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace StarCitizenChf;
 
 public static class Download
 {

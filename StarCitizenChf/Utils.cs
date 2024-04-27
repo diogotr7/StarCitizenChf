@@ -1,4 +1,12 @@
-﻿namespace StarCitizenChf;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+
+namespace StarCitizenChf;
 
 public static class Utils
 {
@@ -18,7 +26,7 @@ public static class Utils
         return $"{start}-{character.id[..8]}";
     }
 
-    public static void ImportGameCharacters(string outputFolder)
+    public static async Task ImportGameCharacters(string outputFolder)
     {
         var inputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
             "Roberts Space Industries", "StarCitizen", "EPTU", "user", "client", "0", "CustomCharacters");
@@ -32,9 +40,15 @@ public static class Utils
 
             if (Directory.Exists(output))
                 continue;
+            
+            var chf = ChfFile.FromChf(character);
+            
+            //do not import our own characters again.
+            if (chf.IsModded())
+                continue;
 
             Directory.CreateDirectory(output);
-            File.Copy(character, Path.Combine(output, $"{name}.chf"));
+            await chf.WriteToFileAsync(Path.Combine(output, $"{name}.chf"));
         }
     }
 
@@ -43,5 +57,30 @@ public static class Utils
         var data = await File.ReadAllBytesAsync(bin);
         Array.Reverse(data);
         await File.WriteAllBytesAsync(reversedBin, data);
+    }
+    
+    public static async Task WriteSolidColorImage(string path, Rgba32 color)
+    {
+        using var image = new Image<Rgba32>(256, 256, color);
+        await using var stream = File.OpenWrite(path);
+        await image.SaveAsPngAsync(stream);
+    }
+        
+    public static List<int> IndexOfAll(this Span<byte> source, ReadOnlySpan<byte> pattern)
+    {
+        var indices = new List<int>();
+        
+        var index = source.IndexOf(pattern);
+        while (index != -1)
+        {
+            indices.Add(index);
+            var newIndex = source[(index + pattern.Length)..].IndexOf(pattern);
+            if (newIndex == -1)
+                break;
+            
+            index += newIndex + pattern.Length;
+        }
+        
+        return indices;
     }
 }

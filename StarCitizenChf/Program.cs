@@ -1,91 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using StarCitizenChf;
+
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var folders = new Folders(csprojFolder);
 
-Utils.ImportGameCharacters(folders.LocalCharacters);
+//Imports all non-modded characters exported from the game into our local characters folder.
+await Utils.ImportGameCharacters(folders.LocalCharacters);
+await Mutations.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
 
+//Downloads all characters from the website and saves them to the website characters folder.
 //await Download.DownloadAllMetadata(folders.MetadataFile);
-
 //await Download.DownloadAllCharacters(folders.MetadataFile, folders.WebsiteCharacters);
 
+//Extracts all chf files into bins, reverses these bins for easier analysis.
+//also tries to extract some color information to compare to images.
 await Task.WhenAll([
     Processing.ProcessAllCharacters(folders.WebsiteCharacters),
     Processing.ProcessAllCharacters(folders.LocalCharacters)
 ]);
 
-//Analysis.BruteForceCommonBytes(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories));
-
-// var lightblue = Directory.GetFiles(folders.LocalCharacters, "lightblue*.bin", SearchOption.AllDirectories);
-//
-// var ints = lightblue.Select(l =>
-// {
-//     var file = File.ReadAllBytes(l);
-//     ReadOnlySpan<byte> lb = [0x9c, 0xbe, 0xe7, 0xff];
-//     var idx = file.AsSpan().IndexOf(lb);
-//     return (Index: idx, DistanceFromEnd: file.Length - idx);
-// }).ToArray();//always 136 bytes from the end
-//
-// //get 4 byte sequence 136 bytes from the end of every file
-// var allBins = Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories);
-// var allBytes = allBins.Select(File.ReadAllBytes).ToArray();
-// var lastBytes = allBytes.Select(b =>
-// {
-//     var rgba = b.AsSpan().Slice(b.Length - 136, 4).ToArray();
-//     return $"#{rgba[0]:X2}{rgba[1]:X2}{rgba[2]:X2}{rgba[3]:X2}";
-// }).Distinct().Order().ToArray();
-//
-// var all = string.Join(Environment.NewLine, lastBytes);
-//
-
-var reversed = Directory.GetFiles(folders.Base, "*.reversed.bin", SearchOption.AllDirectories);
-var bins = Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories).Except(reversed).ToArray();
-foreach (var r in reversed)
+//only search for colors in website characters since those have images we can compare to.
+var websiteRevs = Directory.GetFiles(folders.WebsiteCharacters, "*.rev", SearchOption.AllDirectories);
+await Task.WhenAll(websiteRevs.SelectMany(b => new[]
 {
-    ColorAnalyzer.FindAllColors(r);
-continue;
-    await ColorAnalyzer.ExtractCharacterColors(r);
-    await ColorAnalyzer.GetHairColorDye(r);
-}
+    ColorAnalyzer.FindColorsAtIndices(b),
+    ColorAnalyzer.FindColorsWithPattern(b, [0xBD, 0x53, 0x07, 0x97]),
+    ColorAnalyzer.FindColorsWithPattern(b, [0xA2, 0xC7, 0xC9, 0x09]),
+}));
 
-// foreach (var r in reversed)
-// {
-//     //632
-//     var bytes = File.ReadAllBytes(r).Skip(0).Take(48);
-//     var chunks = bytes.Chunk(4).ToArray();
-//     var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
-//     var merged = string.Join("|", stringChunks);
-//     Console.WriteLine($"{merged}: {Path.GetFileName(r)}");
-// }
+// prints all data buffers to a file, one per line, in 4 byte chunks for easy visual comparison.
+await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.Base, "*.rev", SearchOption.AllDirectories), Path.Combine(folders.Base, "reversed.txt"));
+await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories), Path.Combine(folders.Base, "bins.txt"));
 
-return;
-
-var lines = new List<string>();
-foreach (var r in reversed)
-{
-    //632
-    var bytes = File.ReadAllBytes(r);
-    var chunks = bytes.Chunk(4).ToArray();
-    var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
-    var merged = string.Join("|", stringChunks);
-    lines.Add($"{merged}: {Path.GetFileName(r)}");
-}
-File.WriteAllLines(Path.Combine(folders.Base, "reversed.txt"), lines);
-
-var lines2 = new List<string>();
-foreach (var r in bins)
-{
-    //632
-    var bytes = File.ReadAllBytes(r);
-    var chunks = bytes.Chunk(4).ToArray();
-    var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
-    var merged = string.Join("|", stringChunks);
-    lines2.Add($"{merged}: {Path.GetFileName(r)}");
-}
-File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), lines2);
-
-return;
-
-var moddedBin = Path.Combine(folders.ModdedCharacters, "female_ee.bin");
-var buffer = File.ReadAllBytes(moddedBin);
-var file = new ChfFile(buffer);
-var output = Path.ChangeExtension(moddedBin, ".chf");
-File.WriteAllBytes(output, file.File);
+//brute force search for common bytes in all files.
+//this can be useful to find patterns in the data.
+Analysis.BruteForceCommonBytes(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories));
+Analysis.BruteForceCommonBytes(Directory.GetFiles(folders.Base, "*.rev", SearchOption.AllDirectories));

@@ -1,4 +1,9 @@
-﻿namespace StarCitizenChf;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace StarCitizenChf;
 
 public static class Processing
 {
@@ -15,21 +20,21 @@ public static class Processing
                 var chf = files.SingleOrDefault(x => x.EndsWith(".chf"));
                 if (chf == null)
                     return;
-                
+
                 var bin = Path.ChangeExtension(chf, ".bin");
                 if (!File.Exists(bin))
                     await Decompression.DecompressFile(chf, bin);
 
-                var eyeImage = Path.Combine(characterFolder, "eye.png");
-                if (!File.Exists(eyeImage))
-                {
-                    var eyeColor = await Analysis.GetEyeColor(bin);
-                    await Images.WriteSolidColorImage(eyeImage, eyeColor);
-                }
-                
-                var reversedBin = Path.ChangeExtension(chf, ".reversed.bin");
+                var reversedBin = Path.ChangeExtension(chf, ".rev");
                 if (!File.Exists(reversedBin))
                     await Utils.ReverseFile(bin, reversedBin);
+
+                // var eyeImage = Path.Combine(characterFolder, "eye.png");
+                // if (!File.Exists(eyeImage))
+                // {
+                //     var eyeColor = await Analysis.GetEyeColor(bin);
+                //     await Utils.WriteSolidColorImage(eyeImage, eyeColor);
+                // }
             }
             catch (Exception e)
             {

@@ -273,13 +273,14 @@ This table uses reverse indices, so the first byte is the last byte in the file.
 
 ## Theory
 
-| Key         | Value           |
-|-------------|-----------------|
-| A2-C7-C9-09 | Hair dye        |
-| 93-61-cb-58 | freckle amount  |
-| 55-4a-d2-0f | freckle opacity |
-| cf-c4-12-64 | sunspot amount  |
-| b9-58-83-b0 | sunspot opacity |
+| Key         | Value                           |
+|-------------|---------------------------------|
+| A2-C7-C9-09 | Hair dye? def a color for sure. |
+| BD-53-07-97 | skin color? def a color.        |
+| 93-61-cb-58 | freckle amount                  |
+| 55-4a-d2-0f | freckle opacity                 |
+| cf-c4-12-64 | sunspot amount                  |
+| b9-58-83-b0 | sunspot opacity                 |
 
 It's also possible that A2-C7-* refers to a color data type.
 

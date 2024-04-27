@@ -1,4 +1,11 @@
-﻿namespace StarCitizenChf;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
+
+namespace StarCitizenChf;
 
 public record AnalysisResult(List<(int,int)> CommonSequences, int[] CommonBytes, byte[] ValuesAtCommonBytes);
 
@@ -53,11 +60,21 @@ public static class Analysis
         
         throw new Exception();
     }
-
-    /// <summary>
-    /// Tries to look for the largest common byte sequence in every file
-    /// </summary>
-    /// <param name="files"></param>
+    
+    public static async Task PrintAllToFileAsync(IEnumerable<string> files, string output)
+    {
+        var lines = new List<string>();
+        foreach (var r in files)
+        {
+            var bytes = await File.ReadAllBytesAsync(r);
+            var chunks = bytes.Chunk(4).ToArray();
+            var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
+            var merged = string.Join("|", stringChunks);
+            lines.Add($"{merged}: {Path.GetFileName(r)}");
+        }
+        await File.WriteAllLinesAsync(output, lines);
+    }
+    
     public static void BruteForceCommonBytes(IEnumerable<string> files)
     {
         var decompressedFiles = files.Select(File.ReadAllBytes).ToArray();
@@ -78,12 +95,5 @@ public static class Analysis
         {
             Console.WriteLine(chunk);
         }
-    }
-
-    public static async Task<Rgba32> GetEyeColor(string bin)
-    {
-        var data = await File.ReadAllBytesAsync(bin);
-        var eyeColor = data.AsSpan().Slice(data.Length - 136, 4).ToArray();
-        return new Rgba32(eyeColor[0], eyeColor[1], eyeColor[2], eyeColor[3]);
     }
 }

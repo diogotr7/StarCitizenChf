@@ -1,4 +1,9 @@
-﻿namespace StarCitizenChf;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using ZstdSharp;
+
+namespace StarCitizenChf;
 
 public static class Decompression
 {
@@ -14,24 +19,6 @@ public static class Decompression
         var decompressed = Decompress(compressed).ToArray();
 
         await File.WriteAllBytesAsync(outputFilename, decompressed);
-    }
-
-    public static async Task MutateFile(string inputFilename, string outputFilename, Action<byte[]> mutation)
-    {
-        var compressed = await File.ReadAllBytesAsync(inputFilename);
-
-        var decompressed = Decompress(compressed).ToArray();
-
-        mutation(decompressed);
-
-        var reCompressed = Compress(decompressed).ToArray();
-
-        reCompressed.CopyTo(compressed.AsSpan()[16..]);
-
-        Checksum.FixChecksum(compressed);
-
-        Directory.CreateDirectory(Path.GetDirectoryName(outputFilename)!);
-        await File.WriteAllBytesAsync(outputFilename, compressed);
     }
 
     public static Span<byte> Decompress(ReadOnlySpan<byte> compressed)

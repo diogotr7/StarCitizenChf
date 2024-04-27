@@ -1,4 +1,6 @@
-﻿namespace StarCitizenChf;
+﻿using System.IO;
+
+namespace StarCitizenChf;
 
 public class Folders
 {
@@ -8,16 +10,9 @@ public class Folders
             throw new DirectoryNotFoundException($"Directory {baseFolder} not found");
         
         Base = Path.Combine(baseFolder, "data");
-        WebsiteCharacters = Path.Combine(Base, "websiteCharacters");
-        LocalCharacters = Path.Combine(Base, "localCharacters");
-        ModdedCharacters = Path.Combine(Base, "moddedCharacters");
-        Temp = Path.Combine(Base, "temp");
-        
-        foreach (var folder in new[] {WebsiteCharacters, LocalCharacters, ModdedCharacters, Temp})
-            Directory.CreateDirectory(folder);
-        
-        Directory.EnumerateFiles(Temp).ToList().ForEach(File.Delete);
-        
+        WebsiteCharacters = Path.Combine(Base, "websiteCharacters"); Directory.CreateDirectory(WebsiteCharacters);
+        LocalCharacters = Path.Combine(Base, "localCharacters"); Directory.CreateDirectory(LocalCharacters);
+        ModdedCharacters = Path.Combine(Base, "moddedCharacters"); Directory.CreateDirectory(ModdedCharacters);
         MetadataFile = Path.Combine(Base, "metadata.json");
     }
     
@@ -25,6 +20,5 @@ public class Folders
     public string WebsiteCharacters { get; }
     public string LocalCharacters { get; }
     public string ModdedCharacters { get; }
-    public string Temp { get; }
     public string MetadataFile { get; }
 }
