@@ -36,10 +36,17 @@ await Task.WhenAll([
 // var all = string.Join(Environment.NewLine, lastBytes);
 //
 
-var reversed = Directory.GetFiles(folders.WebsiteCharacters, "*.reversed.bin", SearchOption.AllDirectories);
+var reversed = Directory.GetFiles(folders.Base, "*.reversed.bin", SearchOption.AllDirectories);
 foreach (var r in reversed)
 {
-    var bytes = File.ReadAllBytes(r).Skip(632).Take(48);
+    await ColorAnalyzer.ExtractCharacterColors(r);
+    await ColorAnalyzer.GetHairColorDye(r);
+}
+
+foreach (var r in reversed)
+{
+    //632
+    var bytes = File.ReadAllBytes(r).Skip(0).Take(48);
     var chunks = bytes.Chunk(4).ToArray();
     var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
     var merged = string.Join("|", stringChunks);
