@@ -7,6 +7,17 @@ using StarCitizenChf;
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var folders = new Folders(csprojFolder);
 
+
+var allBins = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
+const int offset = 0x44;
+const int offset2 = 0x110;
+const int offset3 = 0x23e;
+const int size = 4;
+var data = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset).Take(size).ToArray()))).ToArray();
+var data2 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset2).Take(size).ToArray()))).ToArray();
+var data3 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset3).Take(size).ToArray()))).ToArray();
+
+
 //Downloads all characters from the website and saves them to the website characters folder.
 //await Download.DownloadAllMetadata(folders.MetadataFile);
 //await Download.DownloadAllCharacters(folders.MetadataFile, folders.WebsiteCharacters);
@@ -15,10 +26,13 @@ var folders = new Folders(csprojFolder);
 await Utils.ImportGameCharacters(folders.LocalCharacters);
 await Utils.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
 
+
 //Extracts all chf files into bins, reverses these bins for easier analysis.
 //also tries to extract some color information to compare to images.
 await Processing.ProcessAllCharacters(folders.WebsiteCharacters);
 await Processing.ProcessAllCharacters(folders.LocalCharacters);
+
+return;
 
 //only search for colors in website characters since those have images we can compare to.
 var websiteRevs = Directory.GetFiles(folders.WebsiteCharacters, "*.rev", SearchOption.AllDirectories);
@@ -30,7 +44,7 @@ await Task.WhenAll(websiteRevs.SelectMany(b => new[]
 }));
 
 // prints all data buffers to a file, one per line, in 4 byte chunks for easy visual comparison.
-await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories), Path.Combine(folders.Base, "bins.txt"));
+await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.WebsiteCharacters, "*.bin", SearchOption.AllDirectories), Path.Combine(folders.Base, "bins.txt"));
 
 //brute force search for common bytes in all files.
 //this can be useful to find patterns in the data.
