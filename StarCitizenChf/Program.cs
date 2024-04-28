@@ -11,11 +11,16 @@ var folders = new Folders(csprojFolder);
 var allBins = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
 const int offset = 0x44;
 const int offset2 = 0x110;
-const int offset3 = 0x23e;
+const int offset3 = 0x13c;
+const int offset4 = 0x140;
+const int offset5 = 0x144;
+
 const int size = 4;
 var data = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset).Take(size).ToArray()))).ToArray();
 var data2 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset2).Take(size).ToArray()))).ToArray();
 var data3 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset3).Take(size).ToArray()))).ToArray();
+var data4 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset4).Take(size).ToArray()))).ToArray();
+var data5 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset5).Take(size).ToArray()))).ToArray();
 
 
 //Downloads all characters from the website and saves them to the website characters folder.
