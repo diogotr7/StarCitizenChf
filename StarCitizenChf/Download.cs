@@ -31,7 +31,7 @@ public static class Download
                 break;
         }
 
-        await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(rowsList));
+        await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(rowsList, new JsonSerializerOptions { WriteIndented = true}));
     }
 
     public static async Task DownloadAllCharacters(string metadataFile, string outputFolder)

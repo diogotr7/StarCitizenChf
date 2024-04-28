@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StarCitizenChf;
 
@@ -26,19 +23,5 @@ public static class Mutations
             man.CopyTo(data.Slice(indexOfMan, 16));
             return;
         }
-    }
-    
-    public static async Task ConvertAllBinariesToChfAsync(string folder)
-    {
-        var bins = Directory.GetFiles(folder, "*.bin", SearchOption.AllDirectories);
-        await Task.WhenAll(bins.Select(async b =>
-        {
-            var target = Path.ChangeExtension(b, ".chf");
-            if (File.Exists(target))
-                return;
-            
-            var file = ChfFile.FromBin(b);
-            await file.WriteToFileAsync(target);
-        }));
     }
 }

@@ -51,6 +51,20 @@ public static class Utils
             await chf.WriteToFileAsync(Path.Combine(output, $"{name}.chf"));
         }
     }
+    
+    public static async Task ConvertAllBinariesToChfAsync(string folder)
+    {
+        var bins = Directory.GetFiles(folder, "*.bin", SearchOption.AllDirectories);
+        await Task.WhenAll(bins.Select(async b =>
+        {
+            var target = Path.ChangeExtension(b, ".chf");
+            if (File.Exists(target))
+                return;
+            
+            var file = ChfFile.FromBin(b);
+            await file.WriteToFileAsync(target);
+        }));
+    }
 
     public static async Task ReverseFile(string bin, string reversedBin)
     {

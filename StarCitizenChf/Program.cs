@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ var folders = new Folders(csprojFolder);
 
 //Imports all non-modded characters exported from the game into our local characters folder.
 await Utils.ImportGameCharacters(folders.LocalCharacters);
-await Mutations.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
+await Utils.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
 
 //Extracts all chf files into bins, reverses these bins for easier analysis.
 //also tries to extract some color information to compare to images.
