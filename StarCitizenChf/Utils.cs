@@ -14,6 +14,7 @@ public static class Utils
     {
         return Directory.GetFiles(path, pattern, SearchOption.AllDirectories)
             .Select(x => (File.ReadAllBytes(x), Path.GetFileName(x)))
+            .Where(x => x.Item1.Length > 0)
             .ToArray();
     }
 
