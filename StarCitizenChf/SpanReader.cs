@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -20,28 +21,24 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
     
+    internal ReadOnlySpan<byte> PeekBehind(int bytes, int length)
+    {
+        return Span.Slice(Position - bytes, length);
+    }
+    
     public ReadOnlySpan<byte> ReadBytes(int length)
     {
         var value = Span[Position..(Position + length)];
         Position += length;
         return value;
     }
-
-    public string ReadLengthAndString()
-    {
-        int length = Read<ushort>();
-        
-        if (length == 0)
-            return string.Empty;
-        
-        return Encoding.ASCII.GetString(ReadBytes(length)[..^1]);
-    }
     
     public T Expect<T>(T expected) where T : unmanaged, IEquatable<T>
     {
         var value = Read<T>();
         if (!value.Equals(expected))
-            throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
+            //throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
+            Debugger.Break();
         return value;
     }
     
@@ -52,7 +49,7 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
             throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
     }
     
-    //AC-41-63-AB
+    
     public void ExpectBytes(string bitConverter)
     {
         var expected = bitConverter.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();

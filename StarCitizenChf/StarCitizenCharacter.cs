@@ -9,147 +9,137 @@ namespace StarCitizenChf;
 
 public sealed class StarCitizenCharacter
 {
-    public required string Name { get; init; }
-    public required bool IsMan { get; init; }
-    public required uint Count_x140 { get; init; }
-    public required string Haircut { get; init; }
-    public required uint Count_x178 { get; init; }
-    public required string x180 { get; init; }
-    public string? EyeBrow { get; init; }
-    
+    public string? Name { get; init; }
+    public bool? IsMan { get; init; }
+    public string? Hair { get; init; }
+    public uint? HairValue { get; init; }
+    public string? Eyebrow { get; init; }
+    public uint? Property2 { get; init; }
+    public uint? Property3 { get; init; }
+    public string? Beard { get; init; }
+    public uint? BeardValue { get; init; }
+    public string? Skin { get; init; }
+
+    public ulong Size { get; init; }
+
     public string Next { get; init; }
-    public string Key3Last { get; init; }
-
-    private static ReadOnlySpan<byte> GenderSpecificA_F =>
-        [0xAD, 0x4C, 0xB0, 0xEF, 0x94, 0x4A, 0x79, 0xD0, 0x53, 0xC2, 0xD3, 0xB4, 0x58, 0x25, 0x38, 0xAD];
-
-    private static ReadOnlySpan<byte> GenderSpecificA_M =>
-        [0x61, 0x4A, 0x6B, 0x14, 0xD5, 0x39, 0xF4, 0x25, 0x49, 0x8A, 0xB6, 0xDF, 0x86, 0xA4, 0x99, 0xA9];
-
-    private static ReadOnlySpan<byte> GenderSpecificB_F => [0x54, 0xEB, 0xF4, 0x9E, 0x04, 0x52, 0xD7, 0x65];
-
-    private static ReadOnlySpan<byte> GenderSpecificB_M => [0xF6, 0x67, 0x6C, 0xDD, 0xD3, 0x40, 0xE7, 0x65];
 
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
         var reader = new SpanReader(data);
-        reader.Expect<uint>(2);
-        reader.Expect<uint>(7);
-        var genderSpecificA = reader.ReadBytes(16);
-        var isMan = genderSpecificA.SequenceEqual(GenderSpecificA_M);
-        var isWoman = genderSpecificA.SequenceEqual(GenderSpecificA_F);
+        reader.Expect<uint>(2);//version?
+        reader.Expect<uint>(7);//chf version definitely
 
-        reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
+        var genderSpecificA1 = reader.Read<ulong>();
+        var genderSpecificA2 = reader.Read<ulong>();
+        
+        var isMan = genderSpecificA1 == 0x25F439D5146B4A61 && genderSpecificA2 == 0xA999A486DFB68A49;
+        var isWoman = genderSpecificA1 == 0xD0794A94EFB04CAD && genderSpecificA2 == 0xAD382558B4D3C253;
+        if (!isMan && !isWoman)
+            throw new Exception();
+        
+        reader.Expect<ulong>(0);
+        reader.Expect<ulong>(0);
 
-        var key1 = reader.Expect<uint>(0x000000d8); //idk
-        reader.Expect<uint>(0x00000000);
-        reader.Expect<uint>(0xfcd09394); //some key for gender-specific
-        var genderSpecificB = reader.ReadBytes(8);
-        var isMan2 = genderSpecificB.SequenceEqual(GenderSpecificB_M);
-        var isWoman2 = genderSpecificB.SequenceEqual(GenderSpecificB_F);
+        reader.ExpectBytes("D8-00-00-00");
+        reader.ExpectBytes("00-00-00-00");
+        reader.ExpectBytes("94-93-D0-FC");
+
+        var genderSpecificB1 = reader.Read<ulong>();
+
+        var isMan2 = genderSpecificB1 == 0x65E740D3_DD6C67F6;
+        var isWoman2 = genderSpecificB1 == 0x65D75204_9EF4EB54;
         if (isMan != isMan2 || isWoman != isWoman2)
             throw new InvalidOperationException($"unexpected gender specific data file  {fileName}");
-
+        
+        
         reader.Expect<uint>(0);
 
         //dna head blending data
         var dnaKey = reader.Expect<uint>(0x0004000c);
-        var dnaData = reader.ReadBytes(0xcc);
+        var dnaData = reader.ReadBytes(0xC4);
 
-        Debug.Assert(reader.Position == 0x110);
-
-        //no clue at all here
+        var someCount = reader.Read<uint>();
+        reader.Expect<uint>(0);
         reader.ExpectBytes("AC-41-63-AB");
         reader.ExpectBytes("04-41-5F-75");
         reader.ExpectBytes("7D-8A-AA-DB");
         reader.ExpectBytes("F6-76-1E-FD");
         reader.ExpectBytes("58-7B-24-8B");
-        reader.ExpectBytes("01-00-00-00");
-        reader.Expect<uint>(0);
-        reader.ExpectBytes("B9-0D-01-47");
-        reader.ExpectBytes("50-45-80-BF");
-        reader.ExpectBytes("B3-FA-5C-1D");
-        reader.ExpectBytes("6E-08-A7-96");
-        reader.ExpectBytes("E8-39-AB-B4");
-        //here be dragons
-
-        if (reader.Position != 0x140)
-            throw new InvalidOperationException("unexpected data length");
-
-        var x140 = reader.Read<uint>();
-        reader.Expect<uint>(0);
-        reader.ExpectBytes("50-55-BB-C5");
-        reader.ExpectBytes("71-48-60-E1");
-        reader.ExpectBytes("63-A3-4C-6B");
-        reader.ExpectBytes("10-03-B4-67");
-        reader.ExpectBytes("74-E4-09-B7");
-        reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
-        reader.ExpectBytes("95-1A-60-13");
-        var haircut = reader.ReadBytes(16);
-
-        var x178 = reader.Read<uint>(); //zero or one
+        //this is probably a count of *something*
+        reader.Expect(1);
         reader.Expect<uint>(0);
 
-        const uint possibleKey1 = 0x_17_87_EE_22;//most "normal" characters have this
-        const uint possibleKey2 = 0x_e7_80_9d_46;//only one weird dude, what the hell is this?
-        const uint possibleKey3 = 0x_19_0b_04_e2;//none of these characters have eyebrows
-        var x180_key = reader.Read<uint>();
+        HairProperty? hair = null;
+        EyeBrowProperty? eyeBrow = null;
+        BeardProperty? beard = null;
+        DyeProperty? unk2 = null;
+        UnknownProperty3? unk3 = null;
+        SkinTextureProperty? skinTextureProperty = null;
 
-        byte[]? eyeBrow = null;
-        string? key3last = null;
-        if (x180_key == possibleKey1)
+        while (true)
         {
-            eyeBrow = reader.ReadBytes(sizeof(uint) * 4).ToArray();
-            reader.Expect<uint>(0);
-            reader.Expect<uint>(0);
-        }
-        else if (x180_key == possibleKey2)
-        {
-            reader.ExpectBytes("AB-4D-9A-E4");
-            reader.ExpectBytes("E5-4C-CE-12");
-            reader.ExpectBytes("F2-DD-AA-2F");
-            reader.ExpectBytes("26-AD-31-9D");
-            reader.Expect<uint>(0);
-            var count = reader.Read<uint>();//usually 0 sometimes 6
-        }
-        else if (x180_key == possibleKey3)
-        {
-            reader.ExpectBytes("3B-44-48-A4");
-            reader.ExpectBytes("13-C1-17-62");
-            reader.ExpectBytes("11-8E-BA-08");
-            reader.ExpectBytes("B1-1B-AA-82");
-            reader.Expect<uint>(0);
-            var count3 = reader.Read<uint>();//0, 5, 6
-            
-            key3last = ToBitConverterRepresentation(count3);
-            
-            //if count3 == 0, we can read the next key. If not, we prob have more data?
-            //sometimes the next piece of data here is a 5, sometimes it's possibleKey4. hwhat?
-        }
-        else
-        {
-            throw new InvalidOperationException($"unexpected key {x180_key:X8}");
+            var key = reader.Read<uint>();
+
+            var rep = BitConverter.ToString(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref key, 1)).ToArray());
+
+            switch (rep)
+            {
+                case UnknownProperty1.KeyRep:
+                    UnknownProperty1.Read(ref reader);
+                    break;
+                case UnknownProperty4.KeyRep:
+                    UnknownProperty4.Read(ref reader);
+                    break;
+                case HairProperty.KeyRep:
+                    hair = HairProperty.Read(ref reader);
+                    break;
+                case EyeBrowProperty.KeyRep:
+                    eyeBrow = EyeBrowProperty.Read(ref reader);
+                    break;
+                case BeardProperty.KeyRep:
+                    beard = BeardProperty.Read(ref reader);
+                    break;
+                case SkinTextureProperty.KeyRep:
+                    skinTextureProperty = SkinTextureProperty.Read(ref reader);
+                    break;
+                case DyeProperty.KeyRep:
+                    unk2 = DyeProperty.Read(ref reader);
+                    break;
+                case UnknownProperty3.KeyRep:
+                    unk3 = UnknownProperty3.Read(ref reader);
+                    break;
+                case UnknownProperty6.KeyRep:
+                    UnknownProperty6.Read(ref reader);
+                    goto exit;
+                case UnknownProperty7.KeyRep:
+                    UnknownProperty7.Read(ref reader);
+                    goto exit;
+                case UnknownProperty8.KeyRep:
+                    UnknownProperty8.Read(ref reader);
+                    goto exit;
+                default:
+                    goto exit;
+            }
         }
 
+        exit:
         var next = reader.Read<uint>();
-
-        const uint possibleKey4 = 0x_98_EF_BB_1C;//usually only appears at the end of possibleKey3
 
         return new StarCitizenCharacter
         {
             Name = fileName,
             IsMan = isMan,
-            Count_x140 = x140,
-            Haircut = BitConverter.ToString(haircut[..4].ToArray()),
-            Count_x178 = x178,
-            x180 = ToBitConverterRepresentation(x180_key),
-            EyeBrow = eyeBrow is null ? null : BitConverter.ToString(eyeBrow[..4]),
+            Hair = BitConverter.ToString(hair.Data[..4].ToArray()),
+            HairValue = hair?.ChildCount,
+            Eyebrow = eyeBrow is null ? null : BitConverter.ToString(eyeBrow.Data[..4]),
             Next = ToBitConverterRepresentation(next),
-            Key3Last = key3last ?? string.Empty
+            Property2 = unk2?.Data,
+            Beard = beard is null ? null : BitConverter.ToString(beard.Data[..4]),
+            BeardValue = beard?.Value,
+            Property3 = unk3?.Value,
+            Skin = skinTextureProperty?.Data is null ? null : BitConverter.ToString(skinTextureProperty.Data[..4]),
+            Size = someCount,
         };
     }
 

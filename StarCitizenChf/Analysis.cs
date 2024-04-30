@@ -71,7 +71,7 @@ public static class Analysis
                 continue;
             var chunks = bytes.Chunk(4).ToArray();
             var stringChunks = chunks.Select(c => BitConverter.ToString(c)).ToArray();
-            var merged = string.Join("|", stringChunks);
+            var merged = string.Join("-", stringChunks);
             lines.Add($"{merged}: {Path.GetFileName(r)}");
         }
         await File.WriteAllLinesAsync(output, lines);
