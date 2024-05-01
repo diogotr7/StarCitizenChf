@@ -9,9 +9,13 @@ internal sealed class HeadProperty
     public const string KeyRep = "B9-0D-01-47";
     
     public ulong ChildCount { get; set; }
-
+    
     public static HeadProperty Read(ref SpanReader reader)
     {
+        var key = reader.Read<uint>();
+        if (key != Key)
+            throw new Exception();
+        
         if (reader.ReadGuid() != Guid.Parse("1d5cfab3-bf80-4550-b4ab-39e896a7086e"))
             throw new Exception();
         
@@ -19,7 +23,7 @@ internal sealed class HeadProperty
 
         return new HeadProperty()
         {
-            ChildCount = childCount
+            ChildCount = childCount,
         };
     }
 }

@@ -14,6 +14,10 @@ internal sealed class HairModifierProperty
     
     public static HairModifierProperty Read(ref SpanReader reader)
     {
+        var key = reader.Read<uint>();
+        if (key != Key)
+            throw new Exception();
+        
         var guid = reader.ReadGuid();
         reader.Expect(0);
         var count = reader.Read<uint>();//usually 0 sometimes 6

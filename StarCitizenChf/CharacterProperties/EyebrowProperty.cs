@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace StarCitizenChf;
 
-internal sealed class EyeBrowProperty
+internal sealed class EyebrowProperty
 {
     public const uint Key = 0x1787EE22;
     public const string KeyRep = "22-EE-87-17";
@@ -11,15 +11,25 @@ internal sealed class EyeBrowProperty
     
     public ulong ChildCount { get; set; }
 
-    public static EyeBrowProperty Read(ref SpanReader reader)
+    private static EyebrowProperty Read(ref SpanReader reader)
     {
         var guid = reader.ReadGuid();
         var childCount = reader.Read<ulong>();
 
-        return new EyeBrowProperty()
+        return new EyebrowProperty()
         {
             Id = guid,
             ChildCount = childCount
         };
+    }
+    
+    public static EyebrowProperty? ReadOptional(ref SpanReader reader)
+    {
+        if (reader.PeekKey != Key)
+            return null;
+        
+        _ = reader.Read<uint>();
+        
+        return Read(ref reader);
     }
 }

@@ -8,7 +8,7 @@ namespace StarCitizenChf;
 public sealed class StarCitizenCharacter
 {
     public required string Name { get; init; }
-    public required bool IsMan { get; init; }
+    public required string Gender { get; init; }
     public required ulong TotalCount { get; init; }
     
     public required string EyesId { get; init; }
@@ -29,114 +29,16 @@ public sealed class StarCitizenCharacter
         reader.Expect<uint>(2); //version?
         reader.Expect<uint>(7); //chf version definitely
 
-        var gender = reader.ReadGuid();
-        var isMan = gender == Constants.ModelTagM;
-        var isWoman = gender == Constants.ModelTagF;
-        if (!isMan && !isWoman)
-            throw new Exception();
-
-        reader.Expect<ulong>(0);
-        reader.Expect<ulong>(0);
-
-        var dnaLength = reader.Read<ulong>();
-        if (dnaLength != 216)
-            throw new Exception();
-
-        var dnaByteArray = reader.ReadBytes((int)dnaLength);
-
-        var totalCount = reader.Read<uint>();
-        reader.Expect<uint>(0);
-
-        var bodyKey = reader.Read<uint>();
-        if (bodyKey != BodyProperty.Key)
-            throw new Exception();
-
+        var gender = GenderProperty.Read(ref reader);
+        var dnaProperty = DnaProperty.Read(ref reader);
+        var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
-        //head is child of body?
-        if (body.ChildCount != 1)
-            throw new Exception();
-
-        var headKey = reader.Read<uint>();
-        if (headKey != HeadProperty.Key)
-            throw new Exception();
-
         var head = HeadProperty.Read(ref reader);
-
-        if (head.ChildCount == 0)
-            throw new Exception();
-
-        var eyesKey = reader.Read<uint>();
-        if (eyesKey != EyesProperty.Key)
-            throw new Exception();
-
         var eyes = EyesProperty.Read(ref reader);
-
-        if (eyes.ChildCount != 0)
-            throw new Exception();
-
-        var hairKey = reader.Read<uint>();
-        if (hairKey != HairProperty.Key)
-            throw new Exception();
-
         var hair = HairProperty.Read(ref reader);
-        
-        HairModifierProperty? hairModifier = null;
-        if (hair.ChildCount == 1)
-        {
-            var modifierKey = reader.Read<uint>();
-            if (modifierKey != HairModifierProperty.Key)
-                throw new Exception();
-
-            hairModifier = HairModifierProperty.Read(ref reader);
-
-            //TODO move the modifier read into the HairProperty.Read method?
-        }
-        else if (hair.ChildCount != 0)
-        {
-            throw new Exception();
-        }
-
-        EyeBrowProperty? eyebrow = null;
-        if (reader.PeekKey == EyeBrowProperty.Key)
-        {
-            _ = reader.Read<uint>();
-            eyebrow = EyeBrowProperty.Read(ref reader);
-            if (eyebrow.ChildCount != 0)
-                throw new Exception();
-        }
-
-        var eyelashKey = reader.Read<uint>();
-        if (eyelashKey != EyelashProperty.Key)
-            throw new Exception();
-
+        var eyebrow = EyebrowProperty.ReadOptional(ref reader);
         var eyelash = EyelashProperty.Read(ref reader);
-        
-        //When this is 0, we have beard. why?
-        FacialHairProperty? facialHair = null;
-        HairModifierProperty? facialHairModifier = null;
-        
-        if (reader.PeekKey == FacialHairProperty.Key)
-        {
-            _ = reader.Read<uint>();
-            facialHair = FacialHairProperty.Read(ref reader);
-
-            if (facialHair.ChildCount > 1)
-                throw new Exception();
-            if (facialHair.ChildCount == 1)
-            {
-                var hairModifierKey = reader.Read<uint>();
-                if (hairModifierKey != HairModifierProperty.Key)
-                    throw new Exception();
-
-                facialHairModifier = HairModifierProperty.Read(ref reader);
-                //do something with this
-            }
-        }
-
-        var headMaterialKey = reader.Read<uint>();
-        if (headMaterialKey != HeadMaterialProperty.Key)
-            throw new Exception();
-
+        var facialHair = FacialHairProperty.ReadOptional(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
 
         //unknownprop 6 or 7. i am completely lost here
@@ -146,19 +48,34 @@ public sealed class StarCitizenCharacter
         return new StarCitizenCharacter()
         {
             Name = fileName,
-            IsMan = isMan,
+            Gender = GuidUtils.Shorten(gender.Id),
             TotalCount = totalCount,
             
             EyesId = GuidUtils.Shorten(eyes.Id),
             HairId = GuidUtils.Shorten(hair.Id),
-            HairModId = GuidUtils.Shorten(hairModifier?.Id ?? Guid.Empty),
+            HairModId = GuidUtils.Shorten(hair?.Modifier?.Id ?? Guid.Empty),
             HeadMatId = GuidUtils.Shorten(headMaterial.Id),
             EyeBrowId = GuidUtils.Shorten(eyebrow?.Id ?? Guid.Empty),
             BeardId = GuidUtils.Shorten(facialHair?.Id ?? Guid.Empty),
-            BeardModId = GuidUtils.Shorten(facialHairModifier?.Id ?? Guid.Empty),
+            BeardModId = GuidUtils.Shorten(facialHair?.Modifier?.Id ?? Guid.Empty),
 
             Next = reader.Read<uint>().ToString("X8"),
             NextCount = 0,
         };
+    }
+}
+
+internal sealed class GenderProperty
+{
+    public Guid Id { get; set; }
+    
+    public static GenderProperty Read(ref SpanReader reader)
+    {
+        var guid = reader.ReadGuid();
+        
+        reader.Expect<ulong>(0);
+        reader.Expect<ulong>(0);
+        
+        return new GenderProperty() { Id = guid };
     }
 }

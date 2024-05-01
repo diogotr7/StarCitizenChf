@@ -14,6 +14,10 @@ internal sealed class EyelashProperty
     //fix, terrible
     public static EyelashProperty Read(ref SpanReader reader)
     {
+        var key = reader.Read<uint>();
+        if (key != Key)
+            throw new Exception();
+        
         if (reader.ReadGuid() != Guid.Parse("6217c113-a448-443b-82aa-1bb108ba8e11"))
             throw new Exception();
         

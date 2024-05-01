@@ -11,6 +11,10 @@ internal sealed class HeadMaterialProperty
     
     public static HeadMaterialProperty Read(ref SpanReader reader)
     {
+        var key = reader.Read<uint>();
+        if (key != Key)
+            throw new Exception();
+        
         var guid = reader.ReadGuid();
         
         //TODO

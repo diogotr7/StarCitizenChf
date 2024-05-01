@@ -9,19 +9,31 @@ internal sealed class HairProperty
     public const uint Key = 0x13601A95;
     public const string KeyRep = "95-1A-60-13";
 
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
+    public HairModifierProperty? Modifier { get; init; }
     
-    public ulong ChildCount { get; set; }
-
     public static HairProperty Read(ref SpanReader reader)
     {
+        var key = reader.Read<uint>();
+        if (key != Key)
+            throw new Exception();
+        
         var guid = reader.ReadGuid();
         var childCount = reader.Read<ulong>();
 
-        return new HairProperty()
+        switch (childCount)
         {
-            Id = guid,
-            ChildCount = childCount
-        };
+            case 0: return new HairProperty() { Id = guid };
+            case 1:
+            {
+                var hairModifier = HairModifierProperty.Read(ref reader);
+                return new HairProperty()
+                {
+                    Id = guid,
+                    Modifier = hairModifier
+                };
+            }
+            default: throw new Exception();
+        }
     }
 }

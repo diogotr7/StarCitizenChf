@@ -9,17 +9,22 @@ internal sealed class EyesProperty
     public const string KeyRep = "50-55-BB-C5";
     
     public Guid Id { get; set; }
-    public ulong ChildCount { get; set; }
 
     public static EyesProperty Read(ref SpanReader reader)
     {
+        var key = reader.Read<uint>();
+        if (key != Key)
+            throw new Exception();
+        
         var guid = reader.ReadGuid();
         var childCount = reader.Read<ulong>();
+        
+        if (childCount != 0)
+            throw new Exception();
 
         return new EyesProperty()
         {
             Id = guid,
-            ChildCount = childCount
         };
     }
 }
