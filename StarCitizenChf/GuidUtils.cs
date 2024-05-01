@@ -7,14 +7,16 @@ public static class GuidUtils
 {
     public static void Test()
     {
-        var a = GuidUtils.FromBitConverterRepresentation("F5486885A34250FA2D1B1998DC0236BF");
-        var b = GuidUtils.FromBitConverterRepresentation("04-41-5F-75-7D-8A-AA-DB-F6-76-1E-FD-58-7B-24-8B");
-        var c = GuidUtils.FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
-        var d = GuidUtils.FromBitConverterRepresentation("E2-04-0B-19-3B-44-48-A4-13-C1-17-62-11-8E-BA-08"); //NO
-        var e = GuidUtils.FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82"); //eyelash
-        var fromGuid = GuidUtils.FromGuid(Guid.Parse("33e495ca-dec5-4e59-9517-0b8a8535b4d0"));
+        var a = FromBitConverterRepresentation("F5486885A34250FA2D1B1998DC0236BF");
+        var b = FromBitConverterRepresentation("04-41-5F-75-7D-8A-AA-DB-F6-76-1E-FD-58-7B-24-8B");
+        var c = FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
+        var d = FromBitConverterRepresentation("E2-04-0B-19-3B-44-48-A4-13-C1-17-62-11-8E-BA-08");
+        var e = FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
+        var f = FromBitConverterRepresentation("9A-40-28-05-30-7A-3F-98-E6-F0-65-1A-B8-1E-33-9E");
+        var g = FromBitConverterRepresentation("6A-44-54-E7-88-B2-8C-AA-4E-91-D9-7A-10-98-F0-B8");
+        var z = FromGuid(Guid.Parse("33e495ca-dec5-4e59-9517-0b8a8535b4d0"));
     }
-    
+
     public static byte[] FromGuid(Guid guid)
     {
         var bytes = guid.ToByteArray();

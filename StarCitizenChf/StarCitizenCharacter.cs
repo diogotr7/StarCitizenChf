@@ -7,21 +7,17 @@ namespace StarCitizenChf;
 
 public sealed class StarCitizenCharacter
 {
-    public string? Name { get; init; }
-    public bool? IsMan { get; init; }
-    public string? Hair { get; init; }
-    public uint? HairValue { get; init; }
-    public string? Eyebrow { get; init; }
-    public uint? Property2 { get; init; }
-    public uint? Property3 { get; init; }
-    public string? Beard { get; init; }
-    public uint? BeardValue { get; init; }
-    public string? Skin { get; init; }
-
-    public ulong Size { get; init; }
-
-    public string Next { get; init; }
-    public ulong NextCount { get; init; }
+    public required string Name { get; init; }
+    public required bool IsMan { get; init; }
+    public required ulong TotalCount { get; init; }
+    public required string Next { get; init; }
+    public required ulong NextCount { get; init; }
+    
+    public required Guid EyesId { get; init; }
+    public required Guid HairId { get; init; }
+    public required Guid EyeBrowId { get; init; }
+    public required Guid BeardId { get; init; }
+    public required Guid HeadMaterialId { get; init; }
 
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
@@ -45,7 +41,7 @@ public sealed class StarCitizenCharacter
 
         var dnaByteArray = reader.ReadBytes((int)dnaLength);
 
-        var someCount = reader.Read<uint>();
+        var totalCount = reader.Read<uint>();
         reader.Expect<uint>(0);
 
         var bodyKey = reader.Read<uint>();
@@ -80,8 +76,8 @@ public sealed class StarCitizenCharacter
             throw new Exception();
 
         var hair = HairProperty.Read(ref reader);
+        
         HairModifierProperty? hairModifier = null;
-
         if (hair.ChildCount == 1)
         {
             var modifierKey = reader.Read<uint>();
@@ -106,8 +102,8 @@ public sealed class StarCitizenCharacter
                 throw new Exception();
         }
 
-        var eyelasheKey = reader.Read<uint>();
-        if (eyelasheKey != EyelashProperty.Key)
+        var eyelashKey = reader.Read<uint>();
+        if (eyelashKey != EyelashProperty.Key)
             throw new Exception();
 
         var eyelash = EyelashProperty.Read(ref reader);
@@ -141,12 +137,26 @@ public sealed class StarCitizenCharacter
         var headMaterial = HeadMaterialProperty.Read(ref reader);
 
         //unknownprop 6 or 7. i am completely lost here
+        //72129E8E or A5378A05
+        //nextCount is always 0
 
         return new StarCitizenCharacter()
         {
             Name = fileName,
+            IsMan = isMan,
+            TotalCount = totalCount,
+            EyesId = eyes.Id,
+            HairId = hair.Id,
+            EyeBrowId = eyebrow?.Id ?? Guid.Empty,
+            BeardId = facialHair?.Id ?? Guid.Empty,
+            HeadMaterialId = headMaterial.Id,
+            
+            
+            
+            
+            
             Next = reader.Read<uint>().ToString("X8"),
-            NextCount = 0
+            NextCount = 0,
         };
     }
 }
