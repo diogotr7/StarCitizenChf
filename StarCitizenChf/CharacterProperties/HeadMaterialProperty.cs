@@ -15,6 +15,7 @@ internal sealed class HeadMaterialProperty
         
         //TODO
         var childKeyMaybe = reader.Read<uint>();
+        Console.WriteLine(childKeyMaybe.ToString("X8"));
         reader.Expect(0);
         reader.Expect(0);
         reader.Expect(0);

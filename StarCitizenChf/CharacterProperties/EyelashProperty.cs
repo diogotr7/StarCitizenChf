@@ -16,25 +16,24 @@ internal sealed class EyelashProperty
     {
         if (reader.ReadGuid() != Guid.Parse("6217c113-a448-443b-82aa-1bb108ba8e11"))
             throw new Exception();
+        
         reader.Expect(0);
-        var childCount = reader.Read<uint>();//0, 4, 5, 6
+        var childCount = reader.Read<uint>();
         //this value seems to be 0 when the character has a beard?
         switch (childCount)
         {
             case 0:
                 return new EyelashProperty() { ChildCount = childCount };
+            case 3: //TODOOOOOOOOOOO
             case 4:
             case 5:
             case 6:
-            case 3: //TODOOOOOOOOOOO
                 reader.Expect<uint>(5);
+                //Debugger.Break();
                 return new EyelashProperty() { ChildCount = childCount };
             default:
-                Console.WriteLine("problem");
-                return new EyelashProperty() { ChildCount = childCount };
-                break;
+                Debugger.Break();
+                throw new Exception();
         }
-
-        throw new Exception();
     }
 }

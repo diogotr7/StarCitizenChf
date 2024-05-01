@@ -1,4 +1,6 @@
-﻿namespace StarCitizenChf;
+﻿using System;
+
+namespace StarCitizenChf;
 
 //libs/foundry/records/entities/scitem/characters/human/head/npc/face/pu_protos_head.xml
 internal sealed class HeadProperty
@@ -10,7 +12,9 @@ internal sealed class HeadProperty
 
     public static HeadProperty Read(ref SpanReader reader)
     {
-        var guid = reader.ReadGuid();
+        if (reader.ReadGuid() != Guid.Parse("1d5cfab3-bf80-4550-b4ab-39e896a7086e"))
+            throw new Exception();
+        
         var childCount = reader.Read<ulong>();
 
         return new HeadProperty()

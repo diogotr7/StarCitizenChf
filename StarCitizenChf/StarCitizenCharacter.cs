@@ -10,15 +10,18 @@ public sealed class StarCitizenCharacter
     public required string Name { get; init; }
     public required bool IsMan { get; init; }
     public required ulong TotalCount { get; init; }
+    
+    public required string EyesId { get; init; }
+    public required string HairId { get; init; }
+    public required string HairModId { get; init; }
+    public required string HeadMatId { get; init; }
+    public required string EyeBrowId { get; init; }
+    public required string BeardId { get; init; }
+    public required string BeardModId { get; init; }
+
     public required string Next { get; init; }
     public required ulong NextCount { get; init; }
     
-    public required Guid EyesId { get; init; }
-    public required Guid HairId { get; init; }
-    public required Guid EyeBrowId { get; init; }
-    public required Guid BeardId { get; init; }
-    public required Guid HeadMaterialId { get; init; }
-
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
         var reader = new SpanReader(data);
@@ -49,7 +52,7 @@ public sealed class StarCitizenCharacter
             throw new Exception();
 
         var body = BodyProperty.Read(ref reader);
-        //this is probably a count of *something*
+        //head is child of body?
         if (body.ChildCount != 1)
             throw new Exception();
 
@@ -125,7 +128,7 @@ public sealed class StarCitizenCharacter
                 if (hairModifierKey != HairModifierProperty.Key)
                     throw new Exception();
 
-                hairModifier = HairModifierProperty.Read(ref reader);
+                facialHairModifier = HairModifierProperty.Read(ref reader);
                 //do something with this
             }
         }
@@ -145,16 +148,15 @@ public sealed class StarCitizenCharacter
             Name = fileName,
             IsMan = isMan,
             TotalCount = totalCount,
-            EyesId = eyes.Id,
-            HairId = hair.Id,
-            EyeBrowId = eyebrow?.Id ?? Guid.Empty,
-            BeardId = facialHair?.Id ?? Guid.Empty,
-            HeadMaterialId = headMaterial.Id,
             
-            
-            
-            
-            
+            EyesId = GuidUtils.Shorten(eyes.Id),
+            HairId = GuidUtils.Shorten(hair.Id),
+            HairModId = GuidUtils.Shorten(hairModifier?.Id ?? Guid.Empty),
+            HeadMatId = GuidUtils.Shorten(headMaterial.Id),
+            EyeBrowId = GuidUtils.Shorten(eyebrow?.Id ?? Guid.Empty),
+            BeardId = GuidUtils.Shorten(facialHair?.Id ?? Guid.Empty),
+            BeardModId = GuidUtils.Shorten(facialHairModifier?.Id ?? Guid.Empty),
+
             Next = reader.Read<uint>().ToString("X8"),
             NextCount = 0,
         };
