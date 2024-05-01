@@ -12,7 +12,7 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
     public int Position { get; private set; } = 0;
     public ReadOnlySpan<byte> Remaining => Span[Position..];
     
-    public uint Peek => MemoryMarshal.Read<uint>(Span[Position..]);
+    public uint PeekKey => MemoryMarshal.Read<uint>(Span[Position..]);
 
     internal T Read<T>() where T : unmanaged
     {
@@ -78,44 +78,6 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
         var k = Read<byte>();
         
         return new Guid(c, b, a, k, j, i, h, g, f, e,d);
-    }
-    
-    
-    //follow the same weird pattern as above
-    public static byte[] FromGuid(Guid guid)
-    {
-        
-        var bytes = guid.ToByteArray();
-        var reader = new SpanReader(bytes);
-        
-        var a = reader.Read<int>();
-        var b = reader.Read<short>();
-        var c = reader.Read<short>();
-        var d = reader.Read<byte>();
-        var e = reader.Read<byte>();
-        var f = reader.Read<byte>();
-        var g = reader.Read<byte>();
-        var h = reader.Read<byte>();
-        var i = reader.Read<byte>();
-        var j = reader.Read<byte>();
-        var k = reader.Read<byte>();
-        
-        var result = new byte[16];
-        var writer = new SpanWriter(result);
-
-        writer.Write(c);
-        writer.Write(b);
-        writer.Write(a);
-        writer.Write(k);
-        writer.Write(j);
-        writer.Write(i);
-        writer.Write(h);
-        writer.Write(g);
-        writer.Write(f);
-        writer.Write(e);
-        writer.Write(d);
-        
-        return result;
     }
 }
 

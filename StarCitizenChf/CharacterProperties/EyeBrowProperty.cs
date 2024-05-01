@@ -8,19 +8,18 @@ internal sealed class EyeBrowProperty
     public const uint Key = 0x1787EE22;
     public const string KeyRep = "22-EE-87-17";
     public Guid Id { get; set; }
+    
+    public ulong ChildCount { get; set; }
 
     public static EyeBrowProperty Read(ref SpanReader reader)
     {
         var guid = reader.ReadGuid();
-        var childCount = reader.Read<uint>();
-        reader.Expect(0);
-        
-        if (childCount != 0)
-            Debugger.Break();
+        var childCount = reader.Read<ulong>();
 
         return new EyeBrowProperty()
         {
-            Id = guid
+            Id = guid,
+            ChildCount = childCount
         };
     }
 }

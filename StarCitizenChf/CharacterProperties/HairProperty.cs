@@ -11,13 +11,12 @@ internal sealed class HairProperty
 
     public Guid Id { get; set; }
     
-    public uint ChildCount { get; set; }
+    public ulong ChildCount { get; set; }
 
     public static HairProperty Read(ref SpanReader reader)
     {
         var guid = reader.ReadGuid();
-        var childCount = reader.Read<uint>();
-        reader.Expect(0);
+        var childCount = reader.Read<ulong>();
 
         return new HairProperty()
         {

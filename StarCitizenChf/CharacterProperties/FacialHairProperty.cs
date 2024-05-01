@@ -9,23 +9,21 @@ internal sealed class FacialHairProperty
     public const string KeyRep = "1C-BB-EF-98";
 
     public Guid Id { get; set; }
-    public uint Value { get; set; }
+    public uint ChildCount { get; set; }
 
     public static FacialHairProperty Read(ref SpanReader reader)
     {
         var guid = reader.ReadGuid();
-        //var unknownData = reader.ReadBytes(sizeof(uint) * 4);
-        var count = reader.Read<uint>(); //usually zero sometimes 1
+        var count = reader.Read<uint>();
         switch (count)
         {
             case 0:
                 reader.Expect(6);
                 reader.Expect(5);
-                return new FacialHairProperty() { Id = guid, Value = 0 };
+                return new FacialHairProperty() { Id = guid, ChildCount = 0 };
             case 1:
                 reader.Expect<uint>(0);
-                Console.WriteLine($"Beard next: {reader.Peek:X8}");
-                return new FacialHairProperty() { Id = guid, Value = 1 };
+                return new FacialHairProperty() { Id = guid, ChildCount = 1 };
             default:
                 Debugger.Break();
                 throw new Exception();

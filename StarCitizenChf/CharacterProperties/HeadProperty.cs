@@ -6,13 +6,12 @@ internal sealed class HeadProperty
     public const uint Key = 0x47010DB9;
     public const string KeyRep = "B9-0D-01-47";
     
-    public uint ChildCount { get; set; }
+    public ulong ChildCount { get; set; }
 
     public static HeadProperty Read(ref SpanReader reader)
     {
         var guid = reader.ReadGuid();
-        var childCount = reader.Read<uint>();
-        reader.Expect(0);
+        var childCount = reader.Read<ulong>();
 
         return new HeadProperty()
         {
