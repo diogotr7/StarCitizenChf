@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace StarCitizenChf;
+namespace ChfUtils;
 
 public sealed class ChfFile
 {

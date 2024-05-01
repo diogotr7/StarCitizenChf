@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ZstdSharp;
 
-namespace StarCitizenChf;
+namespace ChfUtils;
 
 public static class Decompression
 {
