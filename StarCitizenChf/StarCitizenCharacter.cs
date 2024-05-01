@@ -10,7 +10,6 @@ public sealed class StarCitizenCharacter
     public required string Name { get; init; }
     public required string Gender { get; init; }
     public required ulong TotalCount { get; init; }
-    public required ulong HeadCount { get; init; }
     
     public required string HairId { get; init; }
     public required string HairModId { get; init; }
@@ -34,22 +33,7 @@ public sealed class StarCitizenCharacter
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
         var head = HeadProperty.Read(ref reader);
-        var eyes = EyesProperty.Read(ref reader);
-        var hair = HairProperty.Read(ref reader);
-        var eyebrow = EyebrowProperty.ReadOptional(ref reader);
-        var eyelash = EyelashProperty.Read(ref reader);
-        var facialHair = FacialHairProperty.ReadOptional(ref reader);
-
-        ulong headChildCount = 0;
-        if (eyes != null) headChildCount++;
-        if (hair != null) headChildCount++;
-        if (eyebrow != null) headChildCount++;
-        if (eyelash != null) headChildCount++;
-        if (facialHair != null) headChildCount++;
-        if (headChildCount != head.ChildCount) throw new Exception();
-        
         var headMaterial = HeadMaterialProperty.Read(ref reader);
-
 
         //unknownprop 6 or 7. i am completely lost here
         //72129E8E or A5378A05
@@ -60,32 +44,16 @@ public sealed class StarCitizenCharacter
             Name = fileName,
             Gender = GuidUtils.Shorten(gender.Id),
             TotalCount = totalCount,
-            HeadCount = head.ChildCount,
             
-            HairId = GuidUtils.Shorten(hair.Id),
-            HairModId = GuidUtils.Shorten(hair?.Modifier?.Id ?? Guid.Empty),
+            HairId = GuidUtils.Shorten(head.Hair.Id),
+            HairModId = GuidUtils.Shorten(head.Hair?.Modifier?.Id ?? Guid.Empty),
             HeadMatId = GuidUtils.Shorten(headMaterial.Id),
-            EyeBrowId = GuidUtils.Shorten(eyebrow?.Id ?? Guid.Empty),
-            BeardId = GuidUtils.Shorten(facialHair?.Id ?? Guid.Empty),
-            BeardModId = GuidUtils.Shorten(facialHair?.Modifier?.Id ?? Guid.Empty),
+            EyeBrowId = GuidUtils.Shorten(head.Eyebrow?.Id ?? Guid.Empty),
+            BeardId = GuidUtils.Shorten(head.FacialHair?.Id ?? Guid.Empty),
+            BeardModId = GuidUtils.Shorten(head.FacialHair?.Modifier?.Id ?? Guid.Empty),
 
             Next = reader.Read<uint>().ToString("X8"),
-            NextCount = diff,
+            NextCount = 0,
         };
-    }
-}
-
-internal sealed class GenderProperty
-{
-    public Guid Id { get; set; }
-    
-    public static GenderProperty Read(ref SpanReader reader)
-    {
-        var guid = reader.ReadGuid();
-        
-        reader.Expect<ulong>(0);
-        reader.Expect<ulong>(0);
-        
-        return new GenderProperty() { Id = guid };
     }
 }
