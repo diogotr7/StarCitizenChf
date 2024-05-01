@@ -1,6 +1,7 @@
 ﻿using System;
+using ChfUtils;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/pu/eyes/pu_head_eyes_white_charactercustomizer.xml
 internal sealed class EyesProperty

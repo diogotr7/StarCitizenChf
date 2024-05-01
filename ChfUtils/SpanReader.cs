@@ -4,9 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
-internal ref struct SpanReader(ReadOnlySpan<byte> span)
+namespace ChfUtils;
+
+public ref struct SpanReader(ReadOnlySpan<byte> span)
 {
     public ReadOnlySpan<byte> Span { get; } = span;
     public int Position { get; private set; } = 0;
@@ -14,7 +15,7 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
     
     public uint PeekKey => MemoryMarshal.Read<uint>(Span[Position..]);
 
-    internal T Read<T>() where T : unmanaged
+    public T Read<T>() where T : unmanaged
     {
         if (typeof(T) == typeof(Guid))
             throw new InvalidOperationException("Use ReadGuid instead");
@@ -24,7 +25,7 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
     
-    internal ReadOnlySpan<byte> PeekBehind(int bytes, int length)
+    public ReadOnlySpan<byte> PeekBehind(int bytes, int length)
     {
         return Span.Slice(Position - bytes, length);
     }
@@ -55,7 +56,6 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
             throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
     }
     
-    
     public void ExpectBytes(string bitConverter)
     {
         var expected = bitConverter.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
@@ -78,37 +78,5 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
         var k = Read<byte>();
         
         return new Guid(c, b, a, k, j, i, h, g, f, e,d);
-    }
-}
-
-internal ref struct SpanWriter(Span<byte> span)
-{
-    public Span<byte> Span { get; } = span;
-    public int Position { get; private set; } = 0;
-    
-    public void Write<T>(T value) where T : unmanaged
-    {
-        MemoryMarshal.Write(Span[Position..], in value);
-        Position += Unsafe.SizeOf<T>();
-    }
-
-    public void Write(ReadOnlySpan<byte> span)
-    {
-        span.CopyTo(Span[Position..]);
-        Position += span.Length;
-    }
-
-    public void WriteLengthAndString(string value)
-    {
-        Write((ushort)(value.Length + 1));
-        Write(value);
-    }
-    
-    public void Write(string value)
-    {
-        var byteCount = Encoding.ASCII.GetByteCount(value.AsSpan());
-        Encoding.ASCII.GetBytes(value, Span.Slice(Position, byteCount));
-        Position += byteCount;
-        Write<byte>(0);
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using ChfUtils;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/appearance_modifier/hair_variant/hair_var_brown.xml
 internal sealed class HairModifierProperty

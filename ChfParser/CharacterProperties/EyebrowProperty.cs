@@ -1,7 +1,8 @@
 using System;
 using System.Diagnostics;
+using ChfUtils;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 internal sealed class EyebrowProperty
 {

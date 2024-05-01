@@ -1,6 +1,7 @@
 ﻿using System;
+using ChfUtils;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/npc/face/pu_protos_head.xml
 internal sealed class HeadProperty

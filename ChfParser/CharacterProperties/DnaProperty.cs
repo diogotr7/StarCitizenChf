@@ -1,6 +1,7 @@
 ﻿using System;
+using ChfUtils;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 internal sealed class DnaProperty
 {

@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Linq;
 
-namespace StarCitizenChf;
+namespace ChfUtils;
 
 public static class GuidUtils
 {
-    public static string Shorten(Guid guid)
-    {
-        return guid.ToString().Substring(0, 8);
-    }
-    
-    
+    public static string Shorten(Guid guid) => guid.ToString().Substring(0, 8);
+
     public static void Test()
     {
         var a = FromBitConverterRepresentation("F5486885A34250FA2D1B1998DC0236BF");
@@ -23,6 +19,7 @@ public static class GuidUtils
         var h = FromBitConverterRepresentation("A2-4D-E5-B9-C9-46-9A-22-2C-E5-42-76-00-8F-5E-87");
         var i = FromBitConverterRepresentation("74-42-4E-92-C7-A0-D0-63-B4-D2-A4-4C-5D-76-62-AF");
         var j = FromBitConverterRepresentation("98-4D-E4-F9-95-82-7A-6A-E2-C6-C3-AD-43-74-AA-82");
+        var k = FromBitConverterRepresentation("44-4F-BC-21-B3-F3-43-B6-54-79-FD-40-E1-0D-E5-95");
         var z = FromGuid(Guid.Parse("33e495ca-dec5-4e59-9517-0b8a8535b4d0"));
         var z1 = ToBitConverterRepresentation(Guid.Parse("9a66730e-512e-4d21-8ba3-d3ce2c3ebfe6"));
         var z2 = ToBitConverterRepresentation(Guid.Parse("538ab6c3-8bb6-4768-9ad1-cc6387e9c65f"));

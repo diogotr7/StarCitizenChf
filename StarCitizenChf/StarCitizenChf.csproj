@@ -9,4 +9,9 @@
       <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
       <PackageReference Include="ZstdSharp.Port" Version="0.7.6" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\ChfParser\ChfParser.csproj" />
+      <ProjectReference Include="..\ChfUtils\ChfUtils.csproj" />
+    </ItemGroup>
 </Project>

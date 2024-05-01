@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using ChfUtils;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/shared/hair/hair_13.xml
 internal sealed class HairProperty
