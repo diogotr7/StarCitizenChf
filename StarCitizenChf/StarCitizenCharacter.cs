@@ -10,8 +10,8 @@ public sealed class StarCitizenCharacter
     public required string Name { get; init; }
     public required string Gender { get; init; }
     public required ulong TotalCount { get; init; }
+    public required ulong HeadCount { get; init; }
     
-    public required string EyesId { get; init; }
     public required string HairId { get; init; }
     public required string HairModId { get; init; }
     public required string HeadMatId { get; init; }
@@ -39,7 +39,17 @@ public sealed class StarCitizenCharacter
         var eyebrow = EyebrowProperty.ReadOptional(ref reader);
         var eyelash = EyelashProperty.Read(ref reader);
         var facialHair = FacialHairProperty.ReadOptional(ref reader);
+
+        ulong headChildCount = 0;
+        if (eyes != null) headChildCount++;
+        if (hair != null) headChildCount++;
+        if (eyebrow != null) headChildCount++;
+        if (eyelash != null) headChildCount++;
+        if (facialHair != null) headChildCount++;
+        if (headChildCount != head.ChildCount) throw new Exception();
+        
         var headMaterial = HeadMaterialProperty.Read(ref reader);
+
 
         //unknownprop 6 or 7. i am completely lost here
         //72129E8E or A5378A05
@@ -50,8 +60,8 @@ public sealed class StarCitizenCharacter
             Name = fileName,
             Gender = GuidUtils.Shorten(gender.Id),
             TotalCount = totalCount,
+            HeadCount = head.ChildCount,
             
-            EyesId = GuidUtils.Shorten(eyes.Id),
             HairId = GuidUtils.Shorten(hair.Id),
             HairModId = GuidUtils.Shorten(hair?.Modifier?.Id ?? Guid.Empty),
             HeadMatId = GuidUtils.Shorten(headMaterial.Id),
@@ -60,7 +70,7 @@ public sealed class StarCitizenCharacter
             BeardModId = GuidUtils.Shorten(facialHair?.Modifier?.Id ?? Guid.Empty),
 
             Next = reader.Read<uint>().ToString("X8"),
-            NextCount = 0,
+            NextCount = diff,
         };
     }
 }
