@@ -71,13 +71,18 @@ public static class Constants
     public static readonly Guid Beard28 = new("e27a835b-965f-487b-bef7-ac8be077cc62");
     public static readonly Guid Beard29 = new("09b25ba2-4e5d-4135-8d27-5649227b7a74");
     public static readonly Guid Beard30 = new("31de0f7c-a059-4a5c-8917-d699a79af303");
+    
+    
+    private static Dictionary<Guid, string> _guidToName = new();
+    
+    public static bool TryGetName(Guid guid, out string name) => _guidToName.TryGetValue(guid, out name);
 
-    public static (Guid, string)[] GetAllGuids()
+    public static string GetName(Guid guid) => TryGetName(guid, out var name) ? name : "Unknown";
+    
+    static Constants()
     {
-        //reflect over this class and return all guids
-        return typeof(Constants).GetFields()
+        _guidToName = typeof(Constants).GetFields()
             .Where(f => f.FieldType == typeof(Guid))
-            .Select(f => ((Guid)f.GetValue(null), f.Name))
-            .ToArray();
+            .ToDictionary(f => (Guid)f.GetValue(null), f => f.Name);
     }
 }

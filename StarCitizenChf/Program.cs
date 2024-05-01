@@ -31,8 +31,12 @@ var allBins = web.Concat(local).ToArray();
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
 
 var hairIds = characters.Select(x => x.Body.Head.Hair.Id).Distinct().ToArray();
-var eyebrowIds = characters.Select(x => x.Body.Head.Eyebrow?.Id).Distinct().ToArray();
-var beardIds = characters.Select(x => x.Body.Head.FacialHair?.Id).Distinct().ToArray();
+var eyebrowIds = characters.Select(x => x.Body.Head.Eyebrow?.Id).Distinct().Where(g => g != null).Cast<Guid>().ToArray();
+var beardIds = characters.Select(x => x.Body.Head.FacialHair?.Id).Distinct().Where(g => g != null).Cast<Guid>().ToArray();
+
+var hairNames = hairIds.Select(x => StarCitizenChf.Constants.GetName(x)).ToArray();
+var eyebrowNames = eyebrowIds.Select(x => StarCitizenChf.Constants.GetName(x)).ToArray();
+var beardNames = beardIds.Select(x => StarCitizenChf.Constants.GetName(x)).ToArray();
 
 
 List<string> remaining = new();
