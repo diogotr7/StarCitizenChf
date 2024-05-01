@@ -33,6 +33,13 @@ public sealed class StarCitizenCharacter
         var dnaProperty = DnaProperty.Read(ref reader);
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
+        
+        //MATERIALS
+        
+        //attachment
+        //basematerialguid
+        //additionalflags
+        
         var headMaterial = HeadMaterialProperty.Read(ref reader);
 
         //unknownprop 6 or 7. i am completely lost here
@@ -53,7 +60,7 @@ public sealed class StarCitizenCharacter
             HeadMatId = GuidUtils.Shorten(headMaterial.Id),
 
             Next = reader.Read<uint>().ToString("X8"),
-            NextCount = (ulong)reader.Remaining.Length,
+            NextCount = body.Head.FacialHair?.Modifier?.ChildCount ?? 0
         };
     }
 }

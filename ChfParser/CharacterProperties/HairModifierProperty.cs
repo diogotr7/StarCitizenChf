@@ -21,8 +21,8 @@ internal sealed class HairModifierProperty
         
         var guid = reader.ReadGuid();
         reader.Expect(0);
-        var count = reader.Read<uint>();//usually 0 sometimes 6
-
+        var count = reader.Read<uint>();//0 for hair modifier, 6 for facial hair modifier
+        
         switch (count)
         {
             case 0:

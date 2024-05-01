@@ -28,6 +28,7 @@ internal sealed class HairProperty
             case 1:
             {
                 var hairModifier = HairModifierProperty.Read(ref reader);
+                if (hairModifier.ChildCount != 0) throw new Exception();
                 return new HairProperty()
                 {
                     Id = guid,

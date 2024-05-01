@@ -30,6 +30,8 @@ internal sealed class FacialHairProperty
                 reader.Expect<uint>(0);
                 
                 var hairModifier = HairModifierProperty.Read(ref reader);
+                Console.WriteLine($"facialhairmodifier count: {hairModifier.ChildCount}");
+
                 return new FacialHairProperty() { Id = guid, Modifier = hairModifier};
             default:
                 Debugger.Break();
