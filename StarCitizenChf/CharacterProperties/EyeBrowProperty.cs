@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 namespace StarCitizenChf;
@@ -6,11 +7,11 @@ internal sealed class EyeBrowProperty
 {
     public const uint Key = 0x1787EE22;
     public const string KeyRep = "22-EE-87-17";
-    public byte[] Data { get; set; }
+    public Guid Id { get; set; }
 
     public static EyeBrowProperty Read(ref SpanReader reader)
     {
-        var eyeBrow = reader.ReadBytes(sizeof(uint) * 4);
+        var guid = reader.ReadGuid();
         var childCount = reader.Read<uint>();
         reader.Expect(0);
         
@@ -19,7 +20,7 @@ internal sealed class EyeBrowProperty
 
         return new EyeBrowProperty()
         {
-            Data = eyeBrow.ToArray()
+            Id = guid
         };
     }
 }

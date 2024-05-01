@@ -10,6 +10,8 @@ internal sealed class UnknownProperty8
     public static UnknownProperty8 Read(ref SpanReader reader)
     {
         //I have no idea at all what to do here, misaligned :(
+        
+        var guid = reader.ReadGuid();
 
         return new UnknownProperty8();
         

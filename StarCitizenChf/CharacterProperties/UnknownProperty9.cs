@@ -10,6 +10,7 @@ internal sealed class UnknownProperty9
 
     public static UnknownProperty9 Read(ref SpanReader reader)
     {
+        var guid = reader.ReadGuid();
         return new UnknownProperty9();
     }
 }

@@ -7,7 +7,6 @@ using StarCitizenChf;
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var folders = new Folders(csprojFolder);
 
-
 //Downloads all characters from the website and saves them to the website characters folder.
 //await Download.DownloadAllMetadata(folders.MetadataFile);
 //await Download.DownloadAllCharacters(folders.MetadataFile, folders.WebsiteCharacters);
@@ -46,6 +45,8 @@ var data6 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offse
 var data7 = allBins.Select(x => (x.name, BitConverter.ToString(x.data.Skip(offset6 + 4).Take(size).ToArray()))).ToArray();
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
+
+File.WriteAllLines(Path.Combine(folders.Base, "dna.txt"), StarCitizenCharacter.DNAData);
 
 return;
 

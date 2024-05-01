@@ -16,6 +16,9 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
 
     internal T Read<T>() where T : unmanaged
     {
+        if (typeof(T) == typeof(Guid))
+            throw new InvalidOperationException("Use ReadGuid instead");
+        
         var value = MemoryMarshal.Read<T>(Span[Position..]);
         Position += Unsafe.SizeOf<T>();
         return value;
@@ -35,6 +38,9 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
     
     public T Expect<T>(T expected) where T : unmanaged, IEquatable<T>
     {
+        if (typeof(T) == typeof(Guid))
+            throw new InvalidOperationException("Use ReadGuid instead");
+        
         var value = Read<T>();
         if (!value.Equals(expected))
             //throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
@@ -54,5 +60,93 @@ internal ref struct SpanReader(ReadOnlySpan<byte> span)
     {
         var expected = bitConverter.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
         ExpectBytes(expected);
+    }
+
+    public Guid ReadGuid()
+    {
+        //don't ask.
+        var a = Read<short>();
+        var b = Read<short>();
+        var c = Read<int>();
+        var d = Read<byte>();
+        var e = Read<byte>();
+        var f = Read<byte>();
+        var g = Read<byte>();
+        var h = Read<byte>();
+        var i = Read<byte>();
+        var j = Read<byte>();
+        var k = Read<byte>();
+        
+        return new Guid(c, b, a, k, j, i, h, g, f, e,d);
+    }
+    
+    
+    //follow the same weird pattern as above
+    public static byte[] FromGuid(Guid guid)
+    {
+        
+        var bytes = guid.ToByteArray();
+        var reader = new SpanReader(bytes);
+        
+        var a = reader.Read<int>();
+        var b = reader.Read<short>();
+        var c = reader.Read<short>();
+        var d = reader.Read<byte>();
+        var e = reader.Read<byte>();
+        var f = reader.Read<byte>();
+        var g = reader.Read<byte>();
+        var h = reader.Read<byte>();
+        var i = reader.Read<byte>();
+        var j = reader.Read<byte>();
+        var k = reader.Read<byte>();
+        
+        var result = new byte[16];
+        var writer = new SpanWriter(result);
+
+        writer.Write(c);
+        writer.Write(b);
+        writer.Write(a);
+        writer.Write(k);
+        writer.Write(j);
+        writer.Write(i);
+        writer.Write(h);
+        writer.Write(g);
+        writer.Write(f);
+        writer.Write(e);
+        writer.Write(d);
+        
+        return result;
+    }
+}
+
+internal ref struct SpanWriter(Span<byte> span)
+{
+    public Span<byte> Span { get; } = span;
+    public int Position { get; private set; } = 0;
+    
+    public void Write<T>(T value) where T : unmanaged
+    {
+        MemoryMarshal.Write(Span[Position..], in value);
+        Position += Unsafe.SizeOf<T>();
+    }
+
+    public void Write(ReadOnlySpan<byte> span)
+    {
+        span.CopyTo(Span[Position..]);
+        Position += span.Length;
+    }
+
+    public void WriteLengthAndString(string value)
+    {
+        Write((ushort)(value.Length + 1));
+        Write(value);
+    }
+    
+    public void Write(string value)
+    {
+        var byteCount = Encoding.ASCII.GetByteCount(value.AsSpan());
+        Encoding.ASCII.GetBytes(value, Span.Slice(Position, byteCount));
+        Position += byteCount;
+        Write<byte>(0);
     }
 }
