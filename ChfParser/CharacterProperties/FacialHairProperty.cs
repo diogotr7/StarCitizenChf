@@ -4,21 +4,21 @@ using ChfUtils;
 
 namespace ChfParser;
 
-internal sealed class FacialHairProperty
+public sealed class FacialHairProperty
 {
     public const uint Key = 0x98EFBB1C;
     public const string KeyRep = "1C-BB-EF-98";
 
     public Guid Id { get; set; }
     public HairModifierProperty? Modifier { get; init; }
-
-    private static FacialHairProperty Read(ref SpanReader reader)
+            
+    public static FacialHairProperty? ReadOptional(ref SpanReader reader)
     {
-        var key = reader.Read<uint>();
-        if (key != Key)
-            throw new Exception();
+        if (reader.Peek<uint>() != Key)
+            return null;
         
-        var guid = reader.ReadGuid();
+        reader.Expect(Key);
+        var guid = reader.Read<Guid>();
         var count = reader.Read<uint>();
         switch (count)
         {
@@ -37,13 +37,5 @@ internal sealed class FacialHairProperty
                 Debugger.Break();
                 throw new Exception();
         }
-    }
-            
-    public static FacialHairProperty? ReadOptional(ref SpanReader reader)
-    {
-        if (reader.PeekKey != Key)
-            return null;
-            
-        return Read(ref reader);
     }
 }

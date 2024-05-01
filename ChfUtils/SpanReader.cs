@@ -11,25 +11,37 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
 {
     public ReadOnlySpan<byte> Span { get; } = span;
     public int Position { get; private set; } = 0;
-    public ReadOnlySpan<byte> Remaining => Span[Position..];
     
-    public uint PeekKey => MemoryMarshal.Read<uint>(Span[Position..]);
+    public ReadOnlySpan<byte> Remaining => Span[Position..];
 
+    /// <summary>
+    ///     Reads a value from the span and advances the position.
+    /// </summary>
     public T Read<T>() where T : unmanaged
     {
-        if (typeof(T) == typeof(Guid))
-            throw new InvalidOperationException("Use ReadGuid instead");
-        
-        var value = MemoryMarshal.Read<T>(Span[Position..]);
+        var value = Peek<T>();
         Position += Unsafe.SizeOf<T>();
         return value;
     }
     
-    public ReadOnlySpan<byte> PeekBehind(int bytes, int length)
+    /// <summary>
+    ///     Reads a value from the span without advancing the position.
+    /// </summary>
+    public T Peek<T>() where T : unmanaged
     {
-        return Span.Slice(Position - bytes, length);
+        //special case for Guids, since they're stored in a weird way
+        if (typeof(T) == typeof(Guid))
+        {
+            var guid = GuidUtils.FromBytes(Span[Position..(Position + 16)]);
+            return Unsafe.As<Guid, T>(ref guid);
+        }
+        
+        return MemoryMarshal.Read<T>(Span[Position..]);
     }
     
+    /// <summary>
+    ///     Reads a number of bytes from the span and advances the position.
+    /// </summary>
     public ReadOnlySpan<byte> ReadBytes(int length)
     {
         var value = Span[Position..(Position + length)];
@@ -37,46 +49,39 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
     
+    /// <summary>
+    ///     Reads a T value from the span and checks if it matches the expected value.
+    /// </summary>
     public T Expect<T>(T expected) where T : unmanaged, IEquatable<T>
     {
-        if (typeof(T) == typeof(Guid))
-            throw new InvalidOperationException("Use ReadGuid instead");
-        
         var value = Read<T>();
+        
         if (!value.Equals(expected))
-            //throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
-            Debugger.Break();
+            throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
+        
         return value;
     }
-    
+
+    /// <summary>
+    ///     Reads a number of bytes from the span and checks if it matches the expected value.
+    /// </summary>
+    /// <param name="expected"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public void ExpectBytes(ReadOnlySpan<byte> expected)
     {
         var value = ReadBytes(expected.Length);
+        
         if (!value.SequenceEqual(expected))
             throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
     }
     
+    /// <summary>
+    ///     Reads a number of bytes from the span and checks if it matches the expected value.
+    /// </summary>
+    /// <param name="bitConverter"></param>
     public void ExpectBytes(string bitConverter)
     {
         var expected = bitConverter.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
         ExpectBytes(expected);
-    }
-
-    public Guid ReadGuid()
-    {
-        //don't ask.
-        var a = Read<short>();
-        var b = Read<short>();
-        var c = Read<int>();
-        var d = Read<byte>();
-        var e = Read<byte>();
-        var f = Read<byte>();
-        var g = Read<byte>();
-        var h = Read<byte>();
-        var i = Read<byte>();
-        var j = Read<byte>();
-        var k = Read<byte>();
-        
-        return new Guid(c, b, a, k, j, i, h, g, f, e,d);
     }
 }

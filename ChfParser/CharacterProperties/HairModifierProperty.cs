@@ -5,7 +5,7 @@ using ChfUtils;
 namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/appearance_modifier/hair_variant/hair_var_brown.xml
-internal sealed class HairModifierProperty
+public sealed class HairModifierProperty
 {
     public const uint Key = 0x_e7_80_9d_46;
     public const string KeyRep = "46-9D-80-E7";
@@ -15,11 +15,9 @@ internal sealed class HairModifierProperty
     
     public static HairModifierProperty Read(ref SpanReader reader)
     {
-        var key = reader.Read<uint>();
-        if (key != Key)
-            throw new Exception();
+        reader.Expect(Key);
+        var guid = reader.Read<Guid>();
         
-        var guid = reader.ReadGuid();
         reader.Expect(0);
         var count = reader.Read<uint>();//0 for hair modifier, 6 for facial hair modifier
         

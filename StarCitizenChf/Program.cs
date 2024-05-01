@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +29,23 @@ var web = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
 var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
 var allBins = web.Concat(local).ToArray();
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
+
+var hairIds = characters.Select(x => x.Body.Head.Hair.Id).Distinct().ToArray();
+var eyebrowIds = characters.Select(x => x.Body.Head.Eyebrow?.Id).Distinct().ToArray();
+var beardIds = characters.Select(x => x.Body.Head.FacialHair?.Id).Distinct().ToArray();
+
+
+List<string> remaining = new();
+for (var index = 0; index < characters.Length; index++)
+{
+    var character = characters[index];
+    var last = character.LastReadIndex;
+    var data = allBins[index].data;
+    
+    remaining.Add(BitConverter.ToString(data[last..]));
+}
+
+//File.WriteAllLines(Path.Combine(folders.Base, "remaining.txt"), remaining);
 
 return;
 

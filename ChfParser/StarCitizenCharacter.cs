@@ -17,10 +17,10 @@ public sealed class StarCitizenCharacter
     public required string EyeBrowId { get; init; }
     public required string BeardId { get; init; }
     public required string BeardModId { get; init; }
-    public required string HeadMatId { get; init; }
-
-    public required string Next { get; init; }
-    public required ulong NextCount { get; init; }
+    
+    public required BodyProperty Body { get; init; }
+    
+    public required int LastReadIndex { get; set; }
     
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
@@ -40,27 +40,28 @@ public sealed class StarCitizenCharacter
         //basematerialguid
         //additionalflags
         
-        var headMaterial = HeadMaterialProperty.Read(ref reader);
+        //var headMaterial = HeadMaterialProperty.Read(ref reader);
 
         //unknownprop 6 or 7. i am completely lost here
         //72129E8E or A5378A05
         //nextCount is always 0
-
+        //var next = reader.Read<uint>();
+        //var nextFloat = reader.Read<float>();
+        
         return new StarCitizenCharacter()
         {
             Name = fileName,
             Gender = GuidUtils.Shorten(gender.Id),
             TotalCount = totalCount,
             
+            Body = body,
+            
             HairId = GuidUtils.Shorten(body.Head.Hair.Id),
             HairModId = GuidUtils.Shorten(body.Head.Hair?.Modifier?.Id ?? Guid.Empty),
             EyeBrowId = GuidUtils.Shorten(body.Head.Eyebrow?.Id ?? Guid.Empty),
             BeardId = GuidUtils.Shorten(body.Head.FacialHair?.Id ?? Guid.Empty),
             BeardModId = GuidUtils.Shorten(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
-            HeadMatId = GuidUtils.Shorten(headMaterial.Id),
-
-            Next = reader.Read<uint>().ToString("X8"),
-            NextCount = body.Head.FacialHair?.Modifier?.ChildCount ?? 0
+            LastReadIndex = reader.Position,
         };
     }
 }

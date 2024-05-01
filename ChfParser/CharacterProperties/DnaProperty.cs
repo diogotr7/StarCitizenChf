@@ -3,7 +3,7 @@ using ChfUtils;
 
 namespace ChfParser;
 
-internal sealed class DnaProperty
+public sealed class DnaProperty
 {
     public const int Size = 0xD8;
     
@@ -11,9 +11,7 @@ internal sealed class DnaProperty
     
     public static DnaProperty Read(ref SpanReader reader)
     {
-        var dnaLength = reader.Read<ulong>();
-        if (dnaLength != Size)
-            throw new Exception();
+        reader.Expect<ulong>(Size);
 
         var dna = reader.ReadBytes(Size).ToArray();
         

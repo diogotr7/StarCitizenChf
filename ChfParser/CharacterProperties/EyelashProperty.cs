@@ -5,7 +5,7 @@ using ChfUtils;
 namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/shared/eyelashes/head_eyelashes.xml
-internal sealed class EyelashProperty 
+public sealed class EyelashProperty 
 {
     public const uint Key = 0x_19_0b_04_e2;
     public const string KeyRep = "E2-04-0B-19";
@@ -15,14 +15,10 @@ internal sealed class EyelashProperty
     //fix, terrible
     public static EyelashProperty Read(ref SpanReader reader)
     {
-        var key = reader.Read<uint>();
-        if (key != Key)
-            throw new Exception();
-        
-        if (reader.ReadGuid() != Guid.Parse("6217c113-a448-443b-82aa-1bb108ba8e11"))
-            throw new Exception();
-        
+        reader.Expect(Key);
+        reader.Expect(Guid.Parse("6217c113-a448-443b-82aa-1bb108ba8e11"));
         reader.Expect(0);
+        
         var childCount = reader.Read<uint>();
         //this value seems to be 0 when the character has a beard?
         switch (childCount)

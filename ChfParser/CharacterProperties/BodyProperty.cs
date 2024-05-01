@@ -5,7 +5,7 @@ using ChfUtils;
 namespace ChfParser;
 
 //entities/scitem/characters/human.body/body_01_noMagicPocket
-internal sealed class BodyProperty
+public sealed class BodyProperty
 {
     public const uint Key = 0xAB6341AC;
     public const string KeyRep = "AC-41-63-AB";
@@ -14,13 +14,8 @@ internal sealed class BodyProperty
     
     public static BodyProperty Read(ref SpanReader reader)
     {
-        var key = reader.Read<uint>();
-        if (key != Key)
-            throw new Exception();
-        
-        if (reader.ReadGuid() != Guid.Parse("dbaa8a7d-755f-4104-8b24-7b58fd1e76f6"))
-            throw new Exception();
-        
+        reader.Expect(Key);
+        reader.Expect(Guid.Parse("dbaa8a7d-755f-4104-8b24-7b58fd1e76f6"));
         var childCount = reader.Read<ulong>();
         
         if (childCount != 1)

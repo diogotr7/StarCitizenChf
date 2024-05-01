@@ -3,7 +3,7 @@
 namespace ChfParser;
 
 //this does not look right.
-internal sealed class MakeupProperty
+public sealed class MakeupProperty
 {
     public const uint Key = 0x0C000000;
     public const string KeyRep = "00-00-00-0C";
@@ -13,11 +13,8 @@ internal sealed class MakeupProperty
     
     public static MakeupProperty Read(ref SpanReader reader)
     {
-        var key = reader.Read<uint>();
-        if (key != Key)
-            throw new InvalidDataException($"Expected key {KeyRep}, but got {key:X8}");
-        
-        var guid = reader.ReadGuid();
+        reader.Expect(Key);
+        var guid = reader.Read<Guid>();
         var childCount = reader.Read<ulong>();
 
         return new MakeupProperty()

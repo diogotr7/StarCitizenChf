@@ -5,7 +5,7 @@ using ChfUtils;
 namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/shared/hair/hair_13.xml
-internal sealed class HairProperty
+public sealed class HairProperty
 {
     public const uint Key = 0x13601A95;
     public const string KeyRep = "95-1A-60-13";
@@ -15,11 +15,8 @@ internal sealed class HairProperty
     
     public static HairProperty Read(ref SpanReader reader)
     {
-        var key = reader.Read<uint>();
-        if (key != Key)
-            throw new Exception();
-        
-        var guid = reader.ReadGuid();
+        reader.Expect(Key);
+        var guid = reader.Read<Guid>();
         var childCount = reader.Read<ulong>();
 
         switch (childCount)
