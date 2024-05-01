@@ -17,10 +17,8 @@ internal sealed class HeadMaterialProperty
             throw new Exception();
         
         var guid = reader.ReadGuid();
+        var alsoGuidMaybe = reader.Read<uint>();
         
-        //TODO
-        var childKeyMaybe = reader.Read<uint>();
-        Console.WriteLine(childKeyMaybe.ToString("X8"));
         reader.Expect(0);
         reader.Expect(0);
         reader.Expect(0);

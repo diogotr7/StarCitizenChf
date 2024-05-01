@@ -53,7 +53,7 @@ public sealed class StarCitizenCharacter
             HeadMatId = GuidUtils.Shorten(headMaterial.Id),
 
             Next = reader.Read<uint>().ToString("X8"),
-            NextCount = 0,
+            NextCount = (ulong)reader.Remaining.Length,
         };
     }
 }

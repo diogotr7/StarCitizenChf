@@ -9,6 +9,7 @@ internal sealed class HeadProperty
     public const uint Key = 0x47010DB9;
     public const string KeyRep = "B9-0D-01-47";
     
+    public required ulong ChildCount { get; init; }
     public required EyesProperty Eyes { get; init; }
     public required HairProperty Hair { get; init; }
     public required EyebrowProperty? Eyebrow { get; init; }
@@ -41,6 +42,7 @@ internal sealed class HeadProperty
         
         return new HeadProperty()
         {
+            ChildCount = childCount,
             Eyes = eyes,
             Hair = hair,
             Eyebrow = eyebrow,
