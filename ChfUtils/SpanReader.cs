@@ -63,8 +63,11 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         var value = Read<T>();
         
         if (!value.Equals(expected))
+        {
+            Debugger.Break();
             throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
-        
+        }
+
         return value;
     }
 
@@ -78,7 +81,11 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         var value = ReadBytes(expected.Length);
         
         if (!value.SequenceEqual(expected))
+        {
+            Debugger.Break();
             throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
+        }
+
     }
     
     /// <summary>
