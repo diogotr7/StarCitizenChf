@@ -18,8 +18,6 @@ public sealed class StarCitizenCharacter
     public required string BeardId { get; init; }
     public required string BeardModId { get; init; }
     
-    public required BodyProperty Body { get; init; }
-    
     public required int LastReadIndex { get; set; }
     
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
@@ -33,14 +31,14 @@ public sealed class StarCitizenCharacter
         var dnaProperty = DnaProperty.Read(ref reader);
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
-        
+        var headMaterial = HeadMaterialProperty.Read(ref reader);
+
         //MATERIALS
         
         //attachment
         //basematerialguid
         //additionalflags
         
-        //var headMaterial = HeadMaterialProperty.Read(ref reader);
 
         //unknownprop 6 or 7. i am completely lost here
         //72129E8E or A5378A05
@@ -48,19 +46,22 @@ public sealed class StarCitizenCharacter
         //var next = reader.Read<uint>();
         //var nextFloat = reader.Read<float>();
         
+        //FROM END:
+        //12-byte blocks:
+        //  4-byte key
+        //  4-byte data (color or float, usually)
+        //  4-byte integer, probably child count?
+        
         return new StarCitizenCharacter()
         {
             Name = fileName,
-            Gender = GuidUtils.Shorten(gender.Id),
+            Gender = Constants.GetName(gender.Id),
             TotalCount = totalCount,
-            
-            Body = body,
-            
-            HairId = GuidUtils.Shorten(body.Head.Hair.Id),
-            HairModId = GuidUtils.Shorten(body.Head.Hair?.Modifier?.Id ?? Guid.Empty),
-            EyeBrowId = GuidUtils.Shorten(body.Head.Eyebrow?.Id ?? Guid.Empty),
-            BeardId = GuidUtils.Shorten(body.Head.FacialHair?.Id ?? Guid.Empty),
-            BeardModId = GuidUtils.Shorten(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
+            HairId = Constants.GetName(body.Head.Hair.Id),
+            HairModId = Constants.GetName(body.Head.Hair?.Modifier?.Id ?? Guid.Empty),
+            EyeBrowId = Constants.GetName(body.Head.Eyebrow?.Id ?? Guid.Empty),
+            BeardId = Constants.GetName(body.Head.FacialHair?.Id ?? Guid.Empty),
+            BeardModId = Constants.GetName(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
             LastReadIndex = reader.Position,
         };
     }

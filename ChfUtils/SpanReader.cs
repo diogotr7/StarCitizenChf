@@ -13,6 +13,12 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
     public int Position { get; private set; } = 0;
     
     public ReadOnlySpan<byte> Remaining => Span[Position..];
+    
+    public string NextKey => BitConverter.ToString(Span[Position..(Position + 4)].ToArray());
+    public uint NextUint=> Peek<uint>();
+    public Guid NextGuid => Peek<Guid>();
+    public float NextFloat => Peek<float>();
+    public ulong NextUlong => Peek<ulong>();
 
     /// <summary>
     ///     Reads a value from the span and advances the position.

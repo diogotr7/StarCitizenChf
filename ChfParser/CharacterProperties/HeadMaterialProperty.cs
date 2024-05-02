@@ -23,8 +23,8 @@ public sealed class HeadMaterialProperty
         reader.Expect(1);
         reader.Expect(5);
         //05-8A-37-A5 OR 8E-9E-12-72
-        var skip1 = reader.ReadBytes(4);
-        var skip2 = reader.ReadBytes(54);
+        //var skip1 = reader.ReadBytes(4);
+        //var skip2 = reader.ReadBytes(54);
 
         return new HeadMaterialProperty() { Id = guid };
     }

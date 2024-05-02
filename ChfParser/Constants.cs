@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StarCitizenChf;
+namespace ChfParser;
 
 public static class Constants
 {
-    public static readonly Guid ModelTagM = new("25f439d5-146b-4a61-a999-a486dfb68a49");
-    public static readonly Guid ModelTagF = new("d0794a94-efb0-4cad-ad38-2558b4d3c253");
+    public static readonly Guid Male = new("25f439d5-146b-4a61-a999-a486dfb68a49");
+    public static readonly Guid Female = new("d0794a94-efb0-4cad-ad38-2558b4d3c253");
     
     public static readonly Guid Brows01 = new("89ec0bbc-7daf-4b09-a98d-f8dd8df32305");
     public static readonly Guid Brows02 = new("c40183e4-659c-4e4e-8f96-70b33a3b9d67");
@@ -72,12 +72,13 @@ public static class Constants
     public static readonly Guid Beard29 = new("09b25ba2-4e5d-4135-8d27-5649227b7a74");
     public static readonly Guid Beard30 = new("31de0f7c-a059-4a5c-8917-d699a79af303");
     
+    public static readonly Guid HairVarBrown = new("12ce4ce5-e49a-4dab-9d31-ad262faaddf2");
     
     private static Dictionary<Guid, string> _guidToName = new();
     
     public static bool TryGetName(Guid guid, out string name) => _guidToName.TryGetValue(guid, out name);
 
-    public static string GetName(Guid guid) => TryGetName(guid, out var name) ? name : "Unknown";
+    public static string GetName(Guid guid) => TryGetName(guid, out var name) ? name : "";
     
     static Constants()
     {
