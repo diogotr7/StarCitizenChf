@@ -48,22 +48,22 @@ public static class TestParser
         var sunSpotsAmount = Read<float>(ref reader, "0F-D2-4A-55", 0);
         var sunSpotOpacity = Read<float>(ref reader, "64-12-C4-CF", 0);
         var data00 = Read<float>(ref reader, "B0-83-58-B9", 0);
-        var data01 = Read<uint>(ref reader, "C3-50-F7-9C", 0);
-        var data02 = Read<uint>(ref reader, "DF-44-06-A9", 0);
+        var data01 = Read<float>(ref reader, "C3-50-F7-9C", 0);
+        var data02 = Read<float>(ref reader, "DF-44-06-A9", 0);
         var data04 = Read<float>(ref reader, "87-A9-71-C8", 0);
         var data05 = Read<float>(ref reader, "F4-7A-DE-ED", 0);
         var data06 = Read<float>(ref reader, "E8-6E-2F-D8", 0);
         var data07 = Read<float>(ref reader, "BA-26-E5-CA", 0);
-        var data08 = Read<uint>(ref reader, "02-ED-26-05", 0);
-        var data09 = Read<uint>(ref reader, "71-3E-89-20", 0);
-        var data10 = Read<uint>(ref reader, "6D-2A-78-15", 0);
+        var data08 = Read<float>(ref reader, "02-ED-26-05", 0);
+        var data09 = Read<float>(ref reader, "71-3E-89-20", 0);
+        var data10 = Read<float>(ref reader, "6D-2A-78-15", 0);
         var data11 = Read<float>(ref reader, "D7-D5-E3-9B", 0);
         var data12 = Read<float>(ref reader, "A4-06-4C-BE", 0);
         var data13 = Read<float>(ref reader, "B8-12-BD-8B", 0);
         var data14 = Read<float>(ref reader, "D3-A1-A1-11", 0);
-        var data15 = Read<uint>(ref reader, "C3-1A-57-92", 0);
-        var data16 = Read<uint>(ref reader, "B0-C9-F8-B7", 0);
-        var data17 = Read<uint>(ref reader, "AC-DD-09-82", 0);
+        var data15 = Read<float>(ref reader, "C3-1A-57-92", 0);
+        var data16 = Read<float>(ref reader, "B0-C9-F8-B7", 0);
+        var data17 = Read<float>(ref reader, "AC-DD-09-82", 0);
         var data18 = Read<float>(ref reader, "E7-01-92-AA", 0);
         var data19 = Read<float>(ref reader, "94-D2-3D-8F", 0);
         var data20 = Read<float>(ref reader, "88-C6-CC-BA", 0);
@@ -106,13 +106,13 @@ public static class TestParser
 
         reader.Expect(0);
 
-        var data47_ = Read<uint>(ref reader, "5A-C1-F6-4A", 0);
+        var data47_ = Read<float>(ref reader, "5A-C1-F6-4A", 0);
         var data47 = Read<float>(ref reader, "D9-0B-37-C3", 0);
         var data48 = Read<float>(ref reader, "A3-00-FA-B9", 0);
         var data49 = Read<float>(ref reader, "AF-F0-FB-62", 0);
-        var data50 = Read<uint>(ref reader, "76-40-08-06", 0);
+        var data50 = Read<float>(ref reader, "76-40-08-06", 0);
         var data51 = Read<float>(ref reader, "C8-A7-9A-A5", 0);
-        var data52 = Read<uint>(ref reader, "74-B6-7E-02", 0);
+        var data52 = Read<float>(ref reader, "74-B6-7E-02", 0);
 
         reader.Expect<uint>(2);
         reader.Expect<uint>(0);
@@ -134,9 +134,9 @@ public static class TestParser
         var data59 = Read<float>(ref reader, "D9-0B-37-C3", 0);
         var data60 = Read<float>(ref reader, "A3-00-FA-B9", 0);
         var data61 = Read<float>(ref reader, "AF-F0-FB-62", 0);
-        var data62 = Read<uint>(ref reader, "76-40-08-06", 0);
+        var data62 = Read<float>(ref reader, "76-40-08-06", 0);
         var data63 = Read<float>(ref reader, "C8-A7-9A-A5", 0);
-        var data64 = Read<uint>(ref reader, "74-B6-7E-02", 0);
+        var data64 = Read<float>(ref reader, "74-B6-7E-02", 0);
 
         reader.Expect<uint>(2);
         reader.Expect<uint>(0);
@@ -160,9 +160,9 @@ public static class TestParser
         var data71 = Read<float>(ref reader, "D9-0B-37-C3", 0);
         var data72 = Read<float>(ref reader, "A3-00-FA-B9", 0);
         var data73 = Read<float>(ref reader, "AF-F0-FB-62", 0);
-        var data74 = Read<uint>(ref reader, "76-40-08-06", 0);
+        var data74 = Read<float>(ref reader, "76-40-08-06", 0);
         var data75 = Read<float>(ref reader, "C8-A7-9A-A5", 0);
-        var data76 = Read<uint>(ref reader, "74-B6-7E-02", 0);
+        var data76 = Read<float>(ref reader, "74-B6-7E-02", 0);
 
         reader.Expect<uint>(2);
         reader.Expect<uint>(0);
