@@ -41,39 +41,19 @@ public sealed class HeadMaterialProperty
         reader.Expect<ushort>(0);
         //IMPORTANT: THIS NEEDS TO BE A SHORT. EVERYTHING AFTER THIS IS MISALIGNED?
 
-
         //this "important" count might tell us how many additional things to read here?
         //If it's 2, the logic in TestParser.Read seems to work well enough. Otherwise, I'm guessing it 
         //tries to read some count too early, unsure.
 
-        ReadOnlySpan<byte> magic = [0xE2,0x27, 0x77, 0xE8];
-        var offset = reader.Remaining.IndexOf(magic);
-        var predicted = important switch
-        {
-            2 => 8,
-            3 => 29,
-            4 => 50,
-            5 => 71,
-            _ => 0,
-        };
-        if (offset != predicted)
-        {
-            Debugger.Break();
-        }
+        var predicted = 21 * (important - 2);
         
         //in one of my tests, this 25 appears 33 bytes later than expected which is scary because it seems misaligned.
-        stupid2.Add(offset);
         stupid.Add(important.ToString());
         //this following line tries to predict where the next block starts, hopefully it's correct.
-        reader.ReadBytes(predicted - 8);
+        reader.ReadBytes((int)predicted);
         
         TestParser.Read(ref reader);
         
-        Console.WriteLine($"Important: {important}");
-        Console.WriteLine($"Offset: {offset}");
-        Console.WriteLine($"Predicted: {predicted}");
-        Console.WriteLine();
-
         return new HeadMaterialProperty() { Id = guid };
     }
 }
