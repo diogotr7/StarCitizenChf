@@ -27,15 +27,22 @@ await Processing.ProcessAllCharacters(folders.LocalCharacters);
 
 var web = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
 var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
-var allBins = local;
-var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
-
+var allBins = web;
 HashSet<string> reversed = new();
 foreach (var (data, name) in allBins)
 {
     reversed.Add($"{BitConverter.ToString(data.Reverse().ToArray())} {name}");
 }
 File.WriteAllLines(Path.Combine(folders.Base, "reversed1.txt"), reversed.Order().OrderBy(l => l.Length));
+
+HashSet<string> bins = new();
+foreach (var bin in allBins)
+{
+    bins.Add($"{BitConverter.ToString(bin.data)} {bin.name}");
+}
+File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(l => l.Length));
+
+var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
 
 HashSet<string> remaining = new();
 for (var index = 0; index < characters.Length; index++)
@@ -48,12 +55,6 @@ for (var index = 0; index < characters.Length; index++)
 }
 File.WriteAllLines(Path.Combine(folders.Base, "remaining.txt"), remaining.Order().OrderBy(l => l.Length));
 
-HashSet<string> bins = new();
-foreach (var bin in allBins)
-{
-    bins.Add($"{BitConverter.ToString(bin.data)} {bin.name}");
-}
-File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(l => l.Length));
 
 return;
 

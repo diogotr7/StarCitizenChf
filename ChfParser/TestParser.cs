@@ -15,13 +15,31 @@ public static class TestParser
         reader.Expect(count);
         return data;
     }
-    
+
     private static Guid ReadGuid(ref SpanReader reader, string key)
     {
         reader.ExpectBytes(key);
         return reader.Read<Guid>();
     }
+
+    private static Guid ReadGuid(ref SpanReader reader, params string[] acceptableKeys)
+    {
+        var nextKey = reader.NextKey;
+        if (!acceptableKeys.Contains(reader.NextKey))
+            throw new Exception($"Unexpected key: {nextKey}");
+
+        return ReadGuid(ref reader, reader.NextKey);
+    }
     
+    private static T Read<T>(ref SpanReader reader, int count, params string[] acceptableKeys) where T : unmanaged
+    {
+        var nextKey = reader.NextKey;
+        if (!acceptableKeys.Contains(reader.NextKey))
+            throw new Exception($"Unexpected key: {nextKey}");
+
+        return Read<T>(ref reader, reader.NextKey, count);
+    }
+
     public static void Read(ref SpanReader reader)
     {
         reader.Expect<ulong>(25);
@@ -79,12 +97,12 @@ public static class TestParser
 
         //zero guids
         var data44 = ReadGuid(ref reader, "47-69-83-6C");
-        var data45 = ReadGuid(ref reader, "8A-CE-74-07");
+        var data45 = ReadGuid(ref reader, "8A-CE-74-07", "42-E2-77-6F", "C0-5C-CE-E3", "9E-5A-FD-D4");
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
 
-        var data46 = Read<uint>(ref reader, "17-AD-1F-1F", 7);
+        var data46 = Read<uint>(ref reader, 7, "17-AD-1F-1F", "D5-D1-1C-D5");
 
         reader.Expect(0);
 
@@ -102,21 +120,21 @@ public static class TestParser
         var data53 = Read<Color>(ref reader, "14-08-E9-15", 0);
         var data54 = Read<Color>(ref reader, "09-C9-C7-A2", 0);
         reader.Expect<uint>(5);
-        
+
         var data55 = ReadGuid(ref reader, "93-4D-27-9B");
-        var data56 = ReadGuid(ref reader, "A9-5C-56-AC");
+        var data56 = ReadGuid(ref reader, "A9-5C-56-AC", "A2-D0-D9-1F", "8D-92-29-15", "39-05-50-7C");
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
-        
-        var data57 = Read<uint>(ref reader, "9B-31-92-87", 7);
+
+        var data57 = Read<uint>(ref reader, 7,  "9B-31-92-87" , "1B-D9-0B-75", "9D-E6-76-86", "75-01-D7-A0");
         reader.Expect<uint>(0);
-        
+
         var data58 = Read<float>(ref reader, "5A-C1-F6-4A", 0);
         var data59 = Read<float>(ref reader, "D9-0B-37-C3", 0);
         var data60 = Read<float>(ref reader, "A3-00-FA-B9", 0);
         var data61 = Read<float>(ref reader, "AF-F0-FB-62", 0);
-        var data62 = Read<uint>(ref reader, "76-40-08-06", 0);        
+        var data62 = Read<uint>(ref reader, "76-40-08-06", 0);
         var data63 = Read<float>(ref reader, "C8-A7-9A-A5", 0);
         var data64 = Read<uint>(ref reader, "74-B6-7E-02", 0);
 
@@ -125,16 +143,16 @@ public static class TestParser
 
         var data65 = Read<Color>(ref reader, "14-08-E9-15", 0);
         var data66 = Read<Color>(ref reader, "09-C9-C7-A2", 0);
-    
+
         reader.Expect<uint>(5);
 
         var data67 = ReadGuid(ref reader, "BD-C8-8A-07");
-        var data68 = ReadGuid(ref reader, "6A-B7-8A-A5");
+        var data68 = ReadGuid(ref reader, "6A-B7-8A-A5", "B0-7C-36-91", "04-EB-4F-F8", "1D-80-7F-17");
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
-        
-        var data69 = Read<uint>(ref reader, "10-6D-19-75", 7);
+
+        var data69 = Read<uint>(ref reader, 7, "10-6D-19-75" , "63-AD-37-9F", "74-5B-86-4E", "0A-C9-C7-EB");
 
         reader.Expect<uint>(0);
 
@@ -148,7 +166,7 @@ public static class TestParser
 
         reader.Expect<uint>(2);
         reader.Expect<uint>(0);
-        
+
         var data77 = Read<Color>(ref reader, "14-08-E9-15", 0);
         var data78 = Read<Color>(ref reader, "09-C9-C7-A2", 0);
 
@@ -156,20 +174,20 @@ public static class TestParser
 
         var data79 = ReadGuid(ref reader, "5E-88-47-A0");
         var data80 = ReadGuid(ref reader, "55-F0-9D-CE");
-        
+
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
-        
+
         var data81 = Read<uint>(ref reader, "4B-C4-36-97", 0);
 
         reader.Expect<uint>(0);
         reader.Expect<uint>(1);
         reader.Expect<uint>(0);
-        
+
         var data82 = Read<Color>(ref reader, "AC-34-2A-44", 0);
 
         reader.Expect<uint>(5);
-        
+
         reader.ExpectBytes("58-4D-42-27");
         var someguid = reader.Read<Guid>();
         var additioonal = reader.Read<uint>();
@@ -199,12 +217,4 @@ public static class TestParser
 
         var data86 = Read<Color>(ref reader, "97-07-53-BD", 0);
     }
-}
-
-public readonly record struct Color
-{
-    public readonly byte B;
-    public readonly byte G;
-    public readonly byte R;
-    public readonly byte A;
 }
