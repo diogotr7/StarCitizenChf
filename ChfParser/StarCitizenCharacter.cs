@@ -18,7 +18,11 @@ public sealed class StarCitizenCharacter
     public required string BeardId { get; init; }
     public required string BeardModId { get; init; }
     
-    public required int LastReadIndex { get; set; }
+    public required int LastReadIndex { get; init; }
+    public required string CustomMaterialKey { get; init; }
+    public required CustomMaterialProperty CustomMaterial { get; init; }
+    
+    
     
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
@@ -45,7 +49,9 @@ public sealed class StarCitizenCharacter
             EyeBrowId = Constants.GetName(body.Head.Eyebrow?.Id ?? Guid.Empty),
             BeardId = Constants.GetName(body.Head.FacialHair?.Id ?? Guid.Empty),
             BeardModId = Constants.GetName(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
+            CustomMaterialKey = customMaterial.Key,
             LastReadIndex = reader.Position,
+            CustomMaterial = customMaterial
         };
     }
 }

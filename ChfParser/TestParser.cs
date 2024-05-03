@@ -86,10 +86,20 @@ public static class TestParser
             Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
             return;
         }
+        
+        if (reader.NextKey == "5E-88-47-A0")
+        {
+            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
+            return;
+        }
 
         //zero guids
         var data44 = ReadGuid(ref reader, "47-69-83-6C");
         var data45 = ReadGuid(ref reader,
+            "FD-F9-81-B5",
+            "42-FA-C9-1D",
+            "50-1D-76-41",
+            "FD-E1-3F-C7",
             "03-FC-42-38",
             "1A-97-72-D7",
             "1B-53-BF-35",
@@ -131,7 +141,8 @@ public static class TestParser
             "EF-1E-3E-E9",
             "F0-1E-86-FB",
             "F6-75-0E-06",
-            "F6-75-0E-06"
+            "F6-75-0E-06",
+            "4E-BF-1C-34"
         );
 
         reader.Expect<uint>(1);
@@ -196,9 +207,9 @@ public static class TestParser
         reader.Expect<uint>(5);
 
         var data55 = ReadGuid(ref reader, "93-4D-27-9B", "BD-C8-8A-07");
-
         var data56 = ReadGuid(ref reader,
             "03-B7-7B-61",
+            "04-A0-1F-2A",
             "04-EB-4F-F8",
             "05-C4-4D-EE",
             "0F-2C-90-99",
@@ -241,15 +252,23 @@ public static class TestParser
             "B0-7C-36-91",
             "B1-96-45-0F",
             "B6-44-50-CC",
+            "B7-20-02-08",
             "BB-BB-E9-F0",
             "C6-A1-B0-BD",
             "C7-00-93-F1",
             "C7-4B-C3-23",
+            "CB-9B-78-09",
             "CD-E8-4E-86",
+            "D2-F0-48-E6",
+            "D4-83-7E-69",
             "D5-E7-2C-AD",
+            "D9-7C-C7-55",
             "DE-6B-A3-1E",
+            "DF-0F-7F-46",
+            "DF-CA-80-52",
             "E0-8C-5E-53",
             "E3-CE-EC-48",
+            "E8-42-63-FB",
             "FA-A5-DC-A7"
         );
 
@@ -290,7 +309,8 @@ public static class TestParser
             "EC-A9-30-94",
             "EF-2A-5B-66",
             "F0-BD-C1-A1",
-            "F3-3E-AA-53"
+            "F3-3E-AA-53",
+            "73-D6-33-A1"
         );
         reader.Expect<uint>(0);
 
@@ -313,6 +333,7 @@ public static class TestParser
         var data67 = ReadGuid(ref reader, "BD-C8-8A-07", "5E-88-47-A0");
 
         var data68 = ReadGuid(ref reader,
+            "1C-6A-0C-89",
             "04-EB-4F-F8",
             "1D-80-7F-17",
             "55-F0-9D-CE",
@@ -323,7 +344,8 @@ public static class TestParser
             "B0-7C-36-91",
             "B1-96-45-0F",
             "C6-A1-B0-BD",
-            "C7-4B-C3-23"
+            "C7-4B-C3-23",
+            "DF-CA-80-52"
         );
 
         reader.Expect<uint>(1);

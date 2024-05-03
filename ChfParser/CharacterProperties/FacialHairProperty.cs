@@ -23,7 +23,10 @@ public sealed class FacialHairProperty
         switch (count)
         {
             case 0:
-                reader.Expect(6);
+                var cnt = reader.Read<uint>();
+                if (cnt != 5 && cnt != 6)
+                    Debugger.Break();
+                
                 reader.Expect(5);
                 return new FacialHairProperty() { Id = guid };
             case 1:

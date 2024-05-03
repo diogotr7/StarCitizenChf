@@ -27,7 +27,7 @@ await Processing.ProcessAllCharacters(folders.LocalCharacters);
 
 var web = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
 var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
-var allBins = web;
+var allBins = web.Concat(local).ToArray();
 HashSet<string> reversed = new();
 foreach (var (data, name) in allBins)
 {
@@ -43,6 +43,12 @@ foreach (var bin in allBins)
 File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(l => l.Length));
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
+
+var customMaterials = characters.Select(c => c.CustomMaterial).GroupBy(x => x.Key).ToArray();
+var a = customMaterials.First().ToArray();
+var b = customMaterials.Last().ToArray();
+
+
 return;
 HashSet<string> remaining = new();
 for (var index = 0; index < characters.Length; index++)
