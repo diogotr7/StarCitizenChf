@@ -8,12 +8,12 @@ public sealed class HeadMaterialProperty
 {
     public const uint Key = 0x_A9_8B_EB_34;
     public const string KeyRep = "34-EB-8B-A9";
-    
+
     public Guid Id { get; set; }
-    
+
     private static List<string> stupid = new();
     private static List<int> stupid2 = new();
-    
+
     public static HeadMaterialProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
@@ -26,34 +26,45 @@ public sealed class HeadMaterialProperty
         reader.Expect<uint>(0);
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
-        reader.ReadBytes(4);//reader.ExpectBytes("8E-9E-12-72");//or "05-8A-37-A5"
+        var hmmm = BitConverter.ToString(reader.ReadBytes(4).ToArray()); //reader.ExpectBytes("8E-9E-12-72");//or "05-8A-37-A5"
         var important = reader.Read<uint>();
+
+        //i = 0
         reader.Expect<uint>(0);
         reader.Expect<uint>(4);
+        //is this just a null guid?
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
-        reader.ExpectBytes("00-09-00-00");
-        reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
-        reader.Expect<uint>(0);
-        reader.Expect<ushort>(0);
-        //IMPORTANT: THIS NEEDS TO BE A SHORT. EVERYTHING AFTER THIS IS MISALIGNED?
+        reader.Expect<byte>(0);
 
-        //this "important" count might tell us how many additional things to read here?
-        //If it's 2, the logic in TestParser.Read seems to work well enough. Otherwise, I'm guessing it 
-        //tries to read some count too early, unsure.
+        //i = 1
+        reader.Expect<uint>(0);
+        reader.Expect<uint>(9);
+        //is this just a null guid?
+        reader.Expect<uint>(0);
+        reader.Expect<uint>(0);
+        reader.Expect<uint>(0);
+        reader.Expect<byte>(0);
+        
+        //i = 2+
+        for (var i = 2; i < important; i++)
+        {
+            //21 = sizeof(uint) + sizeof(byte) + sizeof(Guid)
+            var mysteryBytes = BitConverter.ToString(reader.PeekBytes(21).ToArray());
 
-        var predicted = 21 * (important - 2);
-        
-        //in one of my tests, this 25 appears 33 bytes later than expected which is scary because it seems misaligned.
-        stupid.Add(important.ToString());
-        //this following line tries to predict where the next block starts, hopefully it's correct.
-        reader.ReadBytes((int)predicted);
-        
-        TestParser.Read(ref reader);
-        
+            reader.Expect<uint>(0);
+            var mysteryCount = reader.Read<byte>(); //probably wrong
+            var mysteryGuid = reader.Read<Guid>();
+            //Makeup Guid ^^ (lips, eyes, etc)
+            //could be makeup material things?
+            //count has been seen to be 12 and 14 so far.
+
+            Console.WriteLine($"HeadMaterialProperty: {mysteryCount} {mysteryGuid} ({i + 1}/{important})");
+        }
+
+        //TestParser.Read(ref reader);
+
         return new HeadMaterialProperty() { Id = guid };
     }
 }

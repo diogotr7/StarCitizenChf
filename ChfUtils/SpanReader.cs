@@ -55,6 +55,11 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
     
+    public ReadOnlySpan<byte> PeekBytes(int length)
+    {
+        return Span[Position..(Position + length)];
+    }
+    
     /// <summary>
     ///     Reads a T value from the span and checks if it matches the expected value.
     /// </summary>
