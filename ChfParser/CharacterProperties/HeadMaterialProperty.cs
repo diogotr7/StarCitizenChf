@@ -14,21 +14,11 @@ public sealed class HeadMaterialProperty
     {
         reader.Expect(Key);
         var guid = reader.Read<Guid>();
-        var alsoGuidMaybe = reader.Read<uint>();
+        var additionalParams = reader.Read<uint>();
         
-        reader.Expect(0);
-        reader.Expect(0);
-        reader.Expect(0);
-        reader.Expect(0);
-        reader.Expect(1);
-        reader.Expect(5);
-        ReadOnlySpan<byte> please = [0xE2, 0x27, 0x77, 0xe8];
-        var idx = reader.Remaining.IndexOf(please);
-        //05-8A-37-A5 OR 8E-9E-12-72
-        var skip1 = reader.ReadBytes(4);
-        var skip2 = reader.ReadBytes(54);
+        //i have no idea what this is, but after it things seem to line up better?
+        var skip = reader.ReadBytes(74);
         
-        //lol
         TestParser.Read(ref reader);
 
         return new HeadMaterialProperty() { Id = guid };
