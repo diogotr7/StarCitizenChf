@@ -43,7 +43,7 @@ foreach (var bin in allBins)
 File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(l => l.Length));
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
-
+return;
 HashSet<string> remaining = new();
 for (var index = 0; index < characters.Length; index++)
 {

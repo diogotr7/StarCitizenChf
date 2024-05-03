@@ -17,7 +17,7 @@ public sealed class CustomMaterialProperty
             throw new Exception($"Invalid key: {key}");
         
         var hmmm = BitConverter.ToString(reader.ReadBytes(4).ToArray()); //reader.ExpectBytes("8E-9E-12-72");//or "05-8A-37-A5"
-        Console.WriteLine($"Hmmm: {hmmm}");
+        //Console.WriteLine($"Hmmm: {hmmm}");
 
         var childCount = reader.Read<uint>();
         var children = new CustomMaterialChildProperty[childCount];
@@ -26,12 +26,12 @@ public sealed class CustomMaterialProperty
         {
             var child = CustomMaterialChildProperty.Read(ref reader);
             
-            Console.WriteLine($"({i + 1}/{childCount}) CustomMaterialProperty: {child.Count} {Constants.GetName(child.Id)} ");
+            //Console.WriteLine($"({i + 1}/{childCount}) CustomMaterialProperty: {child.Count} {Constants.GetName(child.Id)} ");
             
             children[i] = child;
         }
         
-        Console.WriteLine();
+        //Console.WriteLine();
 
         return new CustomMaterialProperty
         {

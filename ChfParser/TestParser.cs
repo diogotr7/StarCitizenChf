@@ -8,27 +8,14 @@ namespace ChfParser;
 //some other times, the data is a guid, in which case the block is 16 + 4 + 4 = 24 bytes.
 public static class TestParser
 {
-    private static T ReadInternal<T>(ref SpanReader reader, int count, string key) where T : unmanaged
-    {
-        reader.ExpectBytes(key);
-        var data = reader.Read<T>();
-        reader.Expect(count);
-        return data;
-    }
-
-    private static Guid ReadGuidInternal(ref SpanReader reader, string key)
-    {
-        reader.ExpectBytes(key);
-        return reader.Read<Guid>();
-    }
-
     private static Guid ReadGuid(ref SpanReader reader, params string[] acceptableKeys)
     {
         var nextKey = reader.NextKey;
         if (!acceptableKeys.Contains(reader.NextKey))
             throw new Exception($"Unexpected key: {nextKey}");
 
-        return ReadGuidInternal(ref reader, reader.NextKey);
+        reader.ExpectBytes(nextKey);
+        return reader.Read<Guid>();
     }
     
     private static T Read<T>(ref SpanReader reader, int count, params string[] acceptableKeys) where T : unmanaged
@@ -37,7 +24,10 @@ public static class TestParser
         if (!acceptableKeys.Contains(reader.NextKey))
             throw new Exception($"Unexpected key: {nextKey}");
 
-        return ReadInternal<T>(ref reader, count, reader.NextKey);
+        reader.ExpectBytes(nextKey);
+        var data = reader.Read<T>();
+        reader.Expect(count);
+        return data;
     }
 
     public static void Read(ref SpanReader reader)
@@ -94,23 +84,93 @@ public static class TestParser
         var data43 = Read<uint>(ref reader, 0, "22-EC-DB-68");
 
         reader.Expect<uint>(5);
+        
+        if (reader.NextKey == "93-4D-27-9B")
+        {
+            Console.WriteLine("Found 93-4D-27-9B");
+            return;
+        }
 
         //zero guids
         var data44 = ReadGuid(ref reader, "47-69-83-6C");
+
         var data45 = ReadGuid(ref reader, 
-            "8A-CE-74-07",
-            "42-E2-77-6F",
-            "C0-5C-CE-E3",
-            "9E-5A-FD-D4",
-            "E9-75-B6-14",
             "03-FC-42-38",
-            "5B-91-F9-F2"
-            );
+            "1A-97-72-D7",
+            "1B-53-BF-35",
+            "27-2A-83-F3",
+            "27-32-3D-81",
+            "2C-A6-0C-40",
+            "2C-BE-B2-32",
+            "2E-17-FF-56",
+            "35-CD-3C-AF",
+            "35-D5-82-DD",
+            "38-32-85-93",
+            "3E-41-B3-1C",
+            "3E-59-0D-6E",
+            "42-E2-77-6F",
+            "49-76-46-AE",
+            "4F-1D-CE-53",
+            "56-76-FE-BC",
+            "5B-89-47-80",
+            "5B-91-F9-F2",
+            "66-34-B6-A4",
+            "7F-5F-86-4B",
+            "81-42-FB-B4",
+            "87-31-CD-3B",
+            "8A-CE-74-07",
+            "93-A5-44-E8",
+            "98-29-CB-5B",
+            "98-31-75-29",
+            "9E-5A-FD-D4",
+            "A5-94-3A-7F",
+            "B7-6B-3B-51",
+            "BC-FF-0A-90",
+            "C0-5C-CE-E3",
+            "CE-20-31-FD",
+            "D9-37-FE-0C",
+            "E4-8A-0F-28",
+            "E4-92-B1-5A",
+            "E9-75-B6-14",
+            "EF-1E-3E-E9",
+            "F0-1E-86-FB",
+            "F6-75-0E-06"
+        );
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
+        
+        if (reader.NextKey == "4F-9C-58-9B")
+        {
+            Console.WriteLine("Found 4F-9C-58-9B");
+            return;
+        }
+        
+        if (reader.NextKey == "62-2E-98-67")
+        {
+            Console.WriteLine("Found 62-2E-98-67");
+            return;
+        }
 
-        var data46 = Read<uint>(ref reader, 7, "17-AD-1F-1F", "D5-D1-1C-D5", "0F-59-78-5C", "02-0B-17-13");
+        var data46 = Read<uint>(ref reader, 7, 
+            "02-0B-17-13",
+            "08-0B-8F-BE",
+            "08-0B-BB-9B",
+            "0A-6B-87-28",
+            "0F-59-78-5C",
+            "12-AF-65-05",
+            "17-AD-1F-1F",
+            "1F-C5-58-BF",
+            "1F-FD-0A-4A",
+            "3C-D0-F6-B6",
+            "62-2E-98-67",
+            "C3-61-D0-AC",
+            "C6-5F-70-FA",
+            "D5-D1-1C-D5",
+            "E6-79-62-2C",
+            "FA-A1-6B-0E",
+            "FA-E8-F2-CE"
+        );
 
         reader.Expect(0);
 
@@ -130,27 +190,101 @@ public static class TestParser
         reader.Expect<uint>(5);
 
         var data55 = ReadGuid(ref reader, "93-4D-27-9B", "BD-C8-8A-07");
+        
         var data56 = ReadGuid(ref reader, 
-            "A9-5C-56-AC",
-            "A2-D0-D9-1F",
-            "8D-92-29-15",
+            "03-B7-7B-61",
+            "04-EB-4F-F8",
+            "05-C4-4D-EE",
+            "0F-2C-90-99",
+            "11-50-C4-3D",
+            "16-47-A0-76",
+            "1C-6A-0C-89",
+            "1C-AF-7D-01",
+            "1D-80-7F-17",
+            "20-6E-60-93",
+            "26-1D-56-1C",
+            "27-79-04-D8",
             "39-05-50-7C",
+            "3E-12-34-37",
+            "3F-76-66-F3",
+            "42-A9-4E-36",
+            "49-25-C1-85",
+            "4E-32-A5-CE",
+            "50-4E-F1-6A",
+            "57-59-95-21",
+            "61-70-55-C4",
+            "67-03-63-4B",
+            "6A-FC-DA-77",
+            "6B-5D-F9-3B",
+            "6D-EB-BE-3C",
+            "72-36-C9-D4",
+            "73-97-EA-98",
+            "78-1B-65-2B",
+            "7E-68-53-A4",
+            "7F-0C-01-60",
+            "85-B4-8C-63",
             "8C-F6-7B-D1",
+            "8D-92-29-15",
+            "93-EE-7D-B1",
+            "94-F9-19-FA",
+            "A2-D0-D9-1F",
+            "A9-17-06-7E",
+            "A9-5C-56-AC",
+            "AE-4B-32-E7",
+            "AF-2F-60-23",
+            "B0-7C-36-91",
+            "B1-96-45-0F",
+            "B6-44-50-CC",
+            "BB-BB-E9-F0",
+            "C6-A1-B0-BD",
+            "C7-00-93-F1",
+            "C7-4B-C3-23",
+            "CD-E8-4E-86",
+            "D5-E7-2C-AD",
+            "DE-6B-A3-1E",
+            "E0-8C-5E-53",
             "E3-CE-EC-48",
-            "6B-5D-F9-3B"
-            );
+            "FA-A5-DC-A7"
+        );
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
 
         var data57 = Read<uint>(ref reader, 7,  
-            "9B-31-92-87",
+            "01-1A-1E-41",
+            "04-4E-91-B2",
+            "0A-C9-C7-EB",
+            "10-6D-19-75",
+            "18-5A-60-87",
+            "1A-E5-9E-F8",
             "1B-D9-0B-75",
-            "9D-E6-76-86",
+            "1D-3F-76-3A",
+            "20-72-82-EC",
+            "23-F1-E9-1E",
+            "54-69-4B-0D",
+            "57-EA-20-FF",
+            "63-AD-37-9F",
+            "69-15-26-95",
+            "6A-96-4D-67",
+            "6C-41-A9-66",
+            "6F-C2-C2-94",
+            "70-55-58-53",
+            "74-5B-86-4E",
             "75-01-D7-A0",
-            "BA-59-0E-2A",
+            "79-09-E9-01",
             "81-F2-87-B3",
-            "63-AD-37-9F"
+            "82-71-EC-41",
+            "84-A6-08-40",
+            "87-25-63-B2",
+            "9B-31-92-87",
+            "9D-E6-76-86",
+            "9E-65-1D-74",
+            "B9-DA-65-D8",
+            "BA-59-0E-2A",
+            "EC-A9-30-94",
+            "EF-2A-5B-66",
+            "F0-BD-C1-A1",
+            "F3-3E-AA-53"
         );
         reader.Expect<uint>(0);
 
@@ -171,23 +305,39 @@ public static class TestParser
         reader.Expect<uint>(5);
 
         var data67 = ReadGuid(ref reader, "BD-C8-8A-07", "5E-88-47-A0");
+        
         var data68 = ReadGuid(ref reader, 
-            "6A-B7-8A-A5",
-            "B0-7C-36-91",
             "04-EB-4F-F8",
             "1D-80-7F-17",
+            "55-F0-9D-CE",
+            "6A-B7-8A-A5",
             "6B-5D-F9-3B",
-            "55-F0-9D-CE");
+            "72-36-C9-D4",
+            "A9-17-06-7E",
+            "B0-7C-36-91",
+            "B1-96-45-0F",
+            "C6-A1-B0-BD",
+            "C7-4B-C3-23"
+        );
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
+        
+        var nextKey = reader.NextKey;
+        if (nextKey == "4B-C4-36-97")
+        {
+            Console.WriteLine("Found 4B-C4-36-97");
+            return;
+        }
 
         var data69 = Read<uint>(ref reader, 7, 
+            "0A-C9-C7-EB",
             "10-6D-19-75",
+            "1D-3F-76-3A",
             "63-AD-37-9F",
             "74-5B-86-4E",
-            "0A-C9-C7-EB",
-            "4B-C4-36-97");//if 4c-c4 etc then count is zero.
+            "79-09-E9-01"
+            );
 
         reader.Expect<uint>(0);
 
