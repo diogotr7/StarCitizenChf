@@ -32,6 +32,8 @@ public sealed class StarCitizenCharacter
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
+        var customMaterial = CustomMaterialProperty.Read(ref reader);
+        TestParser.Read(ref reader);
 
         //MATERIALS
         

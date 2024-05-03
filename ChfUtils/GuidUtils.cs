@@ -11,6 +11,13 @@ public static class GuidUtils
 
     public static void Test()
     {
+        var foundation1 = ToBitConverterRepresentation(Guid.Parse("b5e53e65-bd4a-4f50-bcd1-843ce5fc231b"));
+        var foundation2 = ToBitConverterRepresentation(Guid.Parse("318114ee-f184-42f5-86cb-19a321bcb513"));
+        var foundation3 = ToBitConverterRepresentation(Guid.Parse("9254513e-8996-4ffb-84f0-7eb6162dddf5"));
+        var foundation4 = ToBitConverterRepresentation(Guid.Parse("846d7afe-2725-47ff-a4b0-c6bdb0aaeade"));
+        var blemish01 = ToBitConverterRepresentation(Guid.Parse("13cfead6-5662-4dea-995a-5e3f42460e20"));
+        var blemish02 = ToBitConverterRepresentation(Guid.Parse("2d8cdf2c-5e5b-482f-ab7c-67e56e2115ae"));
+
         var a = FromBitConverterRepresentation("F5486885A34250FA2D1B1998DC0236BF");
         var b = FromBitConverterRepresentation("04-41-5F-75-7D-8A-AA-DB-F6-76-1E-FD-58-7B-24-8B");
         var c = FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
