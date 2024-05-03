@@ -34,25 +34,6 @@ public sealed class StarCitizenCharacter
         var headMaterial = HeadMaterialProperty.Read(ref reader);
         var customMaterial = CustomMaterialProperty.Read(ref reader);
         TestParser.Read(ref reader);
-
-        //MATERIALS
-        
-        //attachment
-        //basematerialguid
-        //additionalflags
-        
-
-        //unknownprop 6 or 7. i am completely lost here
-        //72129E8E or A5378A05
-        //nextCount is always 0
-        //var next = reader.Read<uint>();
-        //var nextFloat = reader.Read<float>();
-        
-        //FROM END:
-        //12-byte blocks:
-        //  4-byte key
-        //  4-byte data (color or float, usually)
-        //  4-byte integer, probably child count?
         
         return new StarCitizenCharacter()
         {

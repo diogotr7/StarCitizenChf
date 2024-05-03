@@ -9,7 +9,6 @@ public sealed class CustomMaterialProperty
     
     public required CustomMaterialChildProperty[] Children { get; init; }
     
-    
     public static CustomMaterialProperty Read(ref SpanReader reader)
     {
         var key = reader.NextKey;

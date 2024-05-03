@@ -2,10 +2,6 @@
 
 namespace ChfParser;
 
-//Below this is whatever appears after bodymaterial in the smallest files.
-//the data is different, but the key-data-childcount pattern is common.
-//sometimes the data is a color, integer or float, in which case the block is 12 bytes.
-//some other times, the data is a guid, in which case the block is 16 + 4 + 4 = 24 bytes.
 public static class TestParser
 {
     private static Guid ReadGuid(ref SpanReader reader, params string[] acceptableKeys)
@@ -17,7 +13,7 @@ public static class TestParser
         reader.ExpectBytes(nextKey);
         return reader.Read<Guid>();
     }
-    
+
     private static T Read<T>(ref SpanReader reader, int count, params string[] acceptableKeys) where T : unmanaged
     {
         var nextKey = reader.NextKey;
@@ -84,17 +80,16 @@ public static class TestParser
         var data43 = Read<uint>(ref reader, 0, "22-EC-DB-68");
 
         reader.Expect<uint>(5);
-        
+
         if (reader.NextKey == "93-4D-27-9B")
         {
-            Console.WriteLine("Found 93-4D-27-9B");
+            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
             return;
         }
 
         //zero guids
         var data44 = ReadGuid(ref reader, "47-69-83-6C");
-
-        var data45 = ReadGuid(ref reader, 
+        var data45 = ReadGuid(ref reader,
             "03-FC-42-38",
             "1A-97-72-D7",
             "1B-53-BF-35",
@@ -124,6 +119,7 @@ public static class TestParser
             "98-31-75-29",
             "9E-5A-FD-D4",
             "A5-94-3A-7F",
+            "A9-5C-56-AC",
             "B7-6B-3B-51",
             "BC-FF-0A-90",
             "C0-5C-CE-E3",
@@ -134,25 +130,35 @@ public static class TestParser
             "E9-75-B6-14",
             "EF-1E-3E-E9",
             "F0-1E-86-FB",
+            "F6-75-0E-06",
             "F6-75-0E-06"
         );
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
-        
+
+        //-608, -240, -424
         if (reader.NextKey == "4F-9C-58-9B")
         {
-            Console.WriteLine("Found 4F-9C-58-9B");
-            return;
-        }
-        
-        if (reader.NextKey == "62-2E-98-67")
-        {
-            Console.WriteLine("Found 62-2E-98-67");
+            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
             return;
         }
 
-        var data46 = Read<uint>(ref reader, 7, 
+        //-424
+        if (reader.NextKey == "62-2E-98-67")
+        {
+            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
+            return;
+        }
+        
+        //-532
+        if (reader.NextKey == "9B-31-92-87")
+        {
+            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
+            return;
+        }
+
+        var data46 = Read<uint>(ref reader, 7,
             "02-0B-17-13",
             "08-0B-8F-BE",
             "08-0B-BB-9B",
@@ -190,8 +196,8 @@ public static class TestParser
         reader.Expect<uint>(5);
 
         var data55 = ReadGuid(ref reader, "93-4D-27-9B", "BD-C8-8A-07");
-        
-        var data56 = ReadGuid(ref reader, 
+
+        var data56 = ReadGuid(ref reader,
             "03-B7-7B-61",
             "04-EB-4F-F8",
             "05-C4-4D-EE",
@@ -250,7 +256,7 @@ public static class TestParser
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
 
-        var data57 = Read<uint>(ref reader, 7,  
+        var data57 = Read<uint>(ref reader, 7,
             "01-1A-1E-41",
             "04-4E-91-B2",
             "0A-C9-C7-EB",
@@ -305,8 +311,8 @@ public static class TestParser
         reader.Expect<uint>(5);
 
         var data67 = ReadGuid(ref reader, "BD-C8-8A-07", "5E-88-47-A0");
-        
-        var data68 = ReadGuid(ref reader, 
+
+        var data68 = ReadGuid(ref reader,
             "04-EB-4F-F8",
             "1D-80-7F-17",
             "55-F0-9D-CE",
@@ -322,23 +328,25 @@ public static class TestParser
 
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
-        
-        var nextKey = reader.NextKey;
-        if (nextKey == "4B-C4-36-97")
+
+        //-164
+        if (reader.NextKey == "4B-C4-36-97")
         {
-            Console.WriteLine("Found 4B-C4-36-97");
+            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
             return;
         }
 
-        var data69 = Read<uint>(ref reader, 7, 
+        //348 remaining
+        var data69 = Read<uint>(ref reader, 7,
             "0A-C9-C7-EB",
             "10-6D-19-75",
             "1D-3F-76-3A",
             "63-AD-37-9F",
             "74-5B-86-4E",
             "79-09-E9-01"
-            );
-
+        );
+        
+        //336 remaining
         reader.Expect<uint>(0);
 
         var data70 = Read<float>(ref reader, 0, "5A-C1-F6-4A");
@@ -377,6 +385,7 @@ public static class TestParser
         var someguid = reader.Read<Guid>();
         var additioonal = reader.Read<uint>();
 
+        //100 remaining
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
@@ -402,4 +411,10 @@ public static class TestParser
 
         var data86 = Read<Color>(ref reader, 0, "97-07-53-BD");
     }
+}
+
+public interface IProperty
+{
+    public static string Key { get; }
+    public static abstract T Read<T>(ref SpanReader reader);
 }
