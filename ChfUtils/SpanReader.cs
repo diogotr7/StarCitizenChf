@@ -90,7 +90,6 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
             Debugger.Break();
             throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
         }
-
     }
     
     /// <summary>
@@ -101,5 +100,28 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
     {
         var expected = bitConverter.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
         ExpectBytes(expected);
+    }
+    
+    public Guid ReadGuid(params string[] acceptableKeys)
+    {
+        var nextKey = NextKey;
+        if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))
+            throw new Exception($"Unexpected key: {nextKey}");
+        //if no key is provided, assume any key is acceptable
+
+        ExpectBytes(nextKey);
+        return Read<Guid>();
+    }
+
+    public T Read<T>(int count, params string[] acceptableKeys) where T : unmanaged
+    {
+        var nextKey = NextKey;
+        if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))
+            throw new Exception($"Unexpected key: {nextKey}");
+
+        ExpectBytes(nextKey);
+        var data = Read<T>();
+        Expect(count);
+        return data;
     }
 }

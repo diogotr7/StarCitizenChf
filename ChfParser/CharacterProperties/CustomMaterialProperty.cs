@@ -5,8 +5,6 @@ namespace ChfParser;
 public sealed class CustomMaterialProperty
 {
     public required string Key { get; init; }
-    public required uint ChildCount { get; init; }
-    
     public required CustomMaterialChildProperty[] Children { get; init; }
     
     public static CustomMaterialProperty Read(ref SpanReader reader)
@@ -23,18 +21,11 @@ public sealed class CustomMaterialProperty
         
         for (var i = 0; i < childCount; i++)
         {
-            var child = CustomMaterialChildProperty.Read(ref reader);
-            
-            //Console.WriteLine($"({i + 1}/{childCount}) CustomMaterialProperty: {child.Count} {Constants.GetName(child.Id)} ");
-            
-            children[i] = child;
+            children[i] = CustomMaterialChildProperty.Read(ref reader);
         }
         
-        //Console.WriteLine();
-
         return new CustomMaterialProperty
         {
-            ChildCount = childCount,
             Children = children,
             Key = key
         };
