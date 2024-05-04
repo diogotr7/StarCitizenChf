@@ -27,13 +27,13 @@ public sealed class FloatBlock2
             throw new Exception($"Expected 7 floats, got {count}");
         }
 
-        var f01 = reader.Read<float>(0, "5A-C1-F6-4A");
-        var f02 = reader.Read<float>(0, "D9-0B-37-C3");
-        var f03 = reader.Read<float>(0, "A3-00-FA-B9");
-        var f04 = reader.Read<float>(0, "AF-F0-FB-62");
-        var f05 = reader.Read<float>(0, "76-40-08-06");
-        var f06 = reader.Read<float>(0, "C8-A7-9A-A5");
-        var f07 = reader.Read<float>(0, "74-B6-7E-02");
+        var f01 = reader.ReadKeyValueAndChildCount<float>(0, "5A-C1-F6-4A");
+        var f02 = reader.ReadKeyValueAndChildCount<float>(0, "D9-0B-37-C3");
+        var f03 = reader.ReadKeyValueAndChildCount<float>(0, "A3-00-FA-B9");
+        var f04 = reader.ReadKeyValueAndChildCount<float>(0, "AF-F0-FB-62");
+        var f05 = reader.ReadKeyValueAndChildCount<float>(0, "76-40-08-06");
+        var f06 = reader.ReadKeyValueAndChildCount<float>(0, "C8-A7-9A-A5");
+        var f07 = reader.ReadKeyValueAndChildCount<float>(0, "74-B6-7E-02");
         
         return new FloatBlock2()
         {

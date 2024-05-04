@@ -102,7 +102,7 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         ExpectBytes(expected);
     }
     
-    public Guid ReadGuid(params string[] acceptableKeys)
+    public Guid ReadKeyAndGuid(params string[] acceptableKeys)
     {
         var nextKey = NextKey;
         if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))
@@ -113,7 +113,7 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return Read<Guid>();
     }
 
-    public T Read<T>(int count, params string[] acceptableKeys) where T : unmanaged
+    public T ReadKeyValueAndChildCount<T>(int count, params string[] acceptableKeys) where T : unmanaged
     {
         var nextKey = NextKey;
         if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))

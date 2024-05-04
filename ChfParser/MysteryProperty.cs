@@ -17,8 +17,8 @@ public sealed class MysteryProperty
 
         reader.Expect<uint>(5);
 
-        var data79 = reader.ReadGuid(); //"5E-88-47-A0");
-        var data80 = reader.ReadGuid(); //"55-F0-9D-CE");
+        var data79 = reader.ReadKeyAndGuid(); //"5E-88-47-A0");
+        var data80 = reader.ReadKeyAndGuid(); //"55-F0-9D-CE");
 
         var x = reader.Read<uint>();
         if (x != 1 && x != 2)
