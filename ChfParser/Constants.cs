@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ChfParser;
+﻿namespace ChfParser;
 
 public static class Constants
 {
@@ -136,7 +132,7 @@ public static class Constants
     public static readonly Guid m_body_character_customizer = new("fa5042a3-8568-48f5-bf36-02dc98191b2d");
     public static readonly Guid f_body_character_customizer = new("f0153262-588d-4ae8-8c06-53bf98cf80a5");
 
-    private static Dictionary<Guid, string> _guidToName = new();
+    private static readonly Dictionary<Guid, string> _guidToName;
 
     public static string GetName(Guid guid) => _guidToName[guid];
 
@@ -144,6 +140,6 @@ public static class Constants
     {
         _guidToName = typeof(Constants).GetFields()
             .Where(f => f.FieldType == typeof(Guid))
-            .ToDictionary(f => (Guid)f.GetValue(null), f => f.Name);
+            .ToDictionary(f => (Guid)f.GetValue(null)!, f => f.Name);
     }
 }

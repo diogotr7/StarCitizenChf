@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using ChfParser;
 using ChfUtils;
+using SixLabors.ImageSharp.PixelFormats;
 using StarCitizenChf;
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
@@ -89,6 +90,23 @@ foreach (var bin in allBins)
 File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(l => l.Length));
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
+
+//var colors = characters.SelectMany<StarCitizenCharacter, Color>(x => [x.BodyColor1, x.BodyColor2]).Distinct().ToArray();
+// var folder = Path.Combine(folders.Base, "colors");
+// Directory.CreateDirectory(folder);
+// int i = 0;
+// foreach (var color in colors)
+// {
+//     var c = new Rgba32()
+//     {
+//         R = color.R,
+//         G = color.G,
+//         B = color.B,
+//         A = 255
+//     };
+//     await Utils.WriteSolidColorImage(Path.Combine(folder, $"{i++}.png"), c);
+// }
+
 
 return;
 HashSet<string> remaining = new();

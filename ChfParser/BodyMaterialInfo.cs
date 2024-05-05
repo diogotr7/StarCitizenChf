@@ -9,8 +9,8 @@ public sealed class BodyMaterialInfo
     public const int Size = 124;
     
     public required uint AdditionalParams { get; init; }
-    public required Color? Color01 { get; init; }
-    public required Color? Color02 { get; init; }
+    public required Color Color01 { get; init; }
+    public required Color Color02 { get; init; }
     
     public static BodyMaterialInfo Read(ref SpanReader reader)
     {
