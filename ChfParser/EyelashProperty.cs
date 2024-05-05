@@ -10,7 +10,6 @@ public sealed class EyelashProperty
     
     public required ulong ChildCount { get; init; }
     
-    //fix, terrible
     public static EyelashProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
@@ -18,7 +17,6 @@ public sealed class EyelashProperty
         reader.Expect(0);
         
         var childCount = reader.Read<uint>();
-        //this value seems to be 0 when the character has a beard?
         switch (childCount)
         {
             case 0:
@@ -28,10 +26,8 @@ public sealed class EyelashProperty
             case 5:
             case 6:
                 reader.Expect<uint>(5);
-                //Debugger.Break();
                 return new EyelashProperty { ChildCount = childCount };
             default:
-                Debugger.Break();
                 throw new Exception();
         }
     }

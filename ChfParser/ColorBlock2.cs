@@ -22,7 +22,6 @@ public sealed class ColorBlock2
                     Color01 = data53,
                     Color02 = data54
                 };
-                break;
             case 1:
                 var asd = reader.ReadKeyValueAndChildCount<Color>(0, "AC-34-2A-44");
                 
@@ -38,7 +37,6 @@ public sealed class ColorBlock2
                     Color02 = null
                 };
             default:
-                Debugger.Break();
                 throw new Exception($"Expected 1 or 2 colors, got {count}");
         }
     }

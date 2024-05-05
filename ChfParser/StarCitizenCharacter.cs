@@ -38,11 +38,6 @@ public sealed class StarCitizenCharacter
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
         var customMaterial = CustomMaterialProperty.Read(ref reader, headMaterial.Id);
-        
-        var floats = FloatBlock.Read(ref reader);
-        var colors = ColorBlock.Read(ref reader);
-        reader.Expect<uint>(5);
-        
         while (reader.Peek<uint>() != EyeMaterial.Key)
         {
             var nextKey = reader.Read<uint>();
@@ -61,7 +56,6 @@ public sealed class StarCitizenCharacter
 
         var eyeMaterial = EyeMaterial.Read(ref reader);
         var bodyMaterialInfo = BodyMaterialInfo.Read(ref reader);
-        Debug.Assert(reader.Remaining.Length == 0);
 
         return new StarCitizenCharacter
         {
@@ -78,7 +72,7 @@ public sealed class StarCitizenCharacter
             TorsoColor = bodyMaterialInfo.TorsoColor,
             LimbColor = bodyMaterialInfo.LimbColor,
             EyeColor = eyeMaterial.EyeColor,
-            HeadColor = colors.HeadColor,
+            HeadColor = customMaterial.Colors.HeadColor,
             LastReadIndex = reader.Position,
             Special = ""
         };

@@ -23,10 +23,7 @@ public sealed class FloatBlock2
         if (count == 0)
             return null;
         if (count != 7)
-        {
-            Debugger.Break();
             throw new Exception($"Expected 7 floats, got {count}");
-        }
 
         var f01 = reader.ReadKeyValueAndChildCount<float>(0, "5A-C1-F6-4A");
         var f02 = reader.ReadKeyValueAndChildCount<float>(0, "D9-0B-37-C3");

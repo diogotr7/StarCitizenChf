@@ -13,11 +13,11 @@ public sealed class EyeMaterial
     {
         reader.Expect(Key);
         reader.Expect(Guid.Empty);
-        reader.Expect<uint>(0xCE_9D_F0_55);
+        reader.Expect(0xCE_9D_F0_55);
         reader.Expect(Guid.Empty);
         reader.Expect(1);
         reader.Expect(5);
-        reader.Expect<uint>(0x_97_36_C4_4B);
+        reader.Expect(0x_97_36_C4_4B);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);

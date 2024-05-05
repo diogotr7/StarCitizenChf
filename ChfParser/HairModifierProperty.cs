@@ -31,8 +31,7 @@ public sealed class HairModifierProperty
                 reader.Expect(5);
                 return new HairModifierProperty { Id = guid, ChildCount = count };
             default:
-                Debugger.Break();
-                return new HairModifierProperty { Id = guid, ChildCount = count };
+                throw new Exception();
         }
     }
 }

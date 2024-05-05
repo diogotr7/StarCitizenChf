@@ -27,6 +27,7 @@ public sealed class HairProperty
                 var hairModifier = HairModifierProperty.Read(ref reader);
                 if (hairModifier.ChildCount != 0) 
                     throw new Exception("HairModifierProperty child count is not 0");
+                
                 return new HairProperty
                 {
                     Id = guid,

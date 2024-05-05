@@ -24,7 +24,7 @@ public sealed class FacialHairProperty
             case 0:
                 var cnt = reader.Read<uint>();
                 if (cnt != 5 && cnt != 6)
-                    Debugger.Break();
+                    throw new Exception();
                 
                 reader.Expect(5);
                 return new FacialHairProperty { Id = guid, Modifier = null };
@@ -35,7 +35,6 @@ public sealed class FacialHairProperty
                 
                 return new FacialHairProperty() { Id = guid, Modifier = hairModifier};
             default:
-                Debugger.Break();
                 throw new Exception();
         }
     }

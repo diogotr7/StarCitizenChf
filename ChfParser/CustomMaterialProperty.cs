@@ -8,6 +8,8 @@ public sealed class CustomMaterialProperty
     public const uint SpecialKey = 0xa5_37_8a_05;
     
     public required CustomMaterialChildProperty[] Children { get; init; }
+    public required FloatBlock Floats { get; init; }
+    public required ColorBlock Colors { get; init; }
 
     public static CustomMaterialProperty Read(ref SpanReader reader, Guid headMaterial)
     {
@@ -21,10 +23,16 @@ public sealed class CustomMaterialProperty
         {
             children[i] = CustomMaterialChildProperty.Read(ref reader);
         }
+        
+        var floats = FloatBlock.Read(ref reader);
+        var colors = ColorBlock.Read(ref reader);
+        reader.Expect<uint>(5);
 
         return new CustomMaterialProperty
         {
             Children = children,
+            Floats = floats,
+            Colors = colors
         };
     }
 }
