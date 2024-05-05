@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using ChfParser;
 using ChfUtils;
 using StarCitizenChf;
@@ -43,11 +42,6 @@ foreach (var bin in allBins)
 File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(l => l.Length));
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
-
-var customMaterials = characters.Select(c => c.CustomMaterial).GroupBy(x => x.Key).ToArray();
-var a = customMaterials.First().ToArray();
-var b = customMaterials.Last().ToArray();
-
 
 return;
 HashSet<string> remaining = new();

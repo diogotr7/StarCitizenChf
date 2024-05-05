@@ -8,10 +8,9 @@ namespace ChfParser;
 public sealed class HairModifierProperty
 {
     public const uint Key = 0x_e7_80_9d_46;
-    public const string KeyRep = "46-9D-80-E7";
     
-    public Guid Id { get; set; }
-    public ulong ChildCount { get; set; }
+    public required Guid Id { get; init; }
+    public required ulong ChildCount { get; init; }
     
     public static HairModifierProperty Read(ref SpanReader reader)
     {
@@ -24,16 +23,16 @@ public sealed class HairModifierProperty
         switch (count)
         {
             case 0:
-                return new HairModifierProperty() { Id = guid, ChildCount = count };
+                return new HairModifierProperty { Id = guid, ChildCount = count };
             case 6:
                 //the data i have has this 5 here but the next property is right after.
                 //Unknown what this is.
                 //count of how many objects are left to read??
                 reader.Expect(5);
-                return new HairModifierProperty() { Id = guid, ChildCount = count };
+                return new HairModifierProperty { Id = guid, ChildCount = count };
             default:
                 Debugger.Break();
-                return new HairModifierProperty() { Id = guid, ChildCount = count };
+                return new HairModifierProperty { Id = guid, ChildCount = count };
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using ChfUtils;
 
 namespace ChfParser;
@@ -8,9 +7,8 @@ namespace ChfParser;
 public sealed class EyelashProperty 
 {
     public const uint Key = 0x_19_0b_04_e2;
-    public const string KeyRep = "E2-04-0B-19";
     
-    public ulong ChildCount { get; set; }
+    public required ulong ChildCount { get; init; }
     
     //fix, terrible
     public static EyelashProperty Read(ref SpanReader reader)
@@ -24,14 +22,14 @@ public sealed class EyelashProperty
         switch (childCount)
         {
             case 0:
-                return new EyelashProperty() { ChildCount = childCount };
+                return new EyelashProperty { ChildCount = childCount };
             case 3:
             case 4:
             case 5:
             case 6:
                 reader.Expect<uint>(5);
                 //Debugger.Break();
-                return new EyelashProperty() { ChildCount = childCount };
+                return new EyelashProperty { ChildCount = childCount };
             default:
                 Debugger.Break();
                 throw new Exception();

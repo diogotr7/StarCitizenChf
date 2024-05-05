@@ -5,13 +5,13 @@ namespace ChfParser;
 
 public sealed class GenderProperty
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
     
     public static GenderProperty Read(ref SpanReader reader)
     {
         var guid = reader.Read<Guid>();
-        reader.Expect<Guid>(Guid.Empty);
+        reader.Expect(Guid.Empty);
         
-        return new GenderProperty() { Id = guid };
+        return new GenderProperty { Id = guid };
     }
 }

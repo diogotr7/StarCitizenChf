@@ -41,14 +41,15 @@ public static class TestParser
             reader.Expect<uint>(0);
             var cl2 = ColorBlock2.Read(ref reader);
             reader.Expect<uint>(5);
-            var g6 = reader.ReadKeyAndGuid();
-            var additional = reader.Read<uint>();
-            reader.Expect<uint>(0);
-            reader.Expect<uint>(0);
-            reader.Expect<uint>(0);
-            reader.Expect<uint>(0);
-            reader.Expect<uint>(2);
-            reader.Expect<uint>(5);
+            var bodymat = BodyMaterialProperty.Read(ref reader);
+            //var g6 = reader.ReadKeyAndGuid();
+            //var additional = reader.Read<uint>();
+            //reader.Expect<uint>(0);
+            //reader.Expect<uint>(0);
+            //reader.Expect<uint>(0);
+            //reader.Expect<uint>(0);
+            //reader.Expect<uint>(2);
+            //reader.Expect<uint>(5);
             var u2 = reader.ReadKeyValueAndChildCount<uint>(0);
             reader.Expect<uint>(0);
             reader.Expect<uint>(1);
@@ -68,6 +69,7 @@ public static class TestParser
             
             return;
         }
+        return;
         
         //-424
         if (reader.NextKey == "62-2E-98-67")
@@ -89,8 +91,8 @@ public static class TestParser
             //0
             //7
             //5a-c1-f6-4a
-            var anotherFloatBlock = MysteryProperty.Read(ref reader);
-            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
+            //var anotherFloatBlock = MysteryProperty.Read(ref reader);
+            //Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
             return;
         }
 

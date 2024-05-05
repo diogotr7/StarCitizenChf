@@ -1,13 +1,12 @@
-﻿using System;
-using ChfUtils;
+﻿using ChfUtils;
 
 namespace ChfParser;
 
 public sealed class DnaProperty
 {
-    public const int Size = 0xD8;
+    private const int Size = 0xD8;
     
-    public string Dna { get; set; }
+    public required string Dna { get; init; }
     
     public static DnaProperty Read(ref SpanReader reader)
     {
@@ -17,7 +16,7 @@ public sealed class DnaProperty
         
         var dnaString = BitConverter.ToString(dna).Replace("-", "");
         
-        return new DnaProperty()
+        return new DnaProperty
         {
             Dna = dnaString
         };

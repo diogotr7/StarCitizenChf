@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using ChfUtils;
+﻿using ChfUtils;
 
 namespace ChfParser;
 
 public sealed class HeadMaterialProperty
 {
     public const uint Key = 0x_A9_8B_EB_34;
-    public const string KeyRep = "34-EB-8B-A9";
 
     public required Guid Id { get; init; }
     public required uint AdditionalParams { get; init; }
@@ -16,6 +13,9 @@ public sealed class HeadMaterialProperty
     {
         reader.Expect(Key);
         var guid = reader.Read<Guid>();
+        //these additional params are always 1-1 with the guid.
+        //Each guid has a unique set of additional params.
+        //Unknown what these are.
         var additionalParams = reader.Read<uint>();
 
         reader.Expect<uint>(0);
@@ -25,7 +25,7 @@ public sealed class HeadMaterialProperty
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
 
-        return new HeadMaterialProperty()
+        return new HeadMaterialProperty
         {
             Id = guid,
             AdditionalParams = additionalParams

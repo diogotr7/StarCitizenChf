@@ -17,6 +17,7 @@ public static class GuidUtils
         var foundation4 = ToBitConverterRepresentation(Guid.Parse("846d7afe-2725-47ff-a4b0-c6bdb0aaeade"));
         var blemish01 = ToBitConverterRepresentation(Guid.Parse("13cfead6-5662-4dea-995a-5e3f42460e20"));
         var blemish02 = ToBitConverterRepresentation(Guid.Parse("2d8cdf2c-5e5b-482f-ab7c-67e56e2115ae"));
+        var headMaterialThing = ToBitConverterRepresentation(Guid.Parse("5d629e70-ff2f-4fc8-829c-b989f5494d4d"));
 
         var a = FromBitConverterRepresentation("F5486885A34250FA2D1B1998DC0236BF");
         var b = FromBitConverterRepresentation("04-41-5F-75-7D-8A-AA-DB-F6-76-1E-FD-58-7B-24-8B");

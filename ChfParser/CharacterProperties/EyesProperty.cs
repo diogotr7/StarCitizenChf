@@ -7,7 +7,6 @@ namespace ChfParser;
 public sealed class EyesProperty
 {
     public const uint Key = 0xC5BB5550;
-    public const string KeyRep = "50-55-BB-C5";
     
     public static EyesProperty Read(ref SpanReader reader)
     {

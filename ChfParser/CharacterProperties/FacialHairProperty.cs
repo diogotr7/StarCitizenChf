@@ -7,10 +7,9 @@ namespace ChfParser;
 public sealed class FacialHairProperty
 {
     public const uint Key = 0x98EFBB1C;
-    public const string KeyRep = "1C-BB-EF-98";
 
-    public Guid Id { get; set; }
-    public HairModifierProperty? Modifier { get; init; }
+    public required Guid Id { get; init; }
+    public required HairModifierProperty? Modifier { get; init; }
             
     public static FacialHairProperty? ReadOptional(ref SpanReader reader)
     {
@@ -28,7 +27,7 @@ public sealed class FacialHairProperty
                     Debugger.Break();
                 
                 reader.Expect(5);
-                return new FacialHairProperty() { Id = guid };
+                return new FacialHairProperty { Id = guid, Modifier = null };
             case 1:
                 reader.Expect<uint>(0);
                 

@@ -8,9 +8,7 @@ namespace ChfParser;
 public sealed class BodyProperty
 {
     public const uint Key = 0xAB6341AC;
-    public const string KeyRep = "AC-41-63-AB";
-    
-    public HeadProperty Head { get; init; }
+    public required HeadProperty Head { get; init; }
     
     public static BodyProperty Read(ref SpanReader reader)
     {
@@ -23,7 +21,7 @@ public sealed class BodyProperty
         
         var head = HeadProperty.Read(ref reader);
 
-        return new BodyProperty()
+        return new BodyProperty
         {
             Head = head,
         };

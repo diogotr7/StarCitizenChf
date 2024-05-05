@@ -7,7 +7,6 @@ namespace ChfParser;
 public sealed class HeadProperty
 {
     public const uint Key = 0x47010DB9;
-    public const string KeyRep = "B9-0D-01-47";
     
     public required ulong ChildCount { get; init; }
     public required EyesProperty Eyes { get; init; }
@@ -28,16 +27,13 @@ public sealed class HeadProperty
         var eyebrow = EyebrowProperty.ReadOptional(ref reader);
         var eyelash = EyelashProperty.Read(ref reader);
         var facialHair = FacialHairProperty.ReadOptional(ref reader);
-        
-        ulong headChildCount = 0;
-        if (eyes != null) headChildCount++;
-        if (hair != null) headChildCount++;
+
+        ulong headChildCount = 3;
         if (eyebrow != null) headChildCount++;
-        if (eyelash != null) headChildCount++;
         if (facialHair != null) headChildCount++;
         if (headChildCount != childCount) throw new Exception();
         
-        return new HeadProperty()
+        return new HeadProperty
         {
             ChildCount = childCount,
             Eyes = eyes,

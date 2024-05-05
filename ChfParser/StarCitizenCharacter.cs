@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using ChfUtils;
 
 namespace ChfParser;
@@ -10,6 +6,8 @@ public sealed class StarCitizenCharacter
 {
     public required string Name { get; init; }
     public required string Gender { get; init; }
+    
+    public required string DnaString { get; init; }
     public required ulong TotalCount { get; init; }
     
     public required string HairId { get; init; }
@@ -17,10 +15,9 @@ public sealed class StarCitizenCharacter
     public required string EyeBrowId { get; init; }
     public required string BeardId { get; init; }
     public required string BeardModId { get; init; }
+    public required string HeadMaterialId { get; init; }
     
     public required int LastReadIndex { get; init; }
-    public required string CustomMaterialKey { get; init; }
-    public required CustomMaterialProperty CustomMaterial { get; init; }
     
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
@@ -34,22 +31,24 @@ public sealed class StarCitizenCharacter
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
-        var customMaterial = CustomMaterialProperty.Read(ref reader);
+        //is this useful to us?
+        _ = CustomMaterialProperty.Read(ref reader, headMaterial.Id);
+        
         //TestParser.Read(ref reader);
         
-        return new StarCitizenCharacter()
+        return new StarCitizenCharacter
         {
             Name = fileName,
             Gender = Constants.GetName(gender.Id),
+            DnaString = dnaProperty.Dna[..8],
             TotalCount = totalCount,
             HairId = Constants.GetName(body.Head.Hair.Id),
-            HairModId = Constants.GetName(body.Head.Hair?.Modifier?.Id ?? Guid.Empty),
+            HairModId = Constants.GetName(body.Head.Hair.Modifier?.Id ?? Guid.Empty),
             EyeBrowId = Constants.GetName(body.Head.Eyebrow?.Id ?? Guid.Empty),
             BeardId = Constants.GetName(body.Head.FacialHair?.Id ?? Guid.Empty),
             BeardModId = Constants.GetName(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
-            CustomMaterialKey = customMaterial.Key,
+            HeadMaterialId = Constants.GetName(headMaterial.Id),
             LastReadIndex = reader.Position,
-            CustomMaterial = customMaterial
         };
     }
 }

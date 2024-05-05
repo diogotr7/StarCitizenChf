@@ -6,21 +6,23 @@ namespace ChfParser;
 
 public static class Constants
 {
+    public static readonly Guid None = Guid.Empty;
+    
     public static readonly Guid Body = new("dbaa8a7d-755f-4104-8b24-7b58fd1e76f6");
     public static readonly Guid Head = new("1d5cfab3-bf80-4550-b4ab-39e896a7086e");
     public static readonly Guid Eyes = new("6b4ca363-e160-4871-b709-e47467b40310");
     public static readonly Guid Eyelashes = new("6217c113-a448-443b-82aa-1bb108ba8e11");
-    
+
     public static readonly Guid Male = new("25f439d5-146b-4a61-a999-a486dfb68a49");
     public static readonly Guid Female = new("d0794a94-efb0-4cad-ad38-2558b4d3c253");
-    
+
     public static readonly Guid Brows01 = new("89ec0bbc-7daf-4b09-a98d-f8dd8df32305");
     public static readonly Guid Brows02 = new("c40183e4-659c-4e4e-8f96-70b33a3b9d67");
     public static readonly Guid Brows03 = new("6606176a-bfc4-4d24-a40a-b554fcfb8c7e");
     public static readonly Guid Brows04 = new("41a65deb-4a4c-425c-8825-e6d264ecdd4b");
     public static readonly Guid Brows05 = new("a074880a-6df2-4996-89e2-3e204a2790c2");
     public static readonly Guid Brows06 = new("03270dfe-71be-45ee-b51a-fb1dd7e67ba1");
-    
+
     public static readonly Guid Bald01 = new("71dd6cea-e225-4aaf-b9d7-562d2083ae3b");
     public static readonly Guid Hair02 = new("968d0d95-2224-47dc-a05a-da423a4a1c81");
     public static readonly Guid Hair03 = new("a8beac2a-3a3a-455b-9d2b-cfcadf290419");
@@ -45,7 +47,7 @@ public static class Constants
     public static readonly Guid Hair22 = new("d7cb9d99-2e76-43ab-b21e-7c0f9f1df419");
     public static readonly Guid Hair23 = new("63a60790-fc1c-47bb-b0df-d1452e8cde2b");
     public static readonly Guid Hair24 = new("03762539-c42e-4314-9710-97430c72da98");
-    
+
     public static readonly Guid Beard01 = new("3df7bdc3-ea80-47db-bbb7-8a6f28701c3e");
     public static readonly Guid Beard02 = new("e6c2c999-3731-4163-9f1a-e37df9b9a267");
     public static readonly Guid Beard03 = new("c9e19547-ba61-473f-b9b6-e5b8a14cb57e");
@@ -76,9 +78,9 @@ public static class Constants
     public static readonly Guid Beard28 = new("e27a835b-965f-487b-bef7-ac8be077cc62");
     public static readonly Guid Beard29 = new("09b25ba2-4e5d-4135-8d27-5649227b7a74");
     public static readonly Guid Beard30 = new("31de0f7c-a059-4a5c-8917-d699a79af303");
-    
+
     public static readonly Guid HairVarBrown = new("12ce4ce5-e49a-4dab-9d31-ad262faaddf2");
-    
+
     public static readonly Guid MakeupEyes01 = new("b643f3b3-21bc-4f44-95e5-0de140fd7954");
     public static readonly Guid MakeupEyes02 = new("229a46c9-b9e5-4da2-875e-8f007642e52c");
     public static readonly Guid MakeupEyes03 = new("34e882d0-ae6b-4747-acf1-0a86ef8a64bb");
@@ -90,7 +92,7 @@ public static class Constants
     public static readonly Guid MakeupLips03 = new("521a1b21-8bb7-44ef-91b5-74d9a3f0cf1b");
     public static readonly Guid MakeupLips04 = new("5f213adc-04e0-44c4-bd5a-fb6a07022c70");
     public static readonly Guid MakeupLips05 = new("db723134-9142-43c1-84c0-ace36c176135");
-    
+
     //unused?
     public static readonly Guid MakeupFoundation01 = new("b5e53e65-bd4a-4f50-bcd1-843ce5fc231b");
     public static readonly Guid MakeupFoundation02 = new("318114ee-f184-42f5-86cb-19a321bcb513");
@@ -98,13 +100,46 @@ public static class Constants
     public static readonly Guid MakeupFoundation04 = new("846d7afe-2725-47ff-a4b0-c6bdb0aaeade");
     public static readonly Guid BlemishExample_mask_mask = new("13cfead6-5662-4dea-995a-5e3f42460e20");
     public static readonly Guid BlemishExample_ID_mask = new("2d8cdf2c-5e5b-482f-ab7c-67e56e2115ae");
-    
-    private static Dictionary<Guid, string> _guidToName = new();
-    
-    public static bool TryGetName(Guid guid, out string name) => _guidToName.TryGetValue(guid, out name);
 
-    public static string GetName(Guid guid) => TryGetName(guid, out var name) ? name : "";
-    
+    //head materials
+    public static readonly Guid HeadMaterialM01T2 = new("bc56197f-ec97-43fb-b047-aaf51c8eb3b6");
+    public static readonly Guid HeadMaterialM02T2 = new("2fcd7cc1-a46d-4065-84ba-bfabf9d567ce");
+    public static readonly Guid HeadMaterialM04T2 = new("9c55cd1d-b397-4886-b1a4-bc38575916fd");
+    public static readonly Guid HeadMaterialM05T2 = new("d9c34b15-40cd-49b1-84bb-a6161bfa5240");
+    public static readonly Guid HeadMaterialM06T2 = new("538ab6c3-8bb6-4768-9ad1-cc6387e9c65f");
+    public static readonly Guid HeadMaterialM07T2 = new("e6cb61c7-7740-46b9-9f9c-fd5eb3498e75");
+    public static readonly Guid HeadMaterialM08T2 = new("e76ed31e-9ef4-4fe0-8a46-2c3ed8c6ab1b");
+    public static readonly Guid HeadMaterialM09T1 = new("1d33cab4-50bf-4e7d-8c75-ef56e5e8a1b1");
+    public static readonly Guid HeadMaterialM10T2 = new("8a3f884e-4cbf-4c49-a64d-3170e95e54b8");
+    public static readonly Guid HeadMaterialM10T2_2 = new("6a7a8295-f9e4-4d98-82aa-7443adc3c6e2");
+    public static readonly Guid HeadMaterialM11T2 = new("9a66730e-512e-4d21-8ba3-d3ce2c3ebfe6");
+    public static readonly Guid HeadMaterialM12T2 = new("003367a7-9873-4a8f-9a27-9b8def193b43");
+    public static readonly Guid HeadMaterialM13T1 = new("7e033967-fa65-423e-ba74-af2e810e4cac");
+    public static readonly Guid HeadMaterialM14T1 = new("38219031-5c5a-4d44-9cb1-da8bdc0f2089");
+    public static readonly Guid HeadMaterialM15T2 = new("4f79d0fb-389f-48c5-ba3b-9f290b8b4dc2");
+
+    public static readonly Guid HeadMaterialF01 = new("6bf5cf88-c6bf-44ec-8e98-fd513c588886");
+    public static readonly Guid HeadMaterialF02 = new("023bd1d1-6700-4889-b235-d3254db0cec1");
+    public static readonly Guid HeadMaterialF03 = new("23795209-f1c8-42f3-8f93-5eee45c3ea34");
+    public static readonly Guid HeadMaterialF04 = new("aa8cb288-e754-446a-b8f0-98107ad9914e");
+    public static readonly Guid HeadMaterialF05 = new("9c6a7a36-f952-4cdc-8264-c9b83393ee2e");
+    public static readonly Guid HeadMaterialF06 = new("2b23bbfa-aa4b-47e9-9bc8-2af7a2fc39ba");
+    public static readonly Guid HeadMaterialF07 = new("c5b4f677-be97-4827-95b0-ffcef7b77ba8");
+    public static readonly Guid HeadMaterialF08 = new("6739da5b-8d22-4114-acc1-4f333f983101");
+    public static readonly Guid HeadMaterialF09 = new("983f7a30-0528-409a-9e33-1eb81a65f0e6");
+    public static readonly Guid HeadMaterialF10 = new("79adf215-136a-4fc5-9dd7-9e03879e3bd8");
+    public static readonly Guid HeadMaterialF11 = new("5d629e70-ff2f-4fc8-829c-b989f5494d4d");
+    public static readonly Guid HeadMaterialF12 = new("24c9f393-3240-4bd3-a13a-078abd68375b");
+    public static readonly Guid HeadMaterialF13 = new("35b1f87f-14e7-4ece-acf0-6d8d436941b9");
+    public static readonly Guid HeadMaterialF14 = new("e186048a-9a81-47b3-828e-71e957c65762");
+
+    public static readonly Guid m_body_character_customizer = new("fa5042a3-8568-48f5-bf36-02dc98191b2d");
+    public static readonly Guid f_body_character_customizer = new("f0153262-588d-4ae8-8c06-53bf98cf80a5");
+
+    private static Dictionary<Guid, string> _guidToName = new();
+
+    public static string GetName(Guid guid) => _guidToName[guid];
+
     static Constants()
     {
         _guidToName = typeof(Constants).GetFields()

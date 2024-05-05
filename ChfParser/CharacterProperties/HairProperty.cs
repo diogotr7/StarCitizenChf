@@ -8,10 +8,9 @@ namespace ChfParser;
 public sealed class HairProperty
 {
     public const uint Key = 0x13601A95;
-    public const string KeyRep = "95-1A-60-13";
 
-    public Guid Id { get; init; }
-    public HairModifierProperty? Modifier { get; init; }
+    public required Guid Id { get; init; }
+    public required HairModifierProperty? Modifier { get; init; }
     
     public static HairProperty Read(ref SpanReader reader)
     {
@@ -21,18 +20,20 @@ public sealed class HairProperty
 
         switch (childCount)
         {
-            case 0: return new HairProperty() { Id = guid };
+            case 0: 
+                return new HairProperty { Id = guid, Modifier = null };
             case 1:
             {
                 var hairModifier = HairModifierProperty.Read(ref reader);
-                if (hairModifier.ChildCount != 0) throw new Exception();
-                return new HairProperty()
+                if (hairModifier.ChildCount != 0) 
+                    throw new Exception("HairModifierProperty child count is not 0");
+                return new HairProperty
                 {
                     Id = guid,
                     Modifier = hairModifier
                 };
             }
-            default: throw new Exception();
+            default: throw new Exception("HairProperty child count is not 0 or 1");
         }
     }
 }
