@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic;
 
 namespace ChfUtils;
 
@@ -11,6 +12,9 @@ public static class GuidUtils
 
     public static void Test()
     {
+        var asd = ToBitConverterRepresentation(new("fa5042a3-8568-48f5-bf36-02dc98191b2d"));
+        var das = ToBitConverterRepresentation(new("f0153262-588d-4ae8-8c06-53bf98cf80a5"));
+        
         var foundation1 = ToBitConverterRepresentation(Guid.Parse("b5e53e65-bd4a-4f50-bcd1-843ce5fc231b"));
         var foundation2 = ToBitConverterRepresentation(Guid.Parse("318114ee-f184-42f5-86cb-19a321bcb513"));
         var foundation3 = ToBitConverterRepresentation(Guid.Parse("9254513e-8996-4ffb-84f0-7eb6162dddf5"));
@@ -20,6 +24,7 @@ public static class GuidUtils
         var headMaterialThing = ToBitConverterRepresentation(Guid.Parse("5d629e70-ff2f-4fc8-829c-b989f5494d4d"));
 
         var a = FromBitConverterRepresentation("F5486885A34250FA2D1B1998DC0236BF");
+        var asdasdasd = FromBitConverterRepresentation("E8-4A-8D-58-62-32-15-F0-A5-80-CF-98-BF-53-06-8C");
         var b = FromBitConverterRepresentation("04-41-5F-75-7D-8A-AA-DB-F6-76-1E-FD-58-7B-24-8B");
         var c = FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
         var d = FromBitConverterRepresentation("E2-04-0B-19-3B-44-48-A4-13-C1-17-62-11-8E-BA-08");

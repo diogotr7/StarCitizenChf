@@ -18,6 +18,7 @@ public sealed class StarCitizenCharacter
     public required string HeadMaterialId { get; init; }
     
     public required int LastReadIndex { get; init; }
+    public required string Special { get; init; }
     
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
@@ -32,9 +33,13 @@ public sealed class StarCitizenCharacter
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
         //is this useful to us?
-        _ = CustomMaterialProperty.Read(ref reader, headMaterial.Id);
+        var customMaterial = CustomMaterialProperty.Read(ref reader, headMaterial.Id);
         
-        //TestParser.Read(ref reader);
+        //from the end of the last read to the end of the file
+        var target = reader.Remaining.Length - BodyMaterialInfo.Size;
+        reader.ReadBytes(target);
+        
+        var bodyMaterialInfo = BodyMaterialInfo.Read(ref reader);
         
         return new StarCitizenCharacter
         {
@@ -49,6 +54,7 @@ public sealed class StarCitizenCharacter
             BeardModId = Constants.GetName(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
             HeadMaterialId = Constants.GetName(headMaterial.Id),
             LastReadIndex = reader.Position,
+            Special = "asd"
         };
     }
 }

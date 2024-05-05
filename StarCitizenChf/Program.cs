@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ChfParser;
@@ -8,6 +9,52 @@ using StarCitizenChf;
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var folders = new Folders(csprojFolder);
+
+
+var web1 = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
+var local1 = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
+var allBins1 = web1.Concat(local1).Select(x => x.data).ToArray();
+
+
+//opt1 and opt2 always appear before presentAlways.
+//opt1 always appears before opt2.
+var opt1Bytes = BitConverter.GetBytes(0x6C836947);
+var opt2Bytes = BitConverter.GetBytes(0x9B274D93);
+var opt3Bytes = BitConverter.GetBytes(0xC3370BD9);
+
+//might be a material key not related to optional data like facial hair or eyebrows etc.
+var presentAlwaysBytes = BitConverter.GetBytes(0xA047885E);
+
+var useful2 = allBins1.Where(l => Contains(l, opt1Bytes) && Contains(l, opt2Bytes)).ToArray();
+
+var offsets2 = useful2.Select(y =>
+{
+    var x = y.AsSpan();
+    //find how many bytes are between opt1 and opt2
+    var index1 = x.IndexOf(opt1Bytes);
+    var index2 = x.IndexOf(opt2Bytes);
+    var index3 = x.IndexOf(presentAlwaysBytes);
+    Debug.Assert(index1 < index2);
+    Debug.Assert(index2 < index3);
+    return (index3-index2, index2-index1);
+}).ToArray();
+
+//order of appearence:
+//opt1, optional
+//opt2, optional
+//presentAlways, always present
+
+//1 *never* appears after 2
+var zzzzz = allBins1.Where(l => Contains(l, opt1Bytes, opt2Bytes, opt3Bytes)).ToArray();
+var xxxx = allBins1.Where(l => Contains(l, opt2Bytes, opt3Bytes, opt1Bytes)).ToArray();
+
+//444
+var a441 = allBins1.Where(l => Contains(l, opt1Bytes)).ToArray();
+var a288 = allBins1.Where(l => Contains(l, opt2Bytes)).ToArray();
+var asaaasd = allBins1.Where(l => Contains(l, opt3Bytes)).ToArray();
+var a286 = allBins1.Where(l => Contains(l, opt1Bytes, opt2Bytes)).ToArray();
+var asdasd = allBins1.Where(l => Contains(l, opt1Bytes) && !Contains(l, opt2Bytes)).ToArray();
+var asdasd2 = allBins1.Where(l => Contains(l, opt2Bytes) && !Contains(l, opt1Bytes)).ToArray();
 
 GuidUtils.Test();
 
@@ -60,3 +107,16 @@ return;
 
 // prints all data buffers to a file, one per line, in 4 byte chunks for easy visual comparison.
 await Analysis.PrintAllToFileAsync(Directory.GetFiles(folders.Base, "*.bin", SearchOption.AllDirectories), Path.Combine(folders.Base, "bins.txt"));
+
+bool Contains(byte[] data, params byte[][] parts)
+{
+    Span<byte> search = data;
+    foreach (var part in parts)
+    {
+        var index = search.IndexOf(part);
+        if (index == -1)
+            return false;
+        search = search[(index + part.Length)..];
+    }
+    return true;
+}

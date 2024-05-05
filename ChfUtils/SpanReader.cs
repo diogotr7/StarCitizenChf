@@ -92,6 +92,17 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         }
     }
     
+    public ReadOnlySpan<byte> ReadUntil(ReadOnlySpan<byte> expected)
+    {
+        var index = Remaining.IndexOf(expected);
+        if (index == -1)
+            return [];
+        
+        var value = Span[Position..(Position + index)];
+        Position += index + expected.Length;
+        return value;
+    }
+    
     /// <summary>
     ///     Reads a number of bytes from the span and checks if it matches the expected value.
     /// </summary>

@@ -5,7 +5,7 @@ namespace ChfParser;
 
 public sealed class MysteryProperty
 {
-    public required FloatBlock2 FloatBlock { get; init; }
+    public required FloatBlock2? FloatBlock { get; init; }
     public required ColorBlock2 ColorBlock { get; init; }
     public required Guid Id0 { get; init; }
     public required Guid Id1 { get; init; }
@@ -24,6 +24,8 @@ public sealed class MysteryProperty
         if (x != 1 && x != 2)
             Debugger.Break();
         reader.Expect<uint>(5);
+        
+        Console.WriteLine(x);
         
         return new MysteryProperty()
         {
