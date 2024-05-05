@@ -19,8 +19,8 @@ var allBins1 = web1.Concat(local1).Select(x => x.data).ToArray();
 
 //opt1 and opt2 always appear before presentAlways.
 //opt1 always appears before opt2.
-var opt1Bytes = BitConverter.GetBytes(0x6C836947);
-var opt2Bytes = BitConverter.GetBytes(0x9B274D93);
+var opt1Bytes = BitConverter.GetBytes(0x6C836947);//basically all of them
+var opt2Bytes = BitConverter.GetBytes(0x9B274D93);//bald, tate and boredgamerbald
 var opt3Bytes = BitConverter.GetBytes(0xC3370BD9);
 
 //might be a material key not related to optional data like facial hair or eyebrows etc.
@@ -48,6 +48,8 @@ var offsets2 = useful2.Select(y =>
 //1 *never* appears after 2
 var zzzzz = allBins1.Where(l => Contains(l, opt1Bytes, opt2Bytes, opt3Bytes)).ToArray();
 var xxxx = allBins1.Where(l => Contains(l, opt2Bytes, opt3Bytes, opt1Bytes)).ToArray();
+var sdfgsdf = allBins1.Where(l => Contains(l, opt2Bytes, opt1Bytes)).ToArray();
+var zxvxcv = allBins1.Where(l => Contains(l, opt1Bytes, opt2Bytes)).ToArray();
 
 //444
 var a441 = allBins1.Where(l => Contains(l, opt1Bytes)).ToArray();
@@ -72,9 +74,9 @@ await Utils.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
 await Processing.ProcessAllCharacters(folders.WebsiteCharacters);
 await Processing.ProcessAllCharacters(folders.LocalCharacters);
 
-var threecolors = Path.Combine(folders.ModdedCharacters, "female_3colors","female_3colors.bin");
-var threecolorsBin = File.ReadAllBytes(threecolors);
-var threecolorsCharacter = StarCitizenCharacter.FromBytes(threecolors, threecolorsBin);
+// var threecolors = Path.Combine(folders.ModdedCharacters, "female_3colors","female_3colors.bin");
+// var threecolorsBin = File.ReadAllBytes(threecolors);
+// var threecolorsCharacter = StarCitizenCharacter.FromBytes(threecolors, threecolorsBin);
 
 var web = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
 var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
@@ -99,22 +101,22 @@ var idks = StarCitizenCharacter.idks.Where(x => x.Item2.Length > 0).Select(x => 
 var idks_reversed = StarCitizenCharacter.idks.Where(x => x.Item2.Length > 0).Select(x => $"{BitConverter.ToString(x.Item2.Reverse().ToArray())} {x.Item1}").OrderBy(x => x.Length);
 File.WriteAllLines(Path.Combine(folders.Base, "idks.txt"), idks);
 File.WriteAllLines(Path.Combine(folders.Base, "idks_reversed.txt"), idks_reversed);
-
-var colors = characters.SelectMany<StarCitizenCharacter, Color>(x => [x.CustomColor]).Distinct().ToArray();
- var folder = Path.Combine(folders.Base, "colors3");
- Directory.CreateDirectory(folder);
- int i = 0;
- foreach (var color in colors)
- {
-     var c = new Rgba32()
-     {
-         R = color.R,
-         G = color.G,
-         B = color.B,
-         A = 255
-     };
-     await Utils.WriteSolidColorImage(Path.Combine(folder, $"{i++}.png"), c);
- }
+//
+// var colors = characters.SelectMany<StarCitizenCharacter, Color>(x => [x.CustomColor]).Distinct().ToArray();
+//  var folder = Path.Combine(folders.Base, "colors3");
+//  Directory.CreateDirectory(folder);
+//  int i = 0;
+//  foreach (var color in colors)
+//  {
+//      var c = new Rgba32()
+//      {
+//          R = color.R,
+//          G = color.G,
+//          B = color.B,
+//          A = 255
+//      };
+//      await Utils.WriteSolidColorImage(Path.Combine(folder, $"{i++}.png"), c);
+//  }
 
 
 return;

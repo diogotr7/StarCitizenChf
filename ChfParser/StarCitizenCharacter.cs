@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using ChfUtils;
 
 namespace ChfParser;
@@ -39,7 +40,6 @@ public sealed class StarCitizenCharacter
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
         
-        //UNKNOWN START
         //is this useful to us?
         var customMaterial = CustomMaterialProperty.Read(ref reader, headMaterial.Id);
         var floats = FloatBlock.Read(ref reader);
@@ -47,17 +47,64 @@ public sealed class StarCitizenCharacter
         var colors = ColorBlock.Read(ref reader);
         reader.Expect<uint>(5);
         
-        //from the end of the last read to the end of the file
-        var target = reader.Remaining.Length - BodyMaterialInfo.Size - EyeMaterial.Size;
-        var idk = reader.ReadBytes(target);
-        
-        idks.Add((fileName, idk.ToArray()));
-        
-        //UNKNOWN END
-        //this last section seems preety consistent.
+        string asd = "";
+        //if we have 47-69-83-6C, read that. It's possible that it's not there.
+        //in that case, figure out what other keys might be possible.
+        //bd-c8-8a-07
+        //93-4d-27-9b
+        //5e-88-47-a0
+
+        while (reader.Peek<uint>() != EyeMaterial.Key)
+        {
+            var nextKey = reader.Read<uint>();
+            switch (nextKey)
+            {
+                case 0x6C_83_69_47:
+                    reader.Expect(Guid.Empty);
+                    var k1 = reader.Read<uint>();
+                    reader.Expect(Guid.Empty);
+                    reader.Expect(1);
+                    reader.Expect(5);
+                    var floats2 = FloatBlock2.Read(ref reader);
+                    var colors2 = ColorBlock2.Read(ref reader);
+                    reader.Expect(5);
+                    
+                    break;
+                case 0x07_8A_C8_BD:
+                    reader.Expect(Guid.Empty);
+                    var k2 = reader.Read<uint>();
+                    reader.Expect(Guid.Empty);
+                    reader.Expect(1);
+                    reader.Expect(5);
+                    var floats3 = FloatBlock2.Read(ref reader);
+                    var colors3 = ColorBlock2.Read(ref reader);
+                    reader.Expect(5);
+                    
+                    break;
+                case 0x9B_27_4D_93:
+                    reader.Expect(Guid.Empty);
+                    var k3 = reader.Read<uint>();
+                    reader.Expect(Guid.Empty);
+                    reader.Expect(1);
+                    reader.Expect(5);
+                    var floats4 = FloatBlock2.Read(ref reader);
+                    var colors4 = ColorBlock2.Read(ref reader);
+                    reader.Expect(5);
+
+                    break;
+                default:
+                    asd = nextKey.ToString("X8");
+                    Console.WriteLine($"Unexpected key: {nextKey:X8}");
+                    goto exit;
+            }
+        }
+
+        exit:
+
         var eyeMaterial = EyeMaterial.Read(ref reader);
         var bodyMaterialInfo = BodyMaterialInfo.Read(ref reader);
-        
+        Debug.Assert(reader.Remaining.Length == 0);
+
         return new StarCitizenCharacter
         {
             Name = fileName,
@@ -70,12 +117,12 @@ public sealed class StarCitizenCharacter
             BeardId = Constants.GetName(body.Head.FacialHair?.Id ?? Guid.Empty),
             BeardModId = Constants.GetName(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
             HeadMaterialId = Constants.GetName(headMaterial.Id),
-            BodyColor1 = bodyMaterialInfo.TorsoColor,
-            BodyColor2 = bodyMaterialInfo.LimbColor,
-            EyeColor = eyeMaterial.EyeColor,
+            BodyColor1 = new Color(),//bodyMaterialInfo.TorsoColor,
+            BodyColor2 = new Color(),//bodyMaterialInfo.LimbColor,
+            EyeColor = new Color(),//eyeMaterial.EyeColor,
             CustomColor = colors.HeadColor,
             LastReadIndex = reader.Position,
-            Special = "asd"
+            Special = asd
         };
     }
 }

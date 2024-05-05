@@ -45,7 +45,6 @@ public sealed class BodyMaterialInfo
         reader.Expect<uint>(1);
         reader.Expect<uint>(0);
         var c2 = reader.ReadKeyValueAndChildCount<Color>(0, "97-07-53-BD");
-        Debug.Assert(reader.Remaining.Length == 0);
 
         return new BodyMaterialInfo
         {
