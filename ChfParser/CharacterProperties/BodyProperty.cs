@@ -15,11 +15,11 @@ public sealed class BodyProperty
     public static BodyProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
-        reader.Expect(Guid.Parse("dbaa8a7d-755f-4104-8b24-7b58fd1e76f6"));
+        reader.Expect(Constants.Body);
         var childCount = reader.Read<ulong>();
         
         if (childCount != 1)
-            throw new Exception();
+            throw new Exception("BodyProperty child count is not 1");
         
         var head = HeadProperty.Read(ref reader);
 

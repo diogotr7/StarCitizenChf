@@ -19,9 +19,10 @@ public sealed class HeadProperty
     public static HeadProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
-        reader.Expect(Guid.Parse("1d5cfab3-bf80-4550-b4ab-39e896a7086e"));
+        reader.Expect(Constants.Head);
         
         var childCount = reader.Read<ulong>();
+        
         var eyes = EyesProperty.Read(ref reader);
         var hair = HairProperty.Read(ref reader);
         var eyebrow = EyebrowProperty.ReadOptional(ref reader);

@@ -16,7 +16,7 @@ public sealed class EyelashProperty
     public static EyelashProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
-        reader.Expect(Guid.Parse("6217c113-a448-443b-82aa-1bb108ba8e11"));
+        reader.Expect(Constants.Eyelashes);
         reader.Expect(0);
         
         var childCount = reader.Read<uint>();
@@ -25,7 +25,7 @@ public sealed class EyelashProperty
         {
             case 0:
                 return new EyelashProperty() { ChildCount = childCount };
-            case 3: //TODOOOOOOOOOOO
+            case 3:
             case 4:
             case 5:
             case 6:

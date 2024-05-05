@@ -12,10 +12,8 @@ public sealed class EyesProperty
     public static EyesProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
-        reader.Expect(Guid.Parse("6b4ca363-e160-4871-b709-e47467b40310"));
-        var childCount = reader.Read<ulong>();
-        if (childCount != 0)
-            throw new Exception();
+        reader.Expect(Constants.Eyes);
+        reader.Expect<ulong>(0);
 
         return new EyesProperty();
     }

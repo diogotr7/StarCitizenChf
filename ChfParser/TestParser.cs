@@ -31,15 +31,16 @@ public static class TestParser
             var g1 = reader.ReadKeyAndGuid();
             reader.Expect<uint>(0);
             reader.Expect<uint>(5);
-            var g2 =reader.ReadKeyAndGuid();
-            var g3 =reader.ReadKeyAndGuid();
+            var g2 =reader.ReadKeyAndGuid();//93-4D-27-9B
+            var g3 =reader.ReadKeyAndGuid();//61-70-55-C4
             reader.Expect<uint>(1);
             reader.Expect<uint>(5);
-            var mm1 =MysteryProperty.Read(ref reader);
-            var mm2 =MysteryProperty.Read(ref reader);
+            var mm1 = MysteryProperty.Read(ref reader);
+            var mm2 = MysteryProperty.Read(ref reader);
             var u1 = reader.ReadKeyValueAndChildCount<uint>(0);
             reader.Expect<uint>(0);
             var cl2 = ColorBlock2.Read(ref reader);
+            reader.Expect<uint>(5);
             var g6 = reader.ReadKeyAndGuid();
             var additional = reader.Read<uint>();
             reader.Expect<uint>(0);
@@ -48,41 +49,23 @@ public static class TestParser
             reader.Expect<uint>(0);
             reader.Expect<uint>(2);
             reader.Expect<uint>(5);
-            var u2 = reader.Read<uint>();
+            var u2 = reader.ReadKeyValueAndChildCount<uint>(0);
             reader.Expect<uint>(0);
             reader.Expect<uint>(1);
             reader.Expect<uint>(0);
             var cl3 = reader.ReadKeyValueAndChildCount<Color>(0, "97-07-53-BD");
-
-            //4b-c4-36-97 = uint
-            //0
-            //{colorblock2, where count is 1
-            //1
-            //0
-            //ac-34-2a-44 = color
-            //}
-            //58-4d-42-27 = material, guid + additional uint
-            //0
-            //0
-            //0
-            //0
-            //2
-            //5
-            //a9-79-c9-73 = uint
-            //0
-            //1
-            //0
-            //97-07-53-bd = color
-            //5
-            //2c-a1-1f-a4 = uint
-            //0
-            //1
-            //0
-            //97-07-53-bd = color
-            //end
+            reader.Expect(5);
+            var u3 = reader.ReadKeyValueAndChildCount<uint>(0);
+            reader.Expect(0);
+            reader.Expect(1);
+            reader.Expect(0);
+            var cl4 = reader.ReadKeyValueAndChildCount<Color>(0, "97-07-53-BD");
             
+            if (reader.Remaining.Length > 0)
+            {
+                Console.WriteLine($"Remaining: {reader.Remaining.Length}");
+            }
             
-            Console.WriteLine($"Found {reader.NextKey}, remaining: {reader.Remaining.Length}");
             return;
         }
         

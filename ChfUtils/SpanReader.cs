@@ -117,7 +117,10 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
     {
         var nextKey = NextKey;
         if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))
+        {
+            Debugger.Break();
             throw new Exception($"Unexpected key: {nextKey}");
+        }
 
         ExpectBytes(nextKey);
         var data = Read<T>();

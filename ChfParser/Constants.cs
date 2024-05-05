@@ -6,6 +6,11 @@ namespace ChfParser;
 
 public static class Constants
 {
+    public static readonly Guid Body = new("dbaa8a7d-755f-4104-8b24-7b58fd1e76f6");
+    public static readonly Guid Head = new("1d5cfab3-bf80-4550-b4ab-39e896a7086e");
+    public static readonly Guid Eyes = new("6b4ca363-e160-4871-b709-e47467b40310");
+    public static readonly Guid Eyelashes = new("6217c113-a448-443b-82aa-1bb108ba8e11");
+    
     public static readonly Guid Male = new("25f439d5-146b-4a61-a999-a486dfb68a49");
     public static readonly Guid Female = new("d0794a94-efb0-4cad-ad38-2558b4d3c253");
     

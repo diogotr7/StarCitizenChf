@@ -10,9 +10,7 @@ public sealed class GenderProperty
     public static GenderProperty Read(ref SpanReader reader)
     {
         var guid = reader.Read<Guid>();
-        
-        reader.Expect<ulong>(0);
-        reader.Expect<ulong>(0);
+        reader.Expect<Guid>(Guid.Empty);
         
         return new GenderProperty() { Id = guid };
     }

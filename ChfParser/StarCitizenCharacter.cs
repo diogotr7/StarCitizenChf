@@ -22,8 +22,6 @@ public sealed class StarCitizenCharacter
     public required string CustomMaterialKey { get; init; }
     public required CustomMaterialProperty CustomMaterial { get; init; }
     
-    
-    
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
         var reader = new SpanReader(data);
@@ -37,7 +35,7 @@ public sealed class StarCitizenCharacter
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
         var customMaterial = CustomMaterialProperty.Read(ref reader);
-        TestParser.Read(ref reader);
+        //TestParser.Read(ref reader);
         
         return new StarCitizenCharacter()
         {
