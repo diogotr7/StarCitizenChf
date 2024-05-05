@@ -1,5 +1,4 @@
-﻿using System;
-using ChfUtils;
+﻿using ChfUtils;
 
 namespace ChfParser;
 

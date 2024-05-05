@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace ChfUtils;
@@ -14,12 +10,6 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
     
     public ReadOnlySpan<byte> Remaining => Span[Position..];
     
-    public string NextKey => BitConverter.ToString(Span[Position..(Position + 4)].ToArray());
-    public uint NextUint=> Peek<uint>();
-    public Guid NextGuid => Peek<Guid>();
-    public float NextFloat => Peek<float>();
-    public ulong NextUlong => Peek<ulong>();
-
     /// <summary>
     ///     Reads a value from the span and advances the position.
     /// </summary>
@@ -48,9 +38,6 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return MemoryMarshal.Read<T>(Span[Position..]);
     }
     
-    /// <summary>
-    ///     Reads a number of bytes from the span and advances the position.
-    /// </summary>
     public ReadOnlySpan<byte> ReadBytes(int length)
     {
         var value = Span[Position..(Position + length)];
@@ -58,43 +45,13 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
     
-    /// <summary>
-    ///     Reads a T value from the span and checks if it matches the expected value.
-    /// </summary>
     public T Expect<T>(T expected) where T : unmanaged, IEquatable<T>
     {
         var value = Read<T>();
-        
-        if (!value.Equals(expected))
-        {
-            Debugger.Break();
-            throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
-        }
 
-        return value;
-    }
-
-    public T ReadKeyValueAndChildCount<T>(int count, params string[] acceptableKeys) where T : unmanaged
-    {
-        var nextKey = NextKey;
-        if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))
-        {
-            Debugger.Break();
-            throw new Exception($"Unexpected key: {nextKey}");
-        }
-
-        var expected = nextKey.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
-        var value = ReadBytes(expected.Length);
+        if (value.Equals(expected)) return value;
         
-        if (!value.SequenceEqual(expected))
-        {
-            Debugger.Break();
-            throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
-        }
-        
-        var data = Read<T>();
-        Expect(count);
-        return data;
+        throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
     }
 
     public T ReadKeyValueAndChildCount<T>(int count, uint key) where T : unmanaged

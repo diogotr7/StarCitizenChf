@@ -6,8 +6,8 @@ public static class GuidUtils
 {
     public static void Test()
     {
-        var asd = ToBitConverterRepresentation(new("fa5042a3-8568-48f5-bf36-02dc98191b2d"));
-        var das = ToBitConverterRepresentation(new("f0153262-588d-4ae8-8c06-53bf98cf80a5"));
+        var asd = ToBitConverterRepresentation(new Guid("fa5042a3-8568-48f5-bf36-02dc98191b2d"));
+        var das = ToBitConverterRepresentation(new Guid("f0153262-588d-4ae8-8c06-53bf98cf80a5"));
         
         var foundation1 = ToBitConverterRepresentation(Guid.Parse("b5e53e65-bd4a-4f50-bcd1-843ce5fc231b"));
         var foundation2 = ToBitConverterRepresentation(Guid.Parse("318114ee-f184-42f5-86cb-19a321bcb513"));

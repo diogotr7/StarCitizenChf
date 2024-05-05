@@ -5,7 +5,6 @@ namespace ChfParser;
 public sealed class EyeMaterial
 {
     public const uint Key = 0x_A0_47_88_5E;
-    public const int Size = 4 * 11 + 16 * 2 + 12;
     
     public required Color EyeColor { get; init; }
     

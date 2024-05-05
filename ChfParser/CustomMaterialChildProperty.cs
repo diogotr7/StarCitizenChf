@@ -13,7 +13,7 @@ public sealed class CustomMaterialChildProperty
         var count = reader.Read<byte>();
         var id = reader.Read<Guid>();
 
-        return new CustomMaterialChildProperty()
+        return new CustomMaterialChildProperty
         {
             Count = count,
             Id = id

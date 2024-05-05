@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using ChfUtils;
+﻿using ChfUtils;
 
 namespace ChfParser;
 
@@ -25,13 +24,13 @@ public sealed class FloatBlock2
         if (count != 7)
             throw new Exception($"Expected 7 floats, got {count}");
 
-        var f01 = reader.ReadKeyValueAndChildCount<float>(0, "5A-C1-F6-4A");
-        var f02 = reader.ReadKeyValueAndChildCount<float>(0, "D9-0B-37-C3");
-        var f03 = reader.ReadKeyValueAndChildCount<float>(0, "A3-00-FA-B9");
-        var f04 = reader.ReadKeyValueAndChildCount<float>(0, "AF-F0-FB-62");
-        var f05 = reader.ReadKeyValueAndChildCount<float>(0, "76-40-08-06");
-        var f06 = reader.ReadKeyValueAndChildCount<float>(0, "C8-A7-9A-A5");
-        var f07 = reader.ReadKeyValueAndChildCount<float>(0, "74-B6-7E-02");
+        var f01 = reader.ReadKeyValueAndChildCount<float>(0, 0x4a_f6_c1_5a);
+        var f02 = reader.ReadKeyValueAndChildCount<float>(0, 0xc3_37_0b_d9);
+        var f03 = reader.ReadKeyValueAndChildCount<float>(0, 0xb9_fa_00_a3);
+        var f04 = reader.ReadKeyValueAndChildCount<float>(0, 0x62_fb_f0_af);
+        var f05 = reader.ReadKeyValueAndChildCount<float>(0, 0x06_08_40_76);
+        var f06 = reader.ReadKeyValueAndChildCount<float>(0, 0xa5_9a_a7_c8);
+        var f07 = reader.ReadKeyValueAndChildCount<float>(0, 0x02_7e_b6_74);
         
         return new FloatBlock2()
         {

@@ -33,31 +33,32 @@ public sealed class FloatBlock
     public static FloatBlock Read(ref SpanReader reader)
     {
         reader.Expect<ulong>(0x19);
-        var freckleAmount = reader.ReadKeyValueAndChildCount<float>(0, "E2-27-77-E8");
-        var freckleOpacity = reader.ReadKeyValueAndChildCount<float>(0, "58-CB-61-93");
-        var sunSpotsAmount = reader.ReadKeyValueAndChildCount<float>(0, "0F-D2-4A-55");
-        var sunSpotOpacity = reader.ReadKeyValueAndChildCount<float>(0, "64-12-C4-CF");
-        var data00 = reader.ReadKeyValueAndChildCount<float>(0, "B0-83-58-B9");
-        var data01 = reader.ReadKeyValueAndChildCount<float>(0, "C3-50-F7-9C");
-        var data02 = reader.ReadKeyValueAndChildCount<float>(0, "DF-44-06-A9");
-        var data04 = reader.ReadKeyValueAndChildCount<float>(0, "87-A9-71-C8");
-        var data05 = reader.ReadKeyValueAndChildCount<float>(0, "F4-7A-DE-ED");
-        var data06 = reader.ReadKeyValueAndChildCount<float>(0, "E8-6E-2F-D8");
-        var data07 = reader.ReadKeyValueAndChildCount<float>(0, "BA-26-E5-CA");
-        var data08 = reader.ReadKeyValueAndChildCount<float>(0, "02-ED-26-05");
-        var data09 = reader.ReadKeyValueAndChildCount<float>(0, "71-3E-89-20");
-        var data10 = reader.ReadKeyValueAndChildCount<float>(0, "6D-2A-78-15");
-        var data11 = reader.ReadKeyValueAndChildCount<float>(0, "D7-D5-E3-9B");
-        var data12 = reader.ReadKeyValueAndChildCount<float>(0, "A4-06-4C-BE");
-        var data13 = reader.ReadKeyValueAndChildCount<float>(0, "B8-12-BD-8B");
-        var data14 = reader.ReadKeyValueAndChildCount<float>(0, "D3-A1-A1-11");
-        var data15 = reader.ReadKeyValueAndChildCount<float>(0, "C3-1A-57-92");
-        var data16 = reader.ReadKeyValueAndChildCount<float>(0, "B0-C9-F8-B7");
-        var data17 = reader.ReadKeyValueAndChildCount<float>(0, "AC-DD-09-82");
-        var data18 = reader.ReadKeyValueAndChildCount<float>(0, "E7-01-92-AA");
-        var data19 = reader.ReadKeyValueAndChildCount<float>(0, "94-D2-3D-8F");
-        var data20 = reader.ReadKeyValueAndChildCount<float>(0, "88-C6-CC-BA");
-        var data21 = reader.ReadKeyValueAndChildCount<float>(0, "F4-DC-9D-58");
+        
+        var freckleAmount = reader.ReadKeyValueAndChildCount<float>(0, 0xe87727e2);
+        var freckleOpacity = reader.ReadKeyValueAndChildCount<float>(0, 0x9361cb58);
+        var sunSpotsAmount = reader.ReadKeyValueAndChildCount<float>(0, 0x554ad20f);
+        var sunSpotOpacity = reader.ReadKeyValueAndChildCount<float>(0, 0xcfc41264);
+        var data00 = reader.ReadKeyValueAndChildCount<float>(0, 0xb95883b0);
+        var data01 = reader.ReadKeyValueAndChildCount<float>(0, 0x9cf750c3);
+        var data02 = reader.ReadKeyValueAndChildCount<float>(0, 0xa90644df);
+        var data04 = reader.ReadKeyValueAndChildCount<float>(0, 0xc871a987);
+        var data05 = reader.ReadKeyValueAndChildCount<float>(0, 0xedde7af4);
+        var data06 = reader.ReadKeyValueAndChildCount<float>(0, 0xd82f6ee8);
+        var data07 = reader.ReadKeyValueAndChildCount<float>(0, 0xcae526ba);
+        var data08 = reader.ReadKeyValueAndChildCount<float>(0, 0x0526ed02);
+        var data09 = reader.ReadKeyValueAndChildCount<float>(0, 0x20893e71);
+        var data10 = reader.ReadKeyValueAndChildCount<float>(0, 0x15782a6d);
+        var data11 = reader.ReadKeyValueAndChildCount<float>(0, 0x9be3d5d7);
+        var data12 = reader.ReadKeyValueAndChildCount<float>(0, 0xbe4c06a4);
+        var data13 = reader.ReadKeyValueAndChildCount<float>(0, 0x8bbd12b8);
+        var data14 = reader.ReadKeyValueAndChildCount<float>(0, 0x11a1a1d3);
+        var data15 = reader.ReadKeyValueAndChildCount<float>(0, 0x92571ac3);
+        var data16 = reader.ReadKeyValueAndChildCount<float>(0, 0xb7f8c9b0);
+        var data17 = reader.ReadKeyValueAndChildCount<float>(0, 0x8209ddac);
+        var data18 = reader.ReadKeyValueAndChildCount<float>(0, 0xaa9201e7);
+        var data19 = reader.ReadKeyValueAndChildCount<float>(0, 0x8f3dd294);
+        var data20 = reader.ReadKeyValueAndChildCount<float>(0, 0xbaccc688);
+        var data21 = reader.ReadKeyValueAndChildCount<float>(0, 0x589ddcf4);
         
         return new FloatBlock()
         {

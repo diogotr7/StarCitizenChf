@@ -30,28 +30,29 @@ public sealed class ColorBlock
     public static ColorBlock Read(ref SpanReader reader)
     {
         reader.Expect<ulong>(0x16);
-        var data22 = reader.ReadKeyValueAndChildCount<Color>(0, "97-07-53-BD");
-        var data23 = reader.ReadKeyValueAndChildCount<Color>(0, "90-1D-9B-B2");
-        var data24 = reader.ReadKeyValueAndChildCount<Color>(0, "2F-0E-23-E3");
-        var data25 = reader.ReadKeyValueAndChildCount<Color>(0, "36-E7-C0-2E");
-        var data26 = reader.ReadKeyValueAndChildCount<Color>(0, "93-1A-08-1A");
-        var data27 = reader.ReadKeyValueAndChildCount<Color>(0, "2C-09-B0-4B");
-        var data28 = reader.ReadKeyValueAndChildCount<Color>(0, "35-E0-53-86");
-        var data29 = reader.ReadKeyValueAndChildCount<Color>(0, "92-E7-86-7D");
-        var data30 = reader.ReadKeyValueAndChildCount<Color>(0, "2D-F4-3E-2C");
-        var data31 = reader.ReadKeyValueAndChildCount<Color>(0, "34-1D-DD-E1");
-        var data32 = reader.ReadKeyValueAndChildCount<uint>(0, "EC-83-A5-64");
-        var data33 = reader.ReadKeyValueAndChildCount<uint>(0, "18-70-F5-77");
-        var data34 = reader.ReadKeyValueAndChildCount<uint>(0, "98-E5-F3-E9");
-        var data35 = reader.ReadKeyValueAndChildCount<uint>(0, "6C-16-A3-FA");
-        var data36 = reader.ReadKeyValueAndChildCount<uint>(0, "F2-79-B3-3C");
-        var data37 = reader.ReadKeyValueAndChildCount<uint>(0, "06-8A-E3-2F");
-        var data38 = reader.ReadKeyValueAndChildCount<uint>(0, "F1-62-B7-32");
-        var data39 = reader.ReadKeyValueAndChildCount<uint>(0, "05-91-E7-21");
-        var data40 = reader.ReadKeyValueAndChildCount<uint>(0, "57-02-E5-F7");
-        var data41 = reader.ReadKeyValueAndChildCount<uint>(0, "A3-F1-B5-E4");
-        var data42 = reader.ReadKeyValueAndChildCount<uint>(0, "D6-1F-8B-7B");
-        var data43 = reader.ReadKeyValueAndChildCount<uint>(0, "22-EC-DB-68");
+        
+        var data22 = reader.ReadKeyValueAndChildCount<Color>(0, 0xbd530797);
+        var data23 = reader.ReadKeyValueAndChildCount<Color>(0, 0xb29b1d90);
+        var data24 = reader.ReadKeyValueAndChildCount<Color>(0, 0xe3230e2f);
+        var data25 = reader.ReadKeyValueAndChildCount<Color>(0, 0x2ec0e736);
+        var data26 = reader.ReadKeyValueAndChildCount<Color>(0, 0x1a081a93);
+        var data27 = reader.ReadKeyValueAndChildCount<Color>(0, 0x4bb0092c);
+        var data28 = reader.ReadKeyValueAndChildCount<Color>(0, 0x8653e035);
+        var data29 = reader.ReadKeyValueAndChildCount<Color>(0, 0x7d86e792);
+        var data30 = reader.ReadKeyValueAndChildCount<Color>(0, 0x2c3ef42d);
+        var data31 = reader.ReadKeyValueAndChildCount<Color>(0, 0xe1dd1d34);
+        var data32 = reader.ReadKeyValueAndChildCount<uint>(0, 0x64a583ec);
+        var data33 = reader.ReadKeyValueAndChildCount<uint>(0, 0x77f57018);
+        var data34 = reader.ReadKeyValueAndChildCount<uint>(0, 0xe9f3e598);
+        var data35 = reader.ReadKeyValueAndChildCount<uint>(0, 0xfaa3166c);
+        var data36 = reader.ReadKeyValueAndChildCount<uint>(0, 0x3cb379f2);
+        var data37 = reader.ReadKeyValueAndChildCount<uint>(0, 0x2fe38a06);
+        var data38 = reader.ReadKeyValueAndChildCount<uint>(0, 0x32b762f1);
+        var data39 = reader.ReadKeyValueAndChildCount<uint>(0, 0x21e79105);
+        var data40 = reader.ReadKeyValueAndChildCount<uint>(0, 0xf7e50257);
+        var data41 = reader.ReadKeyValueAndChildCount<uint>(0, 0xe4b5f1a3);
+        var data42 = reader.ReadKeyValueAndChildCount<uint>(0, 0x7b8b1fd6);
+        var data43 = reader.ReadKeyValueAndChildCount<uint>(0, 0x68dbec22);
         
         return new ColorBlock()
         {
