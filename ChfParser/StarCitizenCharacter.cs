@@ -56,6 +56,9 @@ public sealed class StarCitizenCharacter
 
         var eyeMaterial = EyeMaterial.Read(ref reader);
         var bodyMaterialInfo = BodyMaterialInfo.Read(ref reader);
+        
+        if (reader.Position != reader.Span.Length)
+            throw new Exception($"Unexpected data at the end of the file: {reader.Remaining.Length} bytes");
 
         return new StarCitizenCharacter
         {

@@ -23,7 +23,9 @@ public sealed class EyeMaterial
         reader.Expect<uint>(0);
         reader.Expect<uint>(1);
         reader.Expect<uint>(0);
-        var c1 = reader.ReadKeyValueAndChildCount<Color>(0, "AC-34-2A-44");
+        reader.Expect(0x44_2A_34_AC);
+        var c1 = reader.Read<Color>();
+        reader.Expect(0);
         reader.Expect<uint>(5);
         
         return new EyeMaterial

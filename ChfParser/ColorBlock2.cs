@@ -14,8 +14,8 @@ public sealed class ColorBlock2
         switch (count)
         {
             case 2:
-                var data53 = reader.ReadKeyValueAndChildCount<Color>(0, "14-08-E9-15");
-                var data54 = reader.ReadKeyValueAndChildCount<Color>(0, "09-C9-C7-A2");
+                var data53 = reader.ReadKeyValueAndChildCount<Color>(0, 0x15e90814);
+                var data54 = reader.ReadKeyValueAndChildCount<Color>(0, 0xa2c7c909);
         
                 return new ColorBlock2
                 {
@@ -23,7 +23,7 @@ public sealed class ColorBlock2
                     Color02 = data54
                 };
             case 1:
-                var asd = reader.ReadKeyValueAndChildCount<Color>(0, "AC-34-2A-44");
+                var asd = reader.ReadKeyValueAndChildCount<Color>(0, 0x442a34ac);
                 
                 return new ColorBlock2
                 {

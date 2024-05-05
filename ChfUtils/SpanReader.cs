@@ -43,12 +43,7 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         }
         
         if (typeof(T) == typeof(bool))
-        {
-            var value = Peek<int>();
-            //if the value is 0, return false, otherwise return true
-            var isTrue = value != 0;
-            return Unsafe.As<bool, T>(ref isTrue);
-        }
+            throw new InvalidOperationException("Read an int and compare it to 0 instead");
         
         return MemoryMarshal.Read<T>(Span[Position..]);
     }
@@ -61,11 +56,6 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         var value = Span[Position..(Position + length)];
         Position += length;
         return value;
-    }
-    
-    public ReadOnlySpan<byte> PeekBytes(int length)
-    {
-        return Span[Position..(Position + length)];
     }
     
     /// <summary>
@@ -84,54 +74,6 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
 
-    /// <summary>
-    ///     Reads a number of bytes from the span and checks if it matches the expected value.
-    /// </summary>
-    /// <param name="expected"></param>
-    /// <exception cref="InvalidOperationException"></exception>
-    public void ExpectBytes(ReadOnlySpan<byte> expected)
-    {
-        var value = ReadBytes(expected.Length);
-        
-        if (!value.SequenceEqual(expected))
-        {
-            Debugger.Break();
-            throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
-        }
-    }
-    
-    public ReadOnlySpan<byte> ReadUntil(ReadOnlySpan<byte> expected)
-    {
-        var index = Remaining.IndexOf(expected);
-        if (index == -1)
-            return [];
-        
-        var value = Span[Position..(Position + index)];
-        Position += index + expected.Length;
-        return value;
-    }
-    
-    /// <summary>
-    ///     Reads a number of bytes from the span and checks if it matches the expected value.
-    /// </summary>
-    /// <param name="bitConverter"></param>
-    public void ExpectBytes(string bitConverter)
-    {
-        var expected = bitConverter.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
-        ExpectBytes(expected);
-    }
-    
-    public Guid ReadKeyAndGuid(params string[] acceptableKeys)
-    {
-        var nextKey = NextKey;
-        if (acceptableKeys.Length > 0 && !acceptableKeys.Contains(nextKey))
-            throw new Exception($"Unexpected key: {nextKey}");
-        //if no key is provided, assume any key is acceptable
-
-        ExpectBytes(nextKey);
-        return Read<Guid>();
-    }
-
     public T ReadKeyValueAndChildCount<T>(int count, params string[] acceptableKeys) where T : unmanaged
     {
         var nextKey = NextKey;
@@ -141,9 +83,26 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
             throw new Exception($"Unexpected key: {nextKey}");
         }
 
-        ExpectBytes(nextKey);
+        var expected = nextKey.Split('-').Select(x => byte.Parse(x, NumberStyles.HexNumber)).ToArray();
+        var value = ReadBytes(expected.Length);
+        
+        if (!value.SequenceEqual(expected))
+        {
+            Debugger.Break();
+            throw new InvalidOperationException($"Expected {BitConverter.ToString(expected.ToArray())}, got {BitConverter.ToString(value.ToArray())} at position 0x{Position - expected.Length:X2}");
+        }
+        
         var data = Read<T>();
         Expect(count);
+        return data;
+    }
+
+    public T ReadKeyValueAndChildCount<T>(int count, uint key) where T : unmanaged
+    {
+        Expect(key);
+        var data = Read<T>();
+        Expect(count);
+        
         return data;
     }
 }

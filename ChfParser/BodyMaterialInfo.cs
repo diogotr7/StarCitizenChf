@@ -35,7 +35,7 @@ public sealed class BodyMaterialInfo
         reader.Expect<uint>(0);
         reader.Expect<uint>(1);
         reader.Expect<uint>(0);
-        var c1 = reader.ReadKeyValueAndChildCount<Color>(0, "97-07-53-BD");
+        var c1 = reader.ReadKeyValueAndChildCount<Color>(0, 0xbd530797);
         reader.Expect<uint>(5);
         reader.Expect(isMan ? 0x_A4_1F_A1_2C : 0x_8A_5B_66_DB);
         reader.Expect<uint>(0);
@@ -43,8 +43,8 @@ public sealed class BodyMaterialInfo
         reader.Expect<uint>(0);
         reader.Expect<uint>(1);
         reader.Expect<uint>(0);
-        var c2 = reader.ReadKeyValueAndChildCount<Color>(0, "97-07-53-BD");
-
+        var c2 = reader.ReadKeyValueAndChildCount<Color>(0, 0xbd530797);
+        
         return new BodyMaterialInfo
         {
             AdditionalParams = additionalParams,
