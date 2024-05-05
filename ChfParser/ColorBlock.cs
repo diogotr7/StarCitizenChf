@@ -4,7 +4,7 @@ namespace ChfParser;
 
 public sealed class ColorBlock
 {
-    public required Color Data00 { get; init; }
+    public required Color HeadColor { get; init; }
     public required Color Data01 { get; init; }
     public required Color Data02 { get; init; }
     public required Color Data03 { get; init; }
@@ -26,7 +26,6 @@ public sealed class ColorBlock
     public required uint Data19 { get; init; }
     public required uint Data20 { get; init; }
     public required uint Data21 { get; init; }
-    
     
     public static ColorBlock Read(ref SpanReader reader)
     {
@@ -56,7 +55,7 @@ public sealed class ColorBlock
         
         return new ColorBlock()
         {
-            Data00 = data22,
+            HeadColor = data22,
             Data01 = data23,
             Data02 = data24,
             Data03 = data25,

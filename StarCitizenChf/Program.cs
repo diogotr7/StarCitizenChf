@@ -72,13 +72,17 @@ await Utils.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
 await Processing.ProcessAllCharacters(folders.WebsiteCharacters);
 await Processing.ProcessAllCharacters(folders.LocalCharacters);
 
+var threecolors = Path.Combine(folders.ModdedCharacters, "female_3colors","female_3colors.bin");
+var threecolorsBin = File.ReadAllBytes(threecolors);
+var threecolorsCharacter = StarCitizenCharacter.FromBytes(threecolors, threecolorsBin);
+
 var web = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
 var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
 var allBins = web.Concat(local).ToArray();
 HashSet<string> reversed = new();
 foreach (var (data, name) in allBins)
 {
-    reversed.Add($"{BitConverter.ToString(data.Reverse().ToArray())} {name}");
+    reversed.Add($"{BitConverter.ToString(data.Reverse().Skip(BodyMaterialInfo.Size).ToArray())} {name}");
 }
 File.WriteAllLines(Path.Combine(folders.Base, "reversed1.txt"), reversed.Order().OrderBy(l => l.Length));
 
@@ -91,21 +95,26 @@ File.WriteAllLines(Path.Combine(folders.Base, "bins.txt"), bins.Order().OrderBy(
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
 
-//var colors = characters.SelectMany<StarCitizenCharacter, Color>(x => [x.BodyColor1, x.BodyColor2]).Distinct().ToArray();
-// var folder = Path.Combine(folders.Base, "colors");
-// Directory.CreateDirectory(folder);
-// int i = 0;
-// foreach (var color in colors)
-// {
-//     var c = new Rgba32()
-//     {
-//         R = color.R,
-//         G = color.G,
-//         B = color.B,
-//         A = 255
-//     };
-//     await Utils.WriteSolidColorImage(Path.Combine(folder, $"{i++}.png"), c);
-// }
+var idks = StarCitizenCharacter.idks.Where(x => x.Item2.Length > 0).Select(x => $"{BitConverter.ToString(x.Item2)} {x.Item1}").OrderBy(x => x.Length);
+var idks_reversed = StarCitizenCharacter.idks.Where(x => x.Item2.Length > 0).Select(x => $"{BitConverter.ToString(x.Item2.Reverse().ToArray())} {x.Item1}").OrderBy(x => x.Length);
+File.WriteAllLines(Path.Combine(folders.Base, "idks.txt"), idks);
+File.WriteAllLines(Path.Combine(folders.Base, "idks_reversed.txt"), idks_reversed);
+
+var colors = characters.SelectMany<StarCitizenCharacter, Color>(x => [x.CustomColor]).Distinct().ToArray();
+ var folder = Path.Combine(folders.Base, "colors3");
+ Directory.CreateDirectory(folder);
+ int i = 0;
+ foreach (var color in colors)
+ {
+     var c = new Rgba32()
+     {
+         R = color.R,
+         G = color.G,
+         B = color.B,
+         A = 255
+     };
+     await Utils.WriteSolidColorImage(Path.Combine(folder, $"{i++}.png"), c);
+ }
 
 
 return;

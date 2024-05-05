@@ -42,6 +42,14 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
             return Unsafe.As<Guid, T>(ref guid);
         }
         
+        if (typeof(T) == typeof(bool))
+        {
+            var value = Peek<int>();
+            //if the value is 0, return false, otherwise return true
+            var isTrue = value != 0;
+            return Unsafe.As<bool, T>(ref isTrue);
+        }
+        
         return MemoryMarshal.Read<T>(Span[Position..]);
     }
     

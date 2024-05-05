@@ -32,7 +32,7 @@ public sealed class FloatBlock
     
     public static FloatBlock Read(ref SpanReader reader)
     {
-        reader.Expect<ulong>(25);
+        reader.Expect<ulong>(0x19);
         var freckleAmount = reader.ReadKeyValueAndChildCount<float>(0, "E2-27-77-E8");
         var freckleOpacity = reader.ReadKeyValueAndChildCount<float>(0, "58-CB-61-93");
         var sunSpotsAmount = reader.ReadKeyValueAndChildCount<float>(0, "0F-D2-4A-55");
