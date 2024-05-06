@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using ChfUtils;
 
 namespace ChfParser;
@@ -11,11 +9,8 @@ public sealed class EyebrowProperty
     public required Guid Id { get; init; }
     public required ulong ChildCount { get; init; }
     
-    public static EyebrowProperty? ReadOptional(ref SpanReader reader)
+    public static EyebrowProperty Read(ref SpanReader reader)
     {
-        if (reader.Peek<uint>() != Key)
-            return null;
-        
         reader.Expect(Key);
         var guid = reader.Read<Guid>();
         var childCount = reader.Read<ulong>();

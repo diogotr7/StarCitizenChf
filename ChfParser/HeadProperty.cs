@@ -20,6 +20,7 @@ public sealed class HeadProperty
         reader.Expect(Constants.Head);
         
         var childCount = reader.Read<ulong>();
+        
         EyesProperty? eyes = null;
         HairProperty? hair = null;
         EyebrowProperty? eyebrow = null;
@@ -37,13 +38,13 @@ public sealed class HeadProperty
                     hair = HairProperty.Read(ref reader);
                     break;
                 case EyebrowProperty.Key:
-                    eyebrow = EyebrowProperty.ReadOptional(ref reader);
+                    eyebrow = EyebrowProperty.Read(ref reader);
                     break;
                 case EyelashProperty.Key:
                     eyelash = EyelashProperty.Read(ref reader);
                     break;
                 case FacialHairProperty.Key:
-                    facialHair = FacialHairProperty.ReadOptional(ref reader);
+                    facialHair = FacialHairProperty.Read(ref reader);
                     break;
                 default:
                     throw new Exception();

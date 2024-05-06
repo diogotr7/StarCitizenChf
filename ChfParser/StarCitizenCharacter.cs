@@ -6,24 +6,24 @@ public sealed class StarCitizenCharacter
 {
     public required string Name { get; init; }
     public required string Gender { get; init; }
-    
+
     public required string DnaString { get; init; }
     public required ulong TotalCount { get; init; }
-    
+
     public required string HairId { get; init; }
     public required string HairModId { get; init; }
     public required string EyeBrowId { get; init; }
     public required string BeardId { get; init; }
     public required string BeardModId { get; init; }
     public required string HeadMaterialId { get; init; }
-    
+
     public required HashSet<Color> AllColors { get; init; }
-    
+
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
         var colors = new HashSet<Color>();
         var reader = new SpanReader(data);
-        
+
         reader.Expect<uint>(2);
         reader.Expect<uint>(7);
 
@@ -44,41 +44,33 @@ public sealed class StarCitizenCharacter
         colors.Add(customMaterial.Colors.Data07);
         colors.Add(customMaterial.Colors.Data08);
         colors.Add(customMaterial.Colors.Data09);
-        
+
+        var props = new List<UnknownProperty>();
         while (reader.Peek<uint>() != EyeMaterial.Key)
         {
-            var nextKey = reader.Read<uint>();
-            if (nextKey != 0x6C_83_69_47 && nextKey != 0x07_8A_C8_BD && nextKey != 0x9B_27_4D_93)
-                throw new Exception($"Unexpected key: {nextKey:X}");
-            
-            reader.Expect(Guid.Empty);
-            var k = reader.Read<uint>();
-            reader.Expect(Guid.Empty);
-            reader.Expect(1);
-            reader.Expect(5);
-            var floatsX = FloatBlock2.Read(ref reader);
-            var colorsX = ColorBlock2.Read(ref reader);
-            reader.Expect(5);
-            
-            if (colorsX.Color01 is { } x)
+            var prop = UnknownProperty.Read(ref reader);
+
+            if (prop.Colors?.Color01 is { } x)
                 colors.Add(x);
-            if (colorsX.Color02  is { } y)
+            if (prop.Colors?.Color02 is { } y)
                 colors.Add(y);
+
+            props.Add(prop);
         }
 
         var eyeMaterial = EyeMaterial.Read(ref reader);
-        var bodyMaterialInfo = BodyMaterialInfo.Read(ref reader);
-        
+        var bodyMaterialInfo = BodyMaterial.Read(ref reader);
+
         colors.Add(eyeMaterial.EyeColor);
         colors.Add(bodyMaterialInfo.TorsoColor);
         colors.Add(bodyMaterialInfo.LimbColor);
-        
+
         if (reader.Position != reader.Span.Length)
             throw new Exception($"Unexpected data at the end of the file: {reader.Remaining.Length} bytes");
 
         return new StarCitizenCharacter
         {
-            Name = fileName,
+            Name = Path.GetFileNameWithoutExtension(fileName),
             Gender = Constants.GetName(gender.Id),
             DnaString = dnaProperty.Dna[..8],
             TotalCount = totalCount,

@@ -60,7 +60,7 @@ public sealed class FloatBlock
         var data20 = reader.ReadKeyValueAndChildCount<float>(0, 0xbaccc688);
         var data21 = reader.ReadKeyValueAndChildCount<float>(0, 0x589ddcf4);
         
-        return new FloatBlock()
+        return new FloatBlock
         {
             FreckleAmount = freckleAmount,
             FreckleOpacity = freckleOpacity,

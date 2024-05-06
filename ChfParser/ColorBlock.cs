@@ -29,6 +29,7 @@ public sealed class ColorBlock
     
     public static ColorBlock Read(ref SpanReader reader)
     {
+        //note: the uints here are either a bitfield or a bool, not sure.
         reader.Expect<ulong>(0x16);
         
         var data22 = reader.ReadKeyValueAndChildCount<Color>(0, 0xbd530797);
@@ -54,7 +55,7 @@ public sealed class ColorBlock
         var data42 = reader.ReadKeyValueAndChildCount<uint>(0, 0x7b8b1fd6);
         var data43 = reader.ReadKeyValueAndChildCount<uint>(0, 0x68dbec22);
         
-        return new ColorBlock()
+        return new ColorBlock
         {
             HeadColor = data22,
             Data01 = data23,

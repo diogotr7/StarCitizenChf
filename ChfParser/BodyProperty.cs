@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using ChfUtils;
+﻿using ChfUtils;
 
 namespace ChfParser;
 
@@ -14,10 +12,7 @@ public sealed class BodyProperty
     {
         reader.Expect(Key);
         reader.Expect(Constants.Body);
-        var childCount = reader.Read<ulong>();
-        
-        if (childCount != 1)
-            throw new Exception("BodyProperty child count is not 1");
+        reader.Expect<ulong>(1);
         
         var head = HeadProperty.Read(ref reader);
 

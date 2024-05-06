@@ -4,6 +4,8 @@ namespace ChfParser;
 
 public sealed class FloatBlock2
 {
+    public required uint Key { get; init; }
+    
     public required float Data01 { get; init; }
     public required float Data02 { get; init; }
     public required float Data03 { get; init; }
@@ -32,8 +34,9 @@ public sealed class FloatBlock2
         var f06 = reader.ReadKeyValueAndChildCount<float>(0, 0xa5_9a_a7_c8);
         var f07 = reader.ReadKeyValueAndChildCount<float>(0, 0x02_7e_b6_74);
         
-        return new FloatBlock2()
+        return new FloatBlock2
         {
+            Key = k,
             Data01 = f01,
             Data02 = f02,
             Data03 = f03,

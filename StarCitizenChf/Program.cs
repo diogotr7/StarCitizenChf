@@ -29,16 +29,17 @@ var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
 var allBins = web;
 
 var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.name, x.data)).ToArray();
+
 return;
 await Task.WhenAll(characters.Select(async character =>
 {
     Console.WriteLine($"Processing {character.Name}");
     //write all colors in the character to a properly named file in the character folder.
     var folder = Path.GetDirectoryName(character.Name);
-    Directory.CreateDirectory(folder);
+    Directory.CreateDirectory(folder!);
     await Task.WhenAll(character.AllColors.Select(async color =>
     {
-        var path = Path.Combine(folder, $"{color.ToString()}.png");
+        var path = Path.Combine(folder!, $"{color.ToString()}.png");
         
         if (File.Exists(path))
             return;

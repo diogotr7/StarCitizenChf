@@ -2,16 +2,15 @@
 
 namespace ChfParser;
 
-public sealed class BodyMaterialInfo
+public sealed class BodyMaterial
 {
     public const uint Key = 0x_27_42_4D_58;
-    public const int Size = 124;
     
     public required uint AdditionalParams { get; init; }
     public required Color TorsoColor { get; init; }
     public required Color LimbColor { get; init; }
     
-    public static BodyMaterialInfo Read(ref SpanReader reader)
+    public static BodyMaterial Read(ref SpanReader reader)
     {
         reader.Expect(Key);
         var guid = reader.Read<Guid>();
@@ -45,7 +44,7 @@ public sealed class BodyMaterialInfo
         reader.Expect<uint>(0);
         var c2 = reader.ReadKeyValueAndChildCount<Color>(0, 0xbd530797);
         
-        return new BodyMaterialInfo
+        return new BodyMaterial
         {
             AdditionalParams = additionalParams,
             TorsoColor = c1,

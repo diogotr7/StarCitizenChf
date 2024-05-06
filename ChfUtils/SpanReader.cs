@@ -45,13 +45,12 @@ public ref struct SpanReader(ReadOnlySpan<byte> span)
         return value;
     }
     
-    public T Expect<T>(T expected) where T : unmanaged, IEquatable<T>
+    public void Expect<T>(T expected) where T : unmanaged, IEquatable<T>
     {
         var value = Read<T>();
 
-        if (value.Equals(expected)) return value;
-        
-        throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
+        if (!value.Equals(expected))
+            throw new InvalidOperationException($"Expected {expected}, got {value} at position 0x{Position - Unsafe.SizeOf<T>():X2}");
     }
 
     public T ReadKeyValueAndChildCount<T>(int count, uint key) where T : unmanaged

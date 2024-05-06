@@ -9,11 +9,8 @@ public sealed class FacialHairProperty
     public required Guid Id { get; init; }
     public required HairModifierProperty? Modifier { get; init; }
             
-    public static FacialHairProperty? ReadOptional(ref SpanReader reader)
+    public static FacialHairProperty Read(ref SpanReader reader)
     {
-        if (reader.Peek<uint>() != Key)
-            return null;
-        
         reader.Expect(Key);
         var guid = reader.Read<Guid>();
         var count = reader.Read<uint>();
