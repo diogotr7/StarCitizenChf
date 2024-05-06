@@ -4,9 +4,9 @@ namespace ChfParser;
 
 public sealed class UnknownProperty
 {
-    public const uint Key1 = 0x6C_83_69_47;
-    public const uint Key2 = 0x07_8A_C8_BD;
-    public const uint Key3 = 0x9B_27_4D_93;
+    public const uint Key1 = 0x6C836947;
+    public const uint Key2 = 0x078AC8BD;
+    public const uint Key3 = 0x9B274D93;
     
     public required uint Key { get; init; }
     public required uint Unknown { get; init; }

@@ -30,7 +30,6 @@ var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
 var allBins = web.Concat(local).ToArray();
 
 var characters = allBins.Select(x =>  (x.name, character: StarCitizenCharacter.FromBytes(x.data))).ToArray();
-
 var charactersWithColor = characters.Select(t =>
 {
     var (name, c) = t;
@@ -50,6 +49,7 @@ var charactersWithColor = characters.Select(t =>
         c.BodyMaterial.TorsoColor,
         c.BodyMaterial.LimbColor
     };
+    
     foreach (var prop in c.Props)
     {
         if (prop.Colors?.Color01 is { } x)

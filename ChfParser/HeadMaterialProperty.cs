@@ -4,7 +4,7 @@ namespace ChfParser;
 
 public sealed class HeadMaterialProperty
 {
-    public const uint Key = 0x_A9_8B_EB_34;
+    public const uint Key = 0xA98BEB34;
 
     public required Guid Id { get; init; }
     public required uint AdditionalParams { get; init; }

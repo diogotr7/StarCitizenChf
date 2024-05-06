@@ -9,9 +9,9 @@ public sealed class StarCitizenCharacter
     public required BodyProperty Body { get; init; }
     public required HeadMaterialProperty HeadMaterial { get; init; }
     public required CustomMaterialProperty CustomMaterial { get; init; }
+    public required List<UnknownProperty> Props { get; init; }
     public required EyeMaterial EyeMaterial { get; init; }
     public required BodyMaterial BodyMaterial { get; init; }
-    public required List<UnknownProperty> Props { get; init; }
 
     public static StarCitizenCharacter FromBytes(ReadOnlySpan<byte> data)
     {

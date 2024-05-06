@@ -5,7 +5,7 @@ namespace ChfParser;
 //libs/foundry/records/entities/scitem/characters/human/head/shared/eyelashes/head_eyelashes.xml
 public sealed class EyelashProperty 
 {
-    public const uint Key = 0x_19_0b_04_e2;
+    public const uint Key = 0x190b04e2;
     
     public required ulong ChildCount { get; init; }
     

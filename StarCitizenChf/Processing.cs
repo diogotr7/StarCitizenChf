@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using ChfParser;
 using ChfUtils;
 
 namespace StarCitizenChf;
@@ -50,6 +52,7 @@ public static class Processing
 
     public static async Task ProcessAllCharacters(string charactersFolder)
     {
+        var opts = new JsonSerializerOptions { WriteIndented = true };
         await Task.WhenAll(Directory.GetDirectories(charactersFolder).Select(async characterFolder =>
         {
             try
@@ -65,11 +68,25 @@ public static class Processing
                 var bin = Path.ChangeExtension(chf, ".bin");
                 if (!File.Exists(bin))
                     await Decompression.DecompressFile(chf, bin);
+                
+                var json = Path.ChangeExtension(chf, ".json");
+                if (!File.Exists(json))
+                    await ExtractCharacterJson(bin, json);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Error processing {characterFolder}: {e.Message}");
             }
         }));
+    }
+    
+    private static readonly JsonSerializerOptions opts = new() { WriteIndented = true };
+
+    public static async Task ExtractCharacterJson(string inputFilename, string outputFilename)
+    {
+        var data = await File.ReadAllBytesAsync(inputFilename);
+        var character = StarCitizenCharacter.FromBytes(data);
+        var json = JsonSerializer.Serialize(character, opts);
+        await File.WriteAllTextAsync(outputFilename, json);
     }
 }

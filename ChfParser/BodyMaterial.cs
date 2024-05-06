@@ -4,7 +4,7 @@ namespace ChfParser;
 
 public sealed class BodyMaterial
 {
-    public const uint Key = 0x_27_42_4D_58;
+    public const uint Key = 0x27424D58;
     
     public required uint AdditionalParams { get; init; }
     public required Color TorsoColor { get; init; }
@@ -28,7 +28,7 @@ public sealed class BodyMaterial
         reader.Expect<uint>(0);
         reader.Expect<uint>(2);
         reader.Expect<uint>(5);
-        reader.Expect(isMan ? 0x_73_C9_79_A9 : 0x_31_6B_6E_4C);
+        reader.Expect(isMan ? 0x73C979A9 : 0x316B6E4C);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
@@ -36,7 +36,7 @@ public sealed class BodyMaterial
         reader.Expect<uint>(0);
         var c1 = reader.ReadKeyValueAndChildCount<Color>(0, 0xbd530797);
         reader.Expect<uint>(5);
-        reader.Expect(isMan ? 0x_A4_1F_A1_2C : 0x_8A_5B_66_DB);
+        reader.Expect(isMan ? 0xA41FA12C : 0x8A5B66DB);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);

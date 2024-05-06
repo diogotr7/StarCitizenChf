@@ -4,8 +4,8 @@ namespace ChfParser;
 
 public sealed class CustomMaterialProperty
 {
-    public const uint Key = 0x72_12_9E_8E;
-    public const uint SpecialKey = 0xa5_37_8a_05;
+    public const uint Key = 0x72129E8E;
+    public const uint SpecialKey = 0xa5378a05;
     
     public required CustomMaterialChildProperty[] Children { get; init; }
     public required FloatBlock Floats { get; init; }

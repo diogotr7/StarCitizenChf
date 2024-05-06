@@ -6,7 +6,7 @@ public sealed class DnaProperty
 {
     private const int Size = 0xD8;
     
-    public required string Dna { get; init; }
+    public required string DnaString { get; init; }
     
     public static DnaProperty Read(ref SpanReader reader)
     {
@@ -18,7 +18,7 @@ public sealed class DnaProperty
         
         return new DnaProperty
         {
-            Dna = dnaString
+            DnaString = dnaString
         };
     }
 }

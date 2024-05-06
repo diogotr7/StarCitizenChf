@@ -5,7 +5,7 @@ namespace ChfParser;
 //libs/foundry/records/entities/scitem/characters/human/appearance_modifier/hair_variant/hair_var_brown.xml
 public sealed class HairModifierProperty
 {
-    public const uint Key = 0x_e7_80_9d_46;
+    public const uint Key = 0xe7809d46;
     
     public required Guid Id { get; init; }
     public required ulong ChildCount { get; init; }
