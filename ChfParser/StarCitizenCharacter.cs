@@ -8,8 +8,8 @@ public sealed class StarCitizenCharacter
     public required DnaProperty Dna { get; init; }
     public required BodyProperty Body { get; init; }
     public required HeadMaterial HeadMaterial { get; init; }
-    public required CustomMaterialProperty CustomMaterial { get; init; }
-    public required List<UnknownProperty> Props { get; init; }
+    public required FaceMaterial FaceMaterial { get; init; }
+    public required List<DyeProperty> Dyes { get; init; }
     public required EyeMaterial EyeMaterial { get; init; }
     public required BodyMaterial BodyMaterial { get; init; }
 
@@ -25,12 +25,12 @@ public sealed class StarCitizenCharacter
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterial.Read(ref reader);
-        var customMaterial = CustomMaterialProperty.Read(ref reader, headMaterial.Material);
+        var customMaterial = FaceMaterial.Read(ref reader, headMaterial.Material);
 
-        var props = new List<UnknownProperty>();
+        var props = new List<DyeProperty>();
         while (reader.Peek<uint>() != EyeMaterial.Key)
         {
-            props.Add(UnknownProperty.Read(ref reader));
+            props.Add(DyeProperty.Read(ref reader));
         }
 
         var eyeMaterial = EyeMaterial.Read(ref reader);
@@ -45,10 +45,10 @@ public sealed class StarCitizenCharacter
             Dna = dnaProperty,
             Body = body,
             HeadMaterial = headMaterial,
-            CustomMaterial = customMaterial,
+            FaceMaterial = customMaterial,
             EyeMaterial = eyeMaterial,
             BodyMaterial = bodyMaterialInfo,
-            Props = props
+            Dyes = props
         };
     }
 }

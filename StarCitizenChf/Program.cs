@@ -6,6 +6,27 @@ using System.Threading.Tasks;
 using ChfParser;
 using ChfUtils;
 using StarCitizenChf;
+var inputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+    "Roberts Space Industries", "StarCitizen", "EPTU", "user", "client", "0", "CustomCharacters");
+using var watcher = new FileSystemWatcher(inputFolder);
+watcher.NotifyFilter = NotifyFilters.Attributes |
+                       NotifyFilters.CreationTime |
+                       NotifyFilters.FileName |
+                       NotifyFilters.LastAccess |
+                       NotifyFilters.LastWrite |
+                       NotifyFilters.Size |
+                       NotifyFilters.Security;
+watcher.Renamed += async (sender, eventArgs) =>
+{
+    Console.WriteLine($"2New character detected: {eventArgs.FullPath}");
+    await Processing.ProcessCharacter(eventArgs.FullPath);
+    Console.WriteLine($"Character processed: {eventArgs.FullPath}");
+};
+
+watcher.EnableRaisingEvents = true;
+
+Console.ReadLine();
+return;
 
 GuidUtils.Test();
 

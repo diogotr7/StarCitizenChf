@@ -50,33 +50,31 @@ public static class Processing
             await file.WriteToFileAsync(target);
         }));
     }
+    public static async Task ProcessCharacter(string chf)
+    {
+        if (!chf.EndsWith(".chf"))
+            throw new ArgumentException("Not a chf file", nameof(chf));
+
+        var bin = Path.ChangeExtension(chf, ".bin");
+        if (!File.Exists(bin))
+            await Decompression.DecompressFile(chf, bin);
+        
+        var json = Path.ChangeExtension(chf, ".json");
+        //if (!File.Exists(json))
+            await ExtractCharacterJson(bin, json);
+    }
 
     public static async Task ProcessAllCharacters(string charactersFolder)
     {
-        var opts = new JsonSerializerOptions { WriteIndented = true };
-        await Task.WhenAll(Directory.GetDirectories(charactersFolder).Select(async characterFolder =>
+        await Task.WhenAll(Directory.GetFiles(charactersFolder, "*.chf", SearchOption.AllDirectories).Select(async characterFile =>
         {
             try
             {
-                var files = Directory.GetFiles(characterFolder);
-                if (files.Length == 0)
-                    return;
-
-                var chf = files.SingleOrDefault(x => x.EndsWith(".chf"));
-                if (chf == null)
-                    return;
-
-                var bin = Path.ChangeExtension(chf, ".bin");
-                if (!File.Exists(bin))
-                    await Decompression.DecompressFile(chf, bin);
-                
-                var json = Path.ChangeExtension(chf, ".json");
-                //if (!File.Exists(json))
-                    await ExtractCharacterJson(bin, json);
+                await ProcessCharacter(characterFile);
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error processing {characterFolder}: {e.Message}");
+                Console.WriteLine($"Error processing {characterFile}: {e.Message}");
             }
         }));
     }

@@ -2,35 +2,35 @@
 
 namespace ChfParser;
 
-public sealed class FloatBlock
+public sealed class FaceValues
 {
     public required float FreckleAmount { get; init; }
     public required float FreckleOpacity { get; init; }
     public required float SunSpotsAmount { get; init; }
     public required float SunSpotOpacity { get; init; }
-    public required float Data00 { get; init; }
-    public required float Data01 { get; init; }
-    public required float Data02 { get; init; }
-    public required float Data04 { get; init; }
-    public required float Data05 { get; init; }
-    public required float Data06 { get; init; }
-    public required float Data07 { get; init; }
-    public required float Data08 { get; init; }
-    public required float Data09 { get; init; }
-    public required float Data10 { get; init; }
-    public required float Data11 { get; init; }
-    public required float Data12 { get; init; }
-    public required float Data13 { get; init; }
-    public required float Data14 { get; init; }
-    public required float Data15 { get; init; }
-    public required float Data16 { get; init; }
-    public required float Data17 { get; init; }
-    public required float Data18 { get; init; }
-    public required float Data19 { get; init; }
-    public required float Data20 { get; init; }
-    public required float Data21 { get; init; }
+    public required float EyeMetallic1 { get; init; }
+    public required float EyeMetallic2 { get; init; }
+    public required float EyeMetallic3 { get; init; }
+    public required float EyeSmoothness1 { get; init; }
+    public required float EyeSmoothness2 { get; init; }
+    public required float EyeSmoothness3 { get; init; }
+    public required float EyeOpacity { get; init; }
+    public required float CheekMetallic1 { get; init; }
+    public required float CheekMetallic2 { get; init; }
+    public required float CheekMetallic3 { get; init; }
+    public required float CheekSmoothness1 { get; init; }
+    public required float CheekSmoothness2 { get; init; }
+    public required float CheekSmoothness3 { get; init; }
+    public required float CheekOpacity { get; init; }
+    public required float LipMetallic1 { get; init; }
+    public required float LipMetallic2 { get; init; }
+    public required float LipMetallic3 { get; init; }
+    public required float LipSmoothness1 { get; init; }
+    public required float LipSmoothness2 { get; init; }
+    public required float LipSmoothness3 { get; init; }
+    public required float LipOpacity { get; init; }
     
-    public static FloatBlock Read(ref SpanReader reader)
+    public static FaceValues Read(ref SpanReader reader)
     {
         reader.Expect<ulong>(0x19);
         
@@ -60,33 +60,33 @@ public sealed class FloatBlock
         var data20 = reader.ReadKeyValueAndChildCount<float>(0, 0xbaccc688);
         var data21 = reader.ReadKeyValueAndChildCount<float>(0, 0x589ddcf4);
         
-        return new FloatBlock
+        return new FaceValues
         {
             FreckleAmount = freckleAmount,
             FreckleOpacity = freckleOpacity,
             SunSpotsAmount = sunSpotsAmount,
             SunSpotOpacity = sunSpotOpacity,
-            Data00 = data00,
-            Data01 = data01,
-            Data02 = data02,
-            Data04 = data04,
-            Data05 = data05,
-            Data06 = data06,
-            Data07 = data07,
-            Data08 = data08,
-            Data09 = data09,
-            Data10 = data10,
-            Data11 = data11,
-            Data12 = data12,
-            Data13 = data13,
-            Data14 = data14,
-            Data15 = data15,
-            Data16 = data16,
-            Data17 = data17,
-            Data18 = data18,
-            Data19 = data19,
-            Data20 = data20,
-            Data21 = data21,
+            EyeMetallic1 = data00,
+            EyeMetallic2 = data01,
+            EyeMetallic3 = data02,
+            EyeSmoothness1 = data04,
+            EyeSmoothness2 = data05,
+            EyeSmoothness3 = data06,
+            EyeOpacity = data07,
+            CheekMetallic1 = data08,
+            CheekMetallic2 = data09,
+            CheekMetallic3 = data10,
+            CheekSmoothness1 = data11,
+            CheekSmoothness2 = data12,
+            CheekSmoothness3 = data13,
+            CheekOpacity = data14,
+            LipMetallic1 = data15,
+            LipMetallic2 = data16,
+            LipMetallic3 = data17,
+            LipSmoothness1 = data18,
+            LipSmoothness2 = data19,
+            LipSmoothness3 = data20,
+            LipOpacity = data21,
         };
     }
 }

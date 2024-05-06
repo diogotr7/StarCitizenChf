@@ -2,18 +2,18 @@
 
 namespace ChfParser;
 
-public sealed class ColorBlock
+public sealed class FaceColors
 {
     public required Color HeadColor { get; init; }
-    public required Color Data01 { get; init; }
-    public required Color Data02 { get; init; }
-    public required Color Data03 { get; init; }
-    public required Color Data04 { get; init; }
-    public required Color Data05 { get; init; }
-    public required Color Data06 { get; init; }
-    public required Color Data07 { get; init; }
-    public required Color Data08 { get; init; }
-    public required Color Data09 { get; init; }
+    public required Color EyeMakeupColor1 { get; init; }
+    public required Color EyeMakeupColor2 { get; init; }
+    public required Color EyeMakeupColor3 { get; init; }
+    public required Color CheekMakeupColor1 { get; init; }
+    public required Color CheekMakeupColor2 { get; init; }
+    public required Color CheekMakeupColor3 { get; init; }
+    public required Color LipMakeupColor1 { get; init; }
+    public required Color LipMakeupColor2 { get; init; }
+    public required Color LipMakeupColor3 { get; init; }
     public required uint Data10 { get; init; }
     public required uint Data11 { get; init; }
     public required uint Data12 { get; init; }
@@ -27,7 +27,7 @@ public sealed class ColorBlock
     public required uint Data20 { get; init; }
     public required uint Data21 { get; init; }
     
-    public static ColorBlock Read(ref SpanReader reader)
+    public static FaceColors Read(ref SpanReader reader)
     {
         //note: the uints here are either a bitfield or a bool, not sure.
         reader.Expect<ulong>(0x16);
@@ -55,18 +55,18 @@ public sealed class ColorBlock
         var data42 = reader.ReadKeyValueAndChildCount<uint>(0, 0x7b8b1fd6);
         var data43 = reader.ReadKeyValueAndChildCount<uint>(0, 0x68dbec22);
         
-        return new ColorBlock
+        return new FaceColors
         {
             HeadColor = data22,
-            Data01 = data23,
-            Data02 = data24,
-            Data03 = data25,
-            Data04 = data26,
-            Data05 = data27,
-            Data06 = data28,
-            Data07 = data29,
-            Data08 = data30,
-            Data09 = data31,
+            EyeMakeupColor1 = data23,
+            EyeMakeupColor2 = data24,
+            EyeMakeupColor3 = data25,
+            CheekMakeupColor1 = data26,
+            CheekMakeupColor2 = data27,
+            CheekMakeupColor3 = data28,
+            LipMakeupColor1 = data29,
+            LipMakeupColor2 = data30,
+            LipMakeupColor3 = data31,
             Data10 = data32,
             Data11 = data33,
             Data12 = data34,

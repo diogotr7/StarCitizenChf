@@ -6,7 +6,7 @@ public sealed class EyeMaterial
 {
     public const uint Key = 0xA047885E;
     
-    public required ColorBlock2 EyeColors { get; init; }
+    public required ColorsProperty EyeColors { get; init; }
     
     public static EyeMaterial Read(ref SpanReader reader)
     {
@@ -20,7 +20,7 @@ public sealed class EyeMaterial
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
         reader.Expect<uint>(0);
-        var colorBlock = ColorBlock2.Read(ref reader);
+        var colorBlock = ColorsProperty.Read(ref reader);
         reader.Expect<uint>(5);
         
         return new EyeMaterial
