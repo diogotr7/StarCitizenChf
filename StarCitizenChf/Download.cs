@@ -12,6 +12,7 @@ namespace StarCitizenChf;
 public static class Download
 {
     private static readonly HttpClient _httpClient = new();
+    private static JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
 
     static Download()
     {
@@ -31,7 +32,7 @@ public static class Download
                 break;
         }
 
-        await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(rowsList, new JsonSerializerOptions { WriteIndented = true}));
+        await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(rowsList, _jsonOptions));
     }
 
     public static async Task DownloadAllCharacters(string metadataFile, string outputFolder)
