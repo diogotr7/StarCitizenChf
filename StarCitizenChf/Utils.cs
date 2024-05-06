@@ -14,7 +14,7 @@ public static class Utils
     public static (byte[] data, string name)[] LoadFilesWithNames(string path, string pattern = "*")
     {
         return Directory.GetFiles(path, pattern, SearchOption.AllDirectories)
-            .Select(x => (File.ReadAllBytes(x), Path.GetFileName(x)))
+            .Select(x => (File.ReadAllBytes(x), x))
             .Where(x => x.Item1.Length > 0)
             .ToArray();
     }
@@ -75,9 +75,16 @@ public static class Utils
         await File.WriteAllBytesAsync(reversedBin, data);
     }
     
-    public static async Task WriteSolidColorImage(string path, Rgba32 color)
+    public static async Task WriteSolidColorImage(string path, ChfParser.Color color)
     {
-        using var image = new Image<Rgba32>(256, 256, color);
+        var c = new Rgba32()
+        {
+            R = color.R,
+            G = color.G,
+            B = color.B,
+            A = 255
+        };
+        using var image = new Image<Rgba32>(256, 256, c);
         await using var stream = File.OpenWrite(path);
         await image.SaveAsPngAsync(stream);
     }

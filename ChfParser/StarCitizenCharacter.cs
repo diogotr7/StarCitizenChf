@@ -16,16 +16,12 @@ public sealed class StarCitizenCharacter
     public required string BeardId { get; init; }
     public required string BeardModId { get; init; }
     public required string HeadMaterialId { get; init; }
-    public required Color TorsoColor { get; init; }
-    public required Color LimbColor { get; init; }
-    public required Color EyeColor { get; init; }
-    public required Color HeadColor { get; init; }
     
-    public required int LastReadIndex { get; init; }
-    public required string Special { get; init; }
+    public required HashSet<Color> AllColors { get; init; }
     
     public static StarCitizenCharacter FromBytes(string fileName, ReadOnlySpan<byte> data)
     {
+        var colors = new HashSet<Color>();
         var reader = new SpanReader(data);
         
         reader.Expect<uint>(2);
@@ -37,6 +33,18 @@ public sealed class StarCitizenCharacter
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterialProperty.Read(ref reader);
         var customMaterial = CustomMaterialProperty.Read(ref reader, headMaterial.Id);
+
+        colors.Add(customMaterial.Colors.HeadColor);
+        colors.Add(customMaterial.Colors.Data01);
+        colors.Add(customMaterial.Colors.Data02);
+        colors.Add(customMaterial.Colors.Data03);
+        colors.Add(customMaterial.Colors.Data04);
+        colors.Add(customMaterial.Colors.Data05);
+        colors.Add(customMaterial.Colors.Data06);
+        colors.Add(customMaterial.Colors.Data07);
+        colors.Add(customMaterial.Colors.Data08);
+        colors.Add(customMaterial.Colors.Data09);
+        
         while (reader.Peek<uint>() != EyeMaterial.Key)
         {
             var nextKey = reader.Read<uint>();
@@ -51,10 +59,19 @@ public sealed class StarCitizenCharacter
             var floatsX = FloatBlock2.Read(ref reader);
             var colorsX = ColorBlock2.Read(ref reader);
             reader.Expect(5);
+            
+            if (colorsX.Color01 is { } x)
+                colors.Add(x);
+            if (colorsX.Color02  is { } y)
+                colors.Add(y);
         }
 
         var eyeMaterial = EyeMaterial.Read(ref reader);
         var bodyMaterialInfo = BodyMaterialInfo.Read(ref reader);
+        
+        colors.Add(eyeMaterial.EyeColor);
+        colors.Add(bodyMaterialInfo.TorsoColor);
+        colors.Add(bodyMaterialInfo.LimbColor);
         
         if (reader.Position != reader.Span.Length)
             throw new Exception($"Unexpected data at the end of the file: {reader.Remaining.Length} bytes");
@@ -65,18 +82,13 @@ public sealed class StarCitizenCharacter
             Gender = Constants.GetName(gender.Id),
             DnaString = dnaProperty.Dna[..8],
             TotalCount = totalCount,
-            HairId = Constants.GetName(body.Head.Hair.Id),
-            HairModId = Constants.GetName(body.Head.Hair.Modifier?.Id ?? Guid.Empty),
+            HairId = Constants.GetName(body.Head.Hair?.Id ?? Guid.Empty),
+            HairModId = Constants.GetName(body.Head.Hair?.Modifier?.Id ?? Guid.Empty),
             EyeBrowId = Constants.GetName(body.Head.Eyebrow?.Id ?? Guid.Empty),
             BeardId = Constants.GetName(body.Head.FacialHair?.Id ?? Guid.Empty),
             BeardModId = Constants.GetName(body.Head.FacialHair?.Modifier?.Id ?? Guid.Empty),
             HeadMaterialId = Constants.GetName(headMaterial.Id),
-            TorsoColor = bodyMaterialInfo.TorsoColor,
-            LimbColor = bodyMaterialInfo.LimbColor,
-            EyeColor = eyeMaterial.EyeColor,
-            HeadColor = customMaterial.Colors.HeadColor,
-            LastReadIndex = reader.Position,
-            Special = ""
+            AllColors = colors
         };
     }
 }

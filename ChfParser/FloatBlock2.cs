@@ -14,8 +14,8 @@ public sealed class FloatBlock2
     
     public static FloatBlock2? Read(ref SpanReader reader)
     {
+        //TODO: what is this?
         var k = reader.Read<uint>();
-        Console.WriteLine($"FloatBlock2: 0x{k:X8}");
         reader.Expect(0);
         var count = reader.Read<ulong>();
         

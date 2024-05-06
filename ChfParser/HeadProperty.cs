@@ -8,10 +8,10 @@ public sealed class HeadProperty
     public const uint Key = 0x47010DB9;
     
     public required ulong ChildCount { get; init; }
-    public required EyesProperty Eyes { get; init; }
-    public required HairProperty Hair { get; init; }
+    public required EyesProperty? Eyes { get; init; }
+    public required HairProperty? Hair { get; init; }
     public required EyebrowProperty? Eyebrow { get; init; }
-    public required EyelashProperty Eyelash { get; init; }
+    public required EyelashProperty? Eyelash { get; init; }
     public required FacialHairProperty? FacialHair { get; init; }
     
     public static HeadProperty Read(ref SpanReader reader)
@@ -20,17 +20,35 @@ public sealed class HeadProperty
         reader.Expect(Constants.Head);
         
         var childCount = reader.Read<ulong>();
+        EyesProperty? eyes = null;
+        HairProperty? hair = null;
+        EyebrowProperty? eyebrow = null;
+        EyelashProperty? eyelash = null;
+        FacialHairProperty? facialHair = null;
         
-        var eyes = EyesProperty.Read(ref reader);
-        var hair = HairProperty.Read(ref reader);
-        var eyebrow = EyebrowProperty.ReadOptional(ref reader);
-        var eyelash = EyelashProperty.Read(ref reader);
-        var facialHair = FacialHairProperty.ReadOptional(ref reader);
-
-        ulong headChildCount = 3;
-        if (eyebrow != null) headChildCount++;
-        if (facialHair != null) headChildCount++;
-        if (headChildCount != childCount) throw new Exception();
+        for (var i = 0; i < (int)childCount; i++)
+        {
+            switch (reader.Peek<uint>())
+            {
+                case EyesProperty.Key:
+                    eyes = EyesProperty.Read(ref reader);
+                    break;
+                case HairProperty.Key:
+                    hair = HairProperty.Read(ref reader);
+                    break;
+                case EyebrowProperty.Key:
+                    eyebrow = EyebrowProperty.ReadOptional(ref reader);
+                    break;
+                case EyelashProperty.Key:
+                    eyelash = EyelashProperty.Read(ref reader);
+                    break;
+                case FacialHairProperty.Key:
+                    facialHair = FacialHairProperty.ReadOptional(ref reader);
+                    break;
+                default:
+                    throw new Exception();
+            }
+        }
         
         return new HeadProperty
         {

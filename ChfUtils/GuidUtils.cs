@@ -22,7 +22,6 @@ public static class GuidUtils
         var b = FromBitConverterRepresentation("04-41-5F-75-7D-8A-AA-DB-F6-76-1E-FD-58-7B-24-8B");
         var c = FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
         var d = FromBitConverterRepresentation("E2-04-0B-19-3B-44-48-A4-13-C1-17-62-11-8E-BA-08");
-        var e = FromBitConverterRepresentation("3B-44-48-A4-13-C1-17-62-11-8E-BA-08-B1-1B-AA-82");
         var f = FromBitConverterRepresentation("9A-40-28-05-30-7A-3F-98-E6-F0-65-1A-B8-1E-33-9E");
         var g = FromBitConverterRepresentation("6A-44-54-E7-88-B2-8C-AA-4E-91-D9-7A-10-98-F0-B8");
         var h = FromBitConverterRepresentation("A2-4D-E5-B9-C9-46-9A-22-2C-E5-42-76-00-8F-5E-87");
