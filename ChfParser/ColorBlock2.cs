@@ -4,8 +4,8 @@ namespace ChfParser;
 
 public sealed class ColorBlock2
 {
-    public required Color? Color01 { get; init; }
-    public required Color? Color02 { get; init; }
+    public required Color Color01 { get; init; }
+    public required Color Color02 { get; init; }
     
     public static ColorBlock2 Read(ref SpanReader reader)
     {
@@ -27,13 +27,13 @@ public sealed class ColorBlock2
                 return new ColorBlock2
                 {
                     Color01 = asd,
-                    Color02 = null
+                    Color02 = new Color(0,0,0)
                 };
             case 0:
                 return new ColorBlock2
                 {
-                    Color01 = null,
-                    Color02 = null
+                    Color01 = new Color(0,0,0),
+                    Color02 = new Color(0,0,0)
                 };
             default:
                 throw new Exception($"Expected 1 or 2 colors, got {count}");

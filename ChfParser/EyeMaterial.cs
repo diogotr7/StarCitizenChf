@@ -6,7 +6,7 @@ public sealed class EyeMaterial
 {
     public const uint Key = 0xA047885E;
     
-    public required Color EyeColor { get; init; }
+    public required ColorBlock2 EyeColors { get; init; }
     
     public static EyeMaterial Read(ref SpanReader reader)
     {
@@ -25,7 +25,7 @@ public sealed class EyeMaterial
         
         return new EyeMaterial
         {
-            EyeColor = colorBlock.Color01 ?? throw new Exception("Expected eye color")
+            EyeColors = colorBlock
         };
     }
 }

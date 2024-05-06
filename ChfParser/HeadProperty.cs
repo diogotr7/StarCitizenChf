@@ -5,6 +5,7 @@ namespace ChfParser;
 //libs/foundry/records/entities/scitem/characters/human/head/npc/face/pu_protos_head.xml
 public sealed class HeadProperty
 {
+    public static readonly Guid Head = new("1d5cfab3-bf80-4550-b4ab-39e896a7086e");
     public const uint Key = 0x47010DB9;
     
     public required ulong ChildCount { get; init; }
@@ -17,7 +18,7 @@ public sealed class HeadProperty
     public static HeadProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
-        reader.Expect(Constants.Head);
+        reader.Expect(Head);
         
         var childCount = reader.Read<ulong>();
         
@@ -54,11 +55,11 @@ public sealed class HeadProperty
         return new HeadProperty
         {
             ChildCount = childCount,
-            Eyes = eyes,
-            Hair = hair,
-            Eyebrow = eyebrow,
-            Eyelash = eyelash,
-            FacialHair = facialHair,
+            Eyes = eyes ?? throw new Exception("EyesProperty is required"),
+            Eyelash = eyelash ?? throw new Exception("EyelashProperty is required"),
+            Hair = hair ?? new HairProperty { HairType = HairType.None, Modifier = null },
+            Eyebrow = eyebrow ?? new EyebrowProperty { EyebrowType = EyebrowType.None, ChildCount = 0 },
+            FacialHair = facialHair ?? new FacialHairProperty { FacialHairType = FacialHairType.None, Modifier = null }
         };
     }
 }

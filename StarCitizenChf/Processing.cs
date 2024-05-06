@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ChfParser;
 using ChfUtils;
@@ -70,7 +71,7 @@ public static class Processing
                     await Decompression.DecompressFile(chf, bin);
                 
                 var json = Path.ChangeExtension(chf, ".json");
-                if (!File.Exists(json))
+                //if (!File.Exists(json))
                     await ExtractCharacterJson(bin, json);
             }
             catch (Exception e)
@@ -79,8 +80,8 @@ public static class Processing
             }
         }));
     }
-    
-    private static readonly JsonSerializerOptions opts = new() { WriteIndented = true };
+
+    private static readonly JsonSerializerOptions opts = new() { WriteIndented = true, Converters = { new JsonStringEnumConverter() } };
 
     public static async Task ExtractCharacterJson(string inputFilename, string outputFilename)
     {

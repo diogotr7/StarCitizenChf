@@ -4,6 +4,9 @@ namespace ChfParser;
 
 public sealed class BodyMaterial
 {
+    public static readonly Guid m_body_character_customizer = new("fa5042a3-8568-48f5-bf36-02dc98191b2d");
+    public static readonly Guid f_body_character_customizer = new("f0153262-588d-4ae8-8c06-53bf98cf80a5");
+    
     public const uint Key = 0x27424D58;
     
     public required uint AdditionalParams { get; init; }
@@ -16,8 +19,8 @@ public sealed class BodyMaterial
         var guid = reader.Read<Guid>();
         var isMan = guid switch
         {
-            _ when guid == Constants.f_body_character_customizer => false,
-            _ when guid == Constants.m_body_character_customizer => true,
+            _ when guid == f_body_character_customizer => false,
+            _ when guid == m_body_character_customizer => true,
             _ => throw new Exception($"Unexpected guid {guid}")
         };
 

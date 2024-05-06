@@ -7,11 +7,12 @@ namespace ChfParser;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 [JsonConverter(typeof(ColorConverter))]
-public readonly struct Color
+public readonly struct Color(byte r, byte g, byte b)
 {
-    public byte R { get; }
-    public byte G { get; }
-    public byte B { get; }
+    public byte R { get; } = r;
+    public byte G { get; } = g;
+    public byte B { get; } = b;
+
     //Alpha seems to be unused. Keep it for alignment.
     private readonly byte _A;
     
