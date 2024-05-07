@@ -21,7 +21,7 @@ public sealed class StarCitizenCharacter
         reader.Expect<uint>(7);
 
         var gender = BodyTypeProperty.Read(ref reader);
-        var dnaProperty = DnaProperty.Read(ref reader);
+        var dnaProperty = DnaProperty.Read(ref reader, gender.Type);
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
         var headMaterial = HeadMaterial.Read(ref reader);

@@ -1,4 +1,5 @@
-﻿using ChfUtils;
+﻿using System.Text.Json.Serialization;
+using ChfUtils;
 
 namespace ChfParser;
 
@@ -9,6 +10,7 @@ public sealed class BodyMaterial
     
     public const uint Key = 0x27424D58;
     
+    [JsonConverter(typeof(HexStringJsonConverter))]
     public required uint AdditionalParams { get; init; }
     public required Color TorsoColor { get; init; }
     public required Color LimbColor { get; init; }

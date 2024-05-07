@@ -1,10 +1,12 @@
-﻿using ChfUtils;
+﻿using System.Text.Json.Serialization;
+using ChfUtils;
 
 namespace ChfParser;
 
 public sealed class DyeProperty
 {
     public required DyeType DyeType { get; init; }
+    [JsonConverter(typeof(HexStringJsonConverter))]
     public required uint Unknown { get; init; }
     public required DyeValuesProperty? Values { get; init; }
     public required Color? RootDyeColor { get; init; }

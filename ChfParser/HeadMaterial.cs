@@ -1,4 +1,5 @@
-﻿using ChfUtils;
+﻿using System.Text.Json.Serialization;
+using ChfUtils;
 
 namespace ChfParser;
 
@@ -7,6 +8,7 @@ public sealed class HeadMaterial
     public const uint Key = 0xA98BEB34;
 
     public required HeadMaterialType Material { get; init; }
+    [JsonConverter(typeof(HexStringJsonConverter))]
     public required uint AdditionalParams { get; init; }
 
     public static HeadMaterial Read(ref SpanReader reader)

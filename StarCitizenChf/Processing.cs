@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -113,5 +114,27 @@ public static class Processing
 
         Console.WriteLine("Press enter to stop watching for new characters.");
         Console.ReadLine();
+    }
+
+    public static string FixWeirdDnaString(string dna)
+    {
+        //384 = 48 uints * 4 bytes * 2 char per byte
+        if (dna.Length != 48 * 4 * 2)
+            throw new ArgumentException("Invalid dna length", nameof(dna));
+        
+        var stringBuilder = new StringBuilder();
+
+        //reverse endianness
+        for (var i = 0; i < 48; i++)
+        {
+            var start = i * 8;
+            var part = dna.Substring(start, 8);
+            stringBuilder.Append(part[6..8]);
+            stringBuilder.Append(part[4..6]);
+            stringBuilder.Append(part[2..4]);
+            stringBuilder.Append(part[0..2]);
+        }
+        
+        return stringBuilder.ToString();
     }
 }
