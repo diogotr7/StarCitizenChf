@@ -9,6 +9,8 @@ public class HexStringJsonConverter : JsonConverter<uint>
     public override uint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var s = reader.GetString();
+        if (s == null)
+            throw new JsonException();
         return uint.Parse(s[2..], NumberStyles.HexNumber);
     }
 

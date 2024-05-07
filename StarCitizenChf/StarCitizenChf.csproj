@@ -3,9 +3,16 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <OutputPath>bin</OutputPath>
     </PropertyGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\ChfParser\ChfParser.csproj" />
+        <ProjectReference Include="..\ChfParser\ChfParser.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CliFx" Version="2.3.5"/>
     </ItemGroup>
 </Project>

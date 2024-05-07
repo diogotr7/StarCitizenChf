@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Debug": {
+      "commandName": "Project",
+      "commandLineArgs": "debug"
+    },
+    "Download": {
+      "commandName": "Project",
+      "commandLineArgs": "download"
+    },
+    "ExportAll": {
+      "commandName": "Project",
+      "commandLineArgs": "export-all"
+    },
+    "ImportAll": {
+      "commandName": "Project",
+      "commandLineArgs": "import-all"
+    },
+    "ProcessAll": {
+      "commandName": "Project",
+      "commandLineArgs": "process-all"
+    },
+    "WatchImport": {
+      "commandName": "Project",
+      "commandLineArgs": "watch-import"
+    },
+    "WatchExport": {
+      "commandName": "Project",
+      "commandLineArgs": "watch-export"
+    }
+  }
+}
