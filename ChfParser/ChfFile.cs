@@ -10,7 +10,7 @@ public class ChfFile(byte[] data, bool isModded)
     private static ReadOnlySpan<byte> CigMagic => [0x42, 0x42, 0x00, 0x00];
     private static ReadOnlySpan<byte> MyMagic => "diogotr7"u8;
     
-    private readonly byte[] _data = data;
+    public byte[] Data { get; } = data;
     public bool Modded { get; } = isModded;
 
     public static ChfFile FromBin(string file, bool isModded = true)
@@ -67,7 +67,7 @@ public class ChfFile(byte[] data, bool isModded)
         if (!file.EndsWith(".bin"))
             throw new ArgumentException("File must be a .bin file");
         
-        await File.WriteAllBytesAsync(file, _data);
+        await File.WriteAllBytesAsync(file, Data);
     }
     
     private byte[] GetChfBuffer()
@@ -75,13 +75,13 @@ public class ChfFile(byte[] data, bool isModded)
         using var zstd = new Compressor();
         
         var output = new byte[Size];
-        var writtenBytes = zstd.Wrap(_data, output, 16);
+        var writtenBytes = zstd.Wrap(Data, output, 16);
         var span = output.AsSpan();
         
         CigMagic.CopyTo(span[..4]);
         MemoryMarshal.Write(span[4..8], 0);//placeholder crc32
         MemoryMarshal.Write(span[8..12], (uint)writtenBytes);
-        MemoryMarshal.Write(span[12..16], (uint)_data.Length);
+        MemoryMarshal.Write(span[12..16], (uint)Data.Length);
         
         //Insert our magic at the end so we can tell if it's a modded character.
         if (Modded)

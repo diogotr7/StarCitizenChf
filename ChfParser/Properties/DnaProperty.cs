@@ -11,7 +11,7 @@ public sealed class DnaProperty
         reader.Expect<ulong>(Size);
 
         var dna = reader.ReadBytes(Size).ToArray();
-        DnaDebug.Debug(dna, bodyType == BodyType.Male);
+        //DnaDebug.Debug(dna, bodyType == BodyType.Male);
         
         var dnaString = BitConverter.ToString(dna).Replace("-", "");
         
