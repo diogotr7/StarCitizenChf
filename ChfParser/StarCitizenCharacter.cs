@@ -6,11 +6,11 @@ public sealed class StarCitizenCharacter
     public required BodyTypeProperty BodyType { get; init; }
     public required DnaProperty Dna { get; init; }
     public required BodyProperty Body { get; init; }
-    public required HeadMaterial HeadMaterial { get; init; }
-    public required FaceMaterial FaceMaterial { get; init; }
+    public required HeadMaterialproperty HeadMaterial { get; init; }
+    public required FaceMaterialProperty FaceMaterial { get; init; }
     public required List<DyeProperty> Dyes { get; init; }
-    public required EyeMaterial EyeMaterial { get; init; }
-    public required BodyMaterial BodyMaterial { get; init; }
+    public required EyeMaterialProperty EyeMaterial { get; init; }
+    public required BodyMaterialProperty BodyMaterial { get; init; }
 
     public static StarCitizenCharacter FromBytes(ReadOnlySpan<byte> data)
     {
@@ -23,17 +23,17 @@ public sealed class StarCitizenCharacter
         var dnaProperty = DnaProperty.Read(ref reader, gender.Type);
         var totalCount = reader.Read<ulong>();
         var body = BodyProperty.Read(ref reader);
-        var headMaterial = HeadMaterial.Read(ref reader);
-        var customMaterial = FaceMaterial.Read(ref reader, headMaterial.Material);
+        var headMaterial = HeadMaterialproperty.Read(ref reader);
+        var customMaterial = FaceMaterialProperty.Read(ref reader, headMaterial.Material);
 
         var props = new List<DyeProperty>();
-        while (reader.Peek<uint>() != EyeMaterial.Key)
+        while (reader.Peek<uint>() != EyeMaterialProperty.Key)
         {
             props.Add(DyeProperty.Read(ref reader));
         }
 
-        var eyeMaterial = EyeMaterial.Read(ref reader);
-        var bodyMaterialInfo = BodyMaterial.Read(ref reader);
+        var eyeMaterial = EyeMaterialProperty.Read(ref reader);
+        var bodyMaterialInfo = BodyMaterialProperty.Read(ref reader);
 
         if (reader.Position != reader.Span.Length)
             throw new Exception($"Unexpected data at the end of the file: {reader.Remaining.Length} bytes");

@@ -1,7 +1,7 @@
 ﻿
 namespace ChfParser;
 
-public sealed class FaceValues
+public sealed class FaceInfoProperty
 {
     public required float FreckleAmount { get; init; }
     public required float FreckleOpacity { get; init; }
@@ -29,7 +29,7 @@ public sealed class FaceValues
     public required float LipSmoothness3 { get; init; }
     public required float LipOpacity { get; init; }
     
-    public static FaceValues Read(ref SpanReader reader)
+    public static FaceInfoProperty Read(ref SpanReader reader)
     {
         reader.Expect<ulong>(0x19);
         
@@ -59,7 +59,7 @@ public sealed class FaceValues
         var data20 = reader.ReadKeyValueAndChildCount<float>(0, 0xbaccc688);
         var data21 = reader.ReadKeyValueAndChildCount<float>(0, 0x589ddcf4);
         
-        return new FaceValues
+        return new FaceInfoProperty
         {
             FreckleAmount = freckleAmount,
             FreckleOpacity = freckleOpacity,

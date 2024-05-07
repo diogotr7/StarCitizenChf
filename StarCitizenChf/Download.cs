@@ -12,7 +12,7 @@ namespace StarCitizenChf;
 public static class Download
 {
     private static readonly HttpClient _httpClient = new();
-    private static JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
 
     static Download()
     {
@@ -46,7 +46,7 @@ public static class Download
                 if (!row.dnaUrl.Contains("chf") || !row.previewUrl.Contains("jpeg"))
                     return;
 
-                var thisCharacterFolder = Path.Combine(outputFolder, Utils.GetSafeDirectoryName(row));
+                var thisCharacterFolder = Path.Combine(outputFolder, GetSafeDirectoryName(row));
                 Directory.CreateDirectory(thisCharacterFolder);
     
                 var imageFilename = row.previewUrl.Split('/').Last();
@@ -74,5 +74,14 @@ public static class Download
         var stream = await _httpClient.GetStreamAsync(url);
         await using var fileStream = File.Create(path);
         await stream.CopyToAsync(fileStream);
+    }
+    
+    public static string GetSafeDirectoryName(Character character)
+    {
+        var start = character.title;
+
+        Array.ForEach([..Path.GetInvalidPathChars(), ' '], x => start = start.Replace(x, '_'));
+
+        return $"{start}-{character.id[..8]}";
     }
 }

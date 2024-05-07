@@ -29,11 +29,11 @@ public static class Processing
             var chf = ChfFile.FromChf(character);
             
             //do not import our own characters again.
-            if (chf.IsModded())
+            if (chf.Modded)
                 continue;
 
             Directory.CreateDirectory(output);
-            await chf.WriteToFileAsync(Path.Combine(output, $"{name}.chf"));
+            await chf.WriteToChfFileAsync(Path.Combine(output, $"{name}.chf"));
         }
     }
     
@@ -45,22 +45,25 @@ public static class Processing
             var target = Path.ChangeExtension(b, ".chf");
             if (File.Exists(target))
                 return;
-            
+
             var file = ChfFile.FromBin(b);
-            await file.WriteToFileAsync(target);
+            
+            await file.WriteToChfFileAsync(target);
         }));
     }
+    
     public static async Task ProcessCharacter(string chf)
     {
         if (!chf.EndsWith(".chf"))
             throw new ArgumentException("Not a chf file", nameof(chf));
 
         var bin = Path.ChangeExtension(chf, ".bin");
+        var chfFile = ChfFile.FromChf(chf);
         if (!File.Exists(bin))
-            await Decompression.DecompressFile(chf, bin);
+            await chfFile.WriteToBinFileAsync(bin);
         
         var json = Path.ChangeExtension(chf, ".json");
-        //if (!File.Exists(json))
+        if (!File.Exists(json))
             await ExtractCharacterJson(bin, json);
     }
 
@@ -119,7 +122,7 @@ public static class Processing
     {
         //384 = 48 uints * 4 bytes * 2 char per byte
         if (dna.Length != 48 * 4 * 2)
-            throw new ArgumentException("Invalid dna length", nameof(dna));
+            return "";//???
         
         var stringBuilder = new StringBuilder();
 

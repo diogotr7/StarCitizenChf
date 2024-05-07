@@ -1,13 +1,13 @@
 ﻿
 namespace ChfParser;
 
-public sealed class EyeMaterial
+public sealed class EyeMaterialProperty
 {
     public const uint Key = 0xA047885E;
     
     public required ColorsProperty EyeColors { get; init; }
     
-    public static EyeMaterial Read(ref SpanReader reader)
+    public static EyeMaterialProperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
         reader.Expect(Guid.Empty);
@@ -22,7 +22,7 @@ public sealed class EyeMaterial
         var colorBlock = ColorsProperty.Read(ref reader);
         reader.Expect<uint>(5);
         
-        return new EyeMaterial
+        return new EyeMaterialProperty
         {
             EyeColors = colorBlock
         };

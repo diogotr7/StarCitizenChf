@@ -2,7 +2,7 @@
 
 namespace ChfParser;
 
-public sealed class HeadMaterial
+public sealed class HeadMaterialproperty
 {
     public const uint Key = 0xA98BEB34;
 
@@ -10,7 +10,7 @@ public sealed class HeadMaterial
     [JsonConverter(typeof(HexStringJsonConverter))]
     public required uint AdditionalParams { get; init; }
 
-    public static HeadMaterial Read(ref SpanReader reader)
+    public static HeadMaterialproperty Read(ref SpanReader reader)
     {
         reader.Expect(Key);
         var guid = reader.Read<Guid>();
@@ -56,7 +56,7 @@ public sealed class HeadMaterial
         reader.Expect<uint>(1);
         reader.Expect<uint>(5);
 
-        return new HeadMaterial
+        return new HeadMaterialproperty
         {
             Material = type,
             AdditionalParams = additionalParams

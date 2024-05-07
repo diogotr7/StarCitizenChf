@@ -1,12 +1,12 @@
 ﻿
 namespace ChfParser;
 
-public sealed class Makeup
+public sealed class MakeupProperty
 {
     public required byte Count { get; init; }
     public required MakeupType Type { get; init; }
 
-    public static Makeup Read(ref SpanReader reader)
+    public static MakeupProperty Read(ref SpanReader reader)
     {
         reader.Expect<uint>(0);
         var count = reader.Read<byte>();
@@ -28,7 +28,7 @@ public sealed class Makeup
             _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
         };
 
-        return new Makeup
+        return new MakeupProperty
         {
             Count = count,
             Type = type

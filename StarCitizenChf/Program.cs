@@ -9,6 +9,12 @@ var xxx = Processing.FixWeirdDnaString(weirdDna);
 
 var csprojFolder = Path.GetFullPath(@"..\..\..\");
 var folders = new Folders(csprojFolder);
+//
+// var hugedna = Path.Combine(folders.Base, "dna", "huge.csv");
+// var hugednaF = Path.Combine(folders.Base, "dna", "huge_fixed.csv");
+// var huge = File.ReadAllLines(hugedna).Select(x => x.Split(',')).ToArray();
+// var huge_fixed = huge.Select(x => $"{Processing.FixWeirdDnaString(x[0])}, {x[1]}").ToArray();
+// File.WriteAllLines(hugednaF, huge_fixed);
 
 //Downloads all characters from the website and saves them to the website characters folder.
 //await Download.DownloadAllMetadata(folders.MetadataFile);
@@ -17,19 +23,20 @@ var folders = new Folders(csprojFolder);
 //Imports all non-modded characters exported from the game into our local characters folder.
 await Processing.ImportGameCharacters(folders.LocalCharacters);
 await Processing.ConvertAllBinariesToChfAsync(folders.ModdedCharacters);
+return;
+
 //Extracts all chf files into bins, reverses these bins for easier analysis.
 //also tries to extract some color information to compare to images.
 await Processing.ProcessAllCharacters(folders.WebsiteCharacters);
 await Processing.ProcessAllCharacters(folders.LocalCharacters);
-return;
 
-var web = Utils.LoadFilesWithNames(folders.WebsiteCharacters, "*.bin");
-var local = Utils.LoadFilesWithNames(folders.LocalCharacters, "*.bin");
-var allBins = web.Concat(local).ToArray();
+var web2 = Directory.GetFiles(folders.WebsiteCharacters, "*.bin", SearchOption.AllDirectories);
+var local2 = Directory.GetFiles(folders.LocalCharacters, "*.bin", SearchOption.AllDirectories);
+var allBins2 = web2.Concat(local2).ToArray();
 
-var characters = allBins.Select(x =>  StarCitizenCharacter.FromBytes(x.data)).ToArray();
+var characters2 = allBins2.Select(x =>  StarCitizenCharacter.FromBytes(File.ReadAllBytes(x))).ToArray();
 
-var viz = characters.Select(c => new
+var viz = characters2.Select(c => new
 {
     dna1 = c.Dna.DnaString.Substring(16, 8),
     dna2 = c.Dna.DnaString.Substring(44, 4),

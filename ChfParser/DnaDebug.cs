@@ -2,28 +2,6 @@
 
 namespace ChfParser;
 
-public sealed class DnaProperty
-{
-    private const int Size = 0xD8;
-    
-    public required string DnaString { get; init; }
-    
-    public static DnaProperty Read(ref SpanReader reader, BodyType bodyType)
-    {
-        reader.Expect<ulong>(Size);
-
-        var dna = reader.ReadBytes(Size).ToArray();
-        DnaDebug.Debug(dna, bodyType == BodyType.Male);
-        
-        var dnaString = BitConverter.ToString(dna).Replace("-", "");
-        
-        return new DnaProperty
-        {
-            DnaString = dnaString
-        };
-    }
-}
-
 public static class DnaDebug
 {
     public static void Debug(ReadOnlySpan<byte> bytes, bool male)
@@ -60,8 +38,8 @@ public static class DnaDebug
             //if (headId > 14)
             //    throw new Exception();
             //if zero, empty uhh slot?
-             if (headId == 43)
-                 Debugger.Break();
+            if (headId == 43)
+                Debugger.Break();
             
             reader.Expect<byte>(0);
             
