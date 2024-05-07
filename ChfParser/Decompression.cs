@@ -1,6 +1,6 @@
 ﻿using ZstdSharp;
 
-namespace ChfUtils;
+namespace ChfParser;
 
 public static class Decompression
 {

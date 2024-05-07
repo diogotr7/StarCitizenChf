@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ChfUtils;
+namespace ChfParser;
 
 public ref struct SpanWriter(Span<byte> span)
 {

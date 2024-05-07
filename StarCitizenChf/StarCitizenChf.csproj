@@ -11,6 +11,5 @@
     
     <ItemGroup>
       <ProjectReference Include="..\ChfParser\ChfParser.csproj" />
-      <ProjectReference Include="..\ChfUtils\ChfUtils.csproj" />
     </ItemGroup>
 </Project>

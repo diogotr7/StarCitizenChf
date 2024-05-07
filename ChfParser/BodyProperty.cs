@@ -1,5 +1,4 @@
-﻿using ChfUtils;
-
+﻿
 namespace ChfParser;
 
 //entities/scitem/characters/human.body/body_01_noMagicPocket

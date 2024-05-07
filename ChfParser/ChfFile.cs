@@ -1,10 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
-namespace ChfUtils;
+namespace ChfParser;
 
 public sealed class ChfFile
 {
@@ -45,14 +42,6 @@ public sealed class ChfFile
         BitConverter.TryWriteBytes(span[4..8], crc);
         
         return new ChfFile(data);
-    }
-    
-    public void WriteToFile(string file)
-    {
-        if (!file.EndsWith(".chf"))
-            throw new ArgumentException("File must be a .chf file");
-        
-        File.WriteAllBytes(file, _data);
     }
     
     public async Task WriteToFileAsync(string file)

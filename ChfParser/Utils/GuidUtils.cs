@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace ChfUtils;
+namespace ChfParser;
 
 public static class GuidUtils
 {

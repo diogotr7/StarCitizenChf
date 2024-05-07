@@ -1,5 +1,4 @@
-﻿using ChfUtils;
-
+﻿
 namespace ChfParser;
 
 public sealed class BodyTypeProperty

@@ -1,5 +1,4 @@
-﻿using ChfUtils;
-
+﻿
 namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/shared/hair/hair_13.xml

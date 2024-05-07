@@ -1,5 +1,4 @@
-﻿using ChfUtils;
-
+﻿
 namespace ChfParser;
 
 //libs/foundry/records/entities/scitem/characters/human/head/shared/eyelashes/head_eyelashes.xml
