@@ -6,7 +6,7 @@ public static class DnaDebug
 {
     public static void Debug(ReadOnlySpan<byte> bytes, bool male)
     {
-        if (bytes.Length != 216)
+        if (bytes.Length != 0xD8)
             throw new Exception();
         
         var reader = new SpanReader(bytes);

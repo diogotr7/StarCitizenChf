@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Buffers;
+using System.Buffers.Binary;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,20 +26,27 @@ public static class Processing
             await chfFile.WriteToBinFileAsync(bin);
         
         var json = Path.ChangeExtension(chf, ".json");
-        if (!File.Exists(json))
+        //if (!File.Exists(json))
         {
             var data = await File.ReadAllBytesAsync(bin);
             var character = StarCitizenCharacter.FromBytes(data);
             var jsonString = JsonSerializer.Serialize(character, opts);
             await File.WriteAllTextAsync(json, jsonString);
         }
+        
+        var dna = Path.ChangeExtension(chf, ".dna");
+        //if (!File.Exists(dna))
+        {
+            const uint dnaStart = 0x30;
+            var dnaBytes = chfFile.Data.AsSpan().Slice((int)dnaStart, 216).ToArray();
+            await File.WriteAllBytesAsync(dna, dnaBytes);
+        }
     }
 
     public static string FixWeirdDnaString(string dna)
     {
-        //384 = 48 uints * 4 bytes * 2 char per byte
-        if (dna.Length != 48 * 4 * 2)
-            return "";//???
+        if (dna.Length != 384)
+            throw new ArgumentException("Invalid length", nameof(dna));
         
         var stringBuilder = new StringBuilder();
 
@@ -57,11 +66,9 @@ public static class Processing
     
     public static string FixWeirdDnaString2(string dna)
     {
-        //384 = 48 uints * 4 bytes * 2 char per byte
-        if (dna.Length != 48 * 4 * 2)
-            return "";//???
+        if (dna.Length != 384)
+            throw new ArgumentException("Invalid length", nameof(dna));
 
-        //parse hex string
         var bytes = Convert.FromHexString(dna);
         var bytesReversed = bytes.Reverse().ToArray();
         return Convert.ToHexString(bytesReversed);

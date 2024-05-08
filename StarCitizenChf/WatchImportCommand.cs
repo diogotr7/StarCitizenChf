@@ -10,7 +10,7 @@ namespace StarCitizenChf;
 public class WatchImportCommand : ICommand
 {
     [CommandOption("input", 'i', Description = "Input folder")]
-    public string InputFolder { get; set; } = Folders.ModdedCharacters;
+    public string InputFolder { get; set; } = Folders.StarCitizenCharactersFolder;
     
     public async ValueTask ExecuteAsync(IConsole console)
     {
