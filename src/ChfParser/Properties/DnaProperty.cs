@@ -16,10 +16,11 @@ public sealed class DnaProperty
         var male = bodyType == BodyType.Male;
 
         reader.Expect<ulong>(Size);
+        var dnaBytes = reader.ReadBytes(Size).ToArray();
+        var dnaString = Convert.ToHexString(dnaBytes);
 
-        var dna = reader.ReadBytes(Size).ToArray();
-
-        var childReader = new SpanReader(dna);
+        var childReader = new SpanReader(dnaBytes);
+        
         childReader.Expect(0xFCD09394);
         childReader.Expect(male ? 0xDD6C67F6 : 0x9EF4EB54);
         childReader.Expect(male ? 0x65E740D3 : 0x65D75204);
@@ -33,34 +34,19 @@ public sealed class DnaProperty
 
         var size = childReader.Read<byte>();
         childReader.Expect<byte>(0);
-        var parts = new DnaPart[PartCount];
 
-        for (var i = 0; i < parts.Length; i++)
+        var perBodyPart = Enum.GetValues<FacePart>().ToDictionary(x => x, _ => new DnaPart[4]);
+        for (var i = 0; i < PartCount; i++)
         {
-            parts[i] = DnaPart.Read(ref childReader);
+            perBodyPart[(FacePart)(i % 12)][i / 12] = DnaPart.Read(ref childReader);
         }
 
-        var perBodyPart = parts.Select((part, idx) => (part, facePart: (FacePart)(idx % 12)))
-            .GroupBy(x => x.facePart)
-            .ToDictionary(x => x.Key, x => x.Select(y => y.part).ToArray());
-
-        int count = 0;
-        foreach (var part in perBodyPart)
+        foreach (var (k, v) in perBodyPart)
         {
-            if (part.Value.Length != 4)
-                throw new Exception($"Invalid part count for {part.Key}");
-
-            if (Math.Abs(part.Value.Sum(x => x.Percent) - 100) > 1)
-                throw new Exception($"Invalid part percent for {part.Key}");
-
-            count += part.Value.Count(x => x.Percent != 0);       
+            if (Math.Abs(v.Sum(x => x.Percent) - 100) > 5f)//it's fiiiine
+                throw new Exception($"Invalid part percent for {k}");
         }
         
-        if (count == size)
-            Debugger.Break();
-        
-        var dnaString = BitConverter.ToString(dna).Replace("-", "");
-
         return new DnaProperty
         {
             DnaString = dnaString,

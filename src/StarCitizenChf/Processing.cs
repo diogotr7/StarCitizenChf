@@ -19,25 +19,13 @@ public static class Processing
 
         var bin = Path.ChangeExtension(chf, ".bin");
         var chfFile = ChfFile.FromChf(chf);
-        if (!File.Exists(bin))
-            await chfFile.WriteToBinFileAsync(bin);
+        await chfFile.WriteToBinFileAsync(bin);
         
         var json = Path.ChangeExtension(chf, ".json");
-        //if (!File.Exists(json))
-        {
-            var data = await File.ReadAllBytesAsync(bin);
-            var character = StarCitizenCharacter.FromBytes(data);
-            var jsonString = JsonSerializer.Serialize(character, opts);
-            await File.WriteAllTextAsync(json, jsonString);
-        }
-        
-        var dna = Path.ChangeExtension(chf, ".dna");
-        //if (!File.Exists(dna))
-        {
-            const uint dnaStart = 0x30;
-            var dnaBytes = chfFile.Data.AsSpan().Slice((int)dnaStart, 216).ToArray();
-            await File.WriteAllBytesAsync(dna, dnaBytes);
-        }
+        var data = await File.ReadAllBytesAsync(bin);
+        var character = StarCitizenCharacter.FromBytes(data);
+        var jsonString = JsonSerializer.Serialize(character, opts);
+        await File.WriteAllTextAsync(json, jsonString);
     }
 
     public static string FixWeirdDnaString(string dna)

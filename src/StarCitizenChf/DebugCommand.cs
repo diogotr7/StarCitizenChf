@@ -15,19 +15,11 @@ public class DebugCommand : ICommand
 {
     public async ValueTask ExecuteAsync(IConsole console)
     {
-        await fixhuge();
-        return;
-        const string fucky =
-            "000000000000000000060000000600000006C77000000000000000000009000000090000000C5EC9000A0000000D000000096378000963780005B8010005B80100030000000D0000000D00000005BAB10005BAB100090000000147E2000900000003000000030000000147FD000147FD0001388E000EBA50000EBA50000E0000000E0000000300000004B81C00046585000E9C86000E9C86000B0000000B000000080000000C45AE000C45AE0007454D0007454D0001A13500070000000E9A79";
-
-        var f1 = Processing.FixWeirdDnaString(fucky);
-
-        var d1 = ParseDnaString(f1);
-
-        await FigureOutHeadCount();
-
-
-        //ExtractWebsiteDnas();
+        await FixDnaStrings();
+        
+        var hugeData = Path.Combine(Folders.Base, "dna", "huge_fixed.csv");
+        var huge_fixed = (await File.ReadAllLinesAsync(hugeData)).Select(x => x.Split(',')).Select(x => (x[1], x[0])).ToArray();
+        await CreateCharactersFromDnaStrings(huge_fixed);
     }
 
     private static Dictionary<FacePart, DnaPart[]> ParseDnaString(string dnaString)
@@ -101,7 +93,7 @@ public class DebugCommand : ICommand
         File.WriteAllLines(Path.Combine(Folders.Base, "dna", "website.csv"), dnas);
     }
 
-    private static async Task fixhuge()
+    private static async Task FixDnaStrings()
     {
         var hugeData = Path.Combine(Folders.Base, "dna", "huge.csv");
         var huge = (await File.ReadAllLinesAsync(hugeData)).Select(x => x.Split(',')).ToArray();
@@ -111,9 +103,12 @@ public class DebugCommand : ICommand
             .Select(x => (x[1], Processing.FixWeirdDnaString(x[0])))
             .ToArray();
 
-        // var huge_fixed_csv = huge_fixed.DistinctBy(x => $"{x.Item2},{x.Item3}").Select(x => $"{x.Item2},{x.Item3},{x.Item1}");
-        // await File.WriteAllLinesAsync(Path.Combine(Folders.Base, "dna", "huge_fixed.csv"), huge_fixed_csv);
+        var huge_fixed_csv = huge_fixed.Select(x => $"{x.Item2},{x.Item1}");
+        await File.WriteAllLinesAsync(Path.Combine(Folders.Base, "dna", "huge_fixed.csv"), huge_fixed_csv);
+    }
 
+    public static async Task CreateCharactersFromDnaStrings(IEnumerable<(string name, string dna)> huge_fixed)
+    {
         var dump = Path.Combine(Folders.Base, "dump");
         Directory.CreateDirectory(dump);
         foreach (var (name, f1) in huge_fixed)
@@ -125,23 +120,46 @@ public class DebugCommand : ICommand
                 male = true;
             else
                 continue;
-
-            const string bDirectory = @"C:\Development\StarCitizenChf\StarCitizenChf\bin\data\localCharacters";
-
-            var default_c = male ? Path.Combine(bDirectory, "default_m", "default_m.chf") : Path.Combine(bDirectory, "default_f", "default_f.chf");
-
-            var chf_f1 = ChfFile.FromChf(default_c);
-
-            var dnaBytes1 = Convert.FromHexString(f1);
             
-            //overwrite the dna
-            const uint dnaStart = 0x30; //0x9493
-
-            dnaBytes1.CopyTo(chf_f1.Data, dnaStart + 0x18);
-            //chf_f1.Data[dnaStart + 0x16] = 0xff;//Is this correct? Probably yes
-
             var sanitized_name = name.Split('\\').Last();
-            await chf_f1.WriteToChfFileAsync(Path.Combine(dump, $"{(male ? 'm' : 'f')}_{sanitized_name}_1.chf"));
+            var path = Path.Combine(dump, $"{(male ? 'm' : 'f')}_{sanitized_name}_1.chf");
+            
+            await CreateCharacterFromDnaString(f1, path, male);
         }
+    }
+
+    private static async Task CreateCharacterFromDnaString(string dna, string name, bool male)
+    {
+        if (dna.Length != 384)
+            throw new ArgumentException("Invalid length", nameof(dna));
+        
+        if (!name.EndsWith(".chf"))
+            throw new ArgumentException("Not a chf file", nameof(name));
+        
+        const string bDirectory = @"C:\Development\StarCitizenChf\src\StarCitizenChf\bin\data\localCharacters";
+
+        var default_c = male ? Path.Combine(bDirectory, "default_m", "default_m.chf") : Path.Combine(bDirectory, "default_f", "default_f.chf");
+        var chf = ChfFile.FromChf(default_c);
+        var dnaBytes = Convert.FromHexString(dna);
+            
+        //overwrite the dna
+        const uint dnaStart = 0x30; //0x9493
+
+        dnaBytes.CopyTo(chf.Data, dnaStart + 0x18);
+        //chf_f1.Data[dnaStart + 0x16] = 0xff;//Is this correct? Probably yes
+        
+        Verify(chf);
+
+        await chf.WriteToChfFileAsync(name);
+    }
+
+    private static void Verify(ChfFile chf)
+    {
+        var reader = new SpanReader(chf.Data);
+        reader.Expect<uint>(2);
+        reader.Expect<uint>(7);
+
+        var gender = BodyTypeProperty.Read(ref reader);
+        DnaProperty.Read(ref reader, gender.Type);
     }
 }
