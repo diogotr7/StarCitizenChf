@@ -122,7 +122,7 @@ public class DebugCommand : ICommand
                 continue;
             
             var sanitized_name = name.Split('\\').Last();
-            var path = Path.Combine(dump, $"{(male ? 'm' : 'f')}_{sanitized_name}_1.chf");
+            var path = Path.Combine(dump, $"{(male ? 'm' : 'f')}_{sanitized_name}.chf");
             
             await CreateCharacterFromDnaString(f1, path, male);
         }
@@ -146,7 +146,9 @@ public class DebugCommand : ICommand
         const uint dnaStart = 0x30; //0x9493
 
         dnaBytes.CopyTo(chf.Data, dnaStart + 0x18);
-        //chf_f1.Data[dnaStart + 0x16] = 0xff;//Is this correct? Probably yes
+        chf.Data[dnaStart + 0x16] = 0;
+        //This^ is very strange. Setting the value to 0xff makes the character look like the default 0x00 one.
+        //anything other than ff works?
         
         Verify(chf);
 

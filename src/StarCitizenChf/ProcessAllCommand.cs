@@ -12,7 +12,7 @@ namespace StarCitizenChf;
 public class ProcessAllCommand : ICommand
 {
     [CommandOption("input", 'i', Description = "Input Folder to process.")]
-    public string InputFolder { get; set; } = Folders.WebsiteCharacters;
+    public string InputFolder { get; set; } = Folders.Base;
 
     public async ValueTask ExecuteAsync(IConsole console)
     {
