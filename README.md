@@ -1,19 +1,28 @@
-# Star Citizen .chf File Format
+# StarCitizenChf
 
-Stands for Character Header File. Used for storing character data in Star Citizen.
+## Usage
 
-## File Format
+```sh
+StarCitizenChf v1.0.0
 
-Files are always 4096 bytes long. Any references to "always" should be interpreted as "always in the files I tested with", which were downloaded from star-citizen-characters.com
+USAGE
+  StarCitizenChf [options]
+  StarCitizenChf [command] [...]
 
-| Hex indices | size | description                               |
-| ----------- | ---- | ----------------------------------------- |
-| 000-003     | 4    | sq42 magic bytes (42-42-00-00)            |
-| 004-007     | 4    | ~CRC32 checksum of data[16..]             |
-| 008-00B     | 4    | Compressed data size, int32               |
-| 00C-00F     | 4    | Decompressed data size, int32             |
-| 010-013     | 4    | Zstd magic bytes (0x28, 0xB5, 0x2F, 0xFD) |
-| 014-FF7     | 4072 | Data. Encrypted, then zstd compressed     |
-| FF8-FFF     | 8    | Footer. More info below.                  |
+OPTIONS
+  -h|--help         Shows help text. 
+  --version         Shows version information. 
 
-Read the [documentation](docs/) for more information.
+COMMANDS
+  debug             
+  download          Downloads all characters from the website and saves them to the website characters folder. 
+  export-all        Exports all modded characters into the Star Citizen folder. 
+  import-all        Imports all non-modded characters exported from the game into our local characters folder. 
+  process           Process a character file 
+  process-all       Processes all characters in the given folder. 
+  watch-export      Watch for new modded characters and export them to the star citizen folder. 
+  watch-import      Watch for new characters in the Star Citizen folder and import them. 
+
+You can run `StarCitizenChf [command] --help` to show help on a specific command.
+
+```

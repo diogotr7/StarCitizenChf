@@ -28,6 +28,10 @@
     "WatchExport": {
       "commandName": "Project",
       "commandLineArgs": "watch-export"
+    },
+    "Empty": {
+      "commandName": "Project",
+      "commandLineArgs": ""
     }
   }
 }

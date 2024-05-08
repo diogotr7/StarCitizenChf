@@ -6,8 +6,7 @@ using CliFx.Infrastructure;
 
 namespace StarCitizenChf;
 
-[Command]
-//default is process single just so i can drag and drop a file on the exe.
+[Command("process", Description = "Process a character file")]
 public class ProcessCommand : ICommand
 {
     [CommandParameter(0, Description = "Character file")]
