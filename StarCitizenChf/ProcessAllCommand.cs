@@ -21,8 +21,8 @@ public class ProcessAllCommand : ICommand
             await console.Error.WriteLineAsync("Folder not found");
             return;
         }
-
-        await Task.WhenAll(Directory.GetFiles(InputFolder, "*.chf", SearchOption.AllDirectories).Select(async characterFile =>
+        
+        foreach (var characterFile in Directory.GetFiles(InputFolder, "*.chf", SearchOption.AllDirectories))
         {
             try
             {
@@ -33,6 +33,6 @@ public class ProcessAllCommand : ICommand
             {
                 await console.Error.WriteLineAsync($"Error processing {characterFile}: {e.Message}");
             }
-        }));
+        }
     }
 }

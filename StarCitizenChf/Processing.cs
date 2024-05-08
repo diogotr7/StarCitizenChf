@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Buffers;
-using System.Buffers.Binary;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -62,15 +59,5 @@ public static class Processing
         }
         
         return stringBuilder.ToString();
-    }
-    
-    public static string FixWeirdDnaString2(string dna)
-    {
-        if (dna.Length != 384)
-            throw new ArgumentException("Invalid length", nameof(dna));
-
-        var bytes = Convert.FromHexString(dna);
-        var bytesReversed = bytes.Reverse().ToArray();
-        return Convert.ToHexString(bytesReversed);
     }
 }
