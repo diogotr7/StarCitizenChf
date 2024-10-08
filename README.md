@@ -1,3 +1,7 @@
+Repository Archived, research moved here: https://github.com/diogotr7/StarBreaker
+
+<del>
+
 # StarCitizenChf
 
 Star Citizen Custom Head File (CHF) reverse engineering and processing tool.
@@ -38,3 +42,4 @@ You can run `StarCitizenChf [command] --help` to show help on a specific command
 If you found something about these files not covered here, please open an issue or a pull request, or discuss it in the [Star Citizen Modding Discord](https://discord.gg/2sBAZbWnV2)
 
 I want to test this tool with as many files as possible, so if you have a character file that is not working, please send it to me
+</del>
